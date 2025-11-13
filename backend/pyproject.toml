@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forum_api"
+version = "0.1.0"
+description = "Forum API"
+authors = [{ name = "Alex", email = "alexandergar228@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "sqlalchemy",
+    "alembic",
+    "psycopg2",
+    "passlib[bcrypt]",
+    "python-jose[cryptography]",
+    "pyjwt",
+    "uvicorn",
+    "dotenv",
+]

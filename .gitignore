@@ -1,2 +1,6 @@
 */venv
+/.vscode
+**/__pycache__
+**/dist
+**/forum_api.egg-info
 /postgres_data

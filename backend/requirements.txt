@@ -1,2 +1,11 @@
 fastapi
 sqlalchemy
+alembic
+psycopg2
+python-jose[cryptography]
+pyjwt
+uvicorn
+dotenv
+python-multipart
+passlib==1.7.4
+bcrypt<5.0.0
