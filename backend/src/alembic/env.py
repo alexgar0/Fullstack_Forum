@@ -9,10 +9,14 @@ from sqlalchemy import pool
 
 from alembic import context
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from database import Base, DATABASE_URL
-import user.database.models
+# Add the parent directory of 'src' to the path, so that 'src' is treated as a package
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.database import Base
+from src.config import DATABASE_URL
+import src.user.database.models
+import src.topic.database.models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

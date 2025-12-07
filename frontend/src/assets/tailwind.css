@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Stack+Sans+Text:wght@200..700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* твоя цветовая схема */
+  --color-surface: #0b0d17;
+  --color-surface-alt: #0f172a;
+
+  --color-accent: #3b82f6;
+  --color-primary: #0d394d;
+  --color-primary-alt: #1e293b;
+
+  --color-text-primary: #dceaf5;
+  --color-text-secondary: #94a3b8;
+  --color-text-error: #ef4444;
+}
+
+@layer base {
+  body {
+    font-family: 'Stack Sans Text', sans-serif;
+     @apply bg-surface text-text-primary;
+  }
+}

@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine
-DATABASE_URL = "postgresql://postgres_user:password@postgres_container:5432/postgres_db"
 from sqlalchemy.orm import sessionmaker, Session, declarative_base
+
+from .config import DATABASE_URL
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -13,3 +14,4 @@ def get_db():
         yield db
     finally:
         db.close()
+        

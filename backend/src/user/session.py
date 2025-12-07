@@ -31,6 +31,12 @@ def get_current_user(
             raise credentials_exception
     except JWTError:
         raise credentials_exception
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
     user_service = UserService(db)
     user = user_service.repo.get_user_by_username(username=username)

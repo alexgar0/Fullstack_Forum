@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:17.1
     container_name: postgres_container
     environment:
       - POSTGRES_USER=postgres_user
@@ -25,6 +25,8 @@ services:
   backend:
     build: ./backend
     container_name: backend_container
+    environment:
+      - DATABASE_URL=postgresql://postgres_user:password@postgres_container:5432/postgres_db
     ports:
       - "8080:8080"
     depends_on:

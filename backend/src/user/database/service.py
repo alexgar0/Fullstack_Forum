@@ -3,11 +3,11 @@ from fastapi import HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from .repo import UserRepo
+from ...exceptions import AppException, ExistingResourceError
 from ..schemas import UserCreate
-from ..security import hash_password
+from ..security import hash_password, verify_password
 from .models import User
-from ..security import verify_password
+from .repo import UserRepo
 
 def password_complexity_check(password) -> tuple[bool, str]:
     if len(password) < 8:
@@ -20,6 +20,10 @@ def password_complexity_check(password) -> tuple[bool, str]:
         return False, "Password must contain at least one digit"
     return True, "Password is valid"
 
+class PasswordTooWeakError(AppException):
+    def __init__(self, message: str = "Password does not meet complexity requirements"):
+        super().__init__(message)
+
 class UserService:
     def __init__(self, db: Session):
         self.repo = UserRepo(db)
@@ -27,15 +31,7 @@ class UserService:
     def create_user(self, user: UserCreate) -> User:
         pwd_check = password_complexity_check(user.password)
         if not pwd_check[0]:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=pwd_check[1])
-        
-        db_user_by_email = self.repo.get_user_by_email(user.email)
-        if db_user_by_email:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
-        
-        db_user_by_username = self.repo.get_user_by_username(user.username)
-        if db_user_by_username:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already taken")
+            raise PasswordTooWeakError(pwd_check[1])
         
         hashed_pass = hash_password(user.password)
         db_user = User(
