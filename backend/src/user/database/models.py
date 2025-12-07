@@ -25,3 +25,20 @@ class User(Base):
     last_activity = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
     
     created_topics = relationship("Topic", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic")
+    created_branches = relationship("Branch", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic")
+    
+    @property
+    def is_admin(self):
+        return self.role == Role.admin
+    
+    @property
+    def is_premium(self):
+        return self.role == Role.premium
+    
+    @property
+    def created_topics_ids(self):
+        return [topic.id for topic in self.created_topics]
+    
+    @property
+    def created_branches_ids(self):
+        return [branch.id for branch in self.created_branches]

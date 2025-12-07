@@ -3,10 +3,10 @@ from fastapi import HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from ...exceptions import AppException, ExistingResourceError
+from ...exceptions import AppException, ExistingResourceError, PermissionDeniedError
 from ..schemas import UserCreate
 from ..security import hash_password, verify_password
-from .models import User
+from .models import User, Role
 from .repo import UserRepo
 
 def password_complexity_check(password) -> tuple[bool, str]:
@@ -27,6 +27,9 @@ class PasswordTooWeakError(AppException):
 class UserService:
     def __init__(self, db: Session):
         self.repo = UserRepo(db)
+        
+    def get_user(self, user_id: int) -> User:
+        return self.repo.get_user_by_id(user_id)
         
     def create_user(self, user: UserCreate) -> User:
         pwd_check = password_complexity_check(user.password)
@@ -52,24 +55,21 @@ class UserService:
         return user
     
     
-    def update_user_role(self, user_id, role) -> User:
-        user = self.repo.get_user(user_id)
-        user.role = role
-        self.repo.db.add(user)
-        self.repo.db.commit()
-        self.repo.db.refresh(user)
-        return user
+    def update_user_role(self, initiator_user: User, user_to_update: User, role: Role) -> User:
+        if not initiator_user.is_admin:
+            raise PermissionDeniedError("You are not an admin")
+        user_to_update.role = role
+        self.repo.update_user(user_to_update)
+        return user_to_update
 
     def update_last_activity(self, user_id) -> User:
-        user = self.repo.get_user(user_id)
+        user = self.repo.get_user_by_id(user_id)
         user.last_activity = datetime.now()
+        self.repo.update_user(user)
         return user
     
     def update_last_login(self, user_id) -> User:
-        user = self.repo.get_user(user_id)
+        user = self.repo.get_user_by_id(user_id)
         user.last_login = datetime.now()
-        user.last_activity = datetime.now()
-        self.repo.db.add(user)
-        self.repo.db.commit()
-        self.repo.db.refresh(user)
+        self.repo.update_user(user)
         return user

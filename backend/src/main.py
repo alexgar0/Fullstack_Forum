@@ -4,6 +4,7 @@ from fastapi import FastAPI
 import uvicorn
 from .user.view import router as user_router
 from .topic.view import router as topic_router
+from .branch.view import router as branch_router
 from .log import initialize_logger
 from .exceptions import register_exception_handlers
 
@@ -16,6 +17,7 @@ register_exception_handlers(app)
 
 app.include_router(user_router)
 app.include_router(topic_router)
+app.include_router(branch_router)
 
 @app.get("/")
 async def root():

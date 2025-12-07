@@ -24,7 +24,7 @@ class UserRepo:
                 raise ExistingResourceError("Username already taken")
             raise
 
-    def get_user(self, user_id: int) -> User:
+    def get_user_by_id(self, user_id: int) -> User:
         return self.db.query(User).filter(User.id == user_id).first()
 
     def get_all_users(self) -> list[User]:
@@ -35,3 +35,9 @@ class UserRepo:
 
     def get_user_by_username(self, username: str) -> User:
         return self.db.query(User).filter(User.username == username).first()
+
+    def update_user(self, user: User) -> User:
+        self.db.add(user)
+        self.db.commit()
+        self.db.refresh(user)
+        return user

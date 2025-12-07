@@ -6,7 +6,7 @@ class Topic(Base):
     __tablename__ = "topics"
     
     id = Column(Integer, primary_key=True, index=True)
-    branch_id = Column(Integer, index=True, nullable=False)
+    branch_id = Column(Integer, ForeignKey("branches.id"), index=True, nullable=False)
     title = Column(String, unique=True, index=True, nullable=False)
     description = Column(Text)
     creator_id = Column(Integer, ForeignKey("users.id"), index=True, nullable=False)
@@ -16,3 +16,4 @@ class Topic(Base):
     view_count = Column(Integer, default=0, nullable=False)
     
     creator = relationship("User", back_populates="created_topics")
+    branch = relationship("Branch", back_populates="topics")

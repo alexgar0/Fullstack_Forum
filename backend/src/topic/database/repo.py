@@ -17,6 +17,8 @@ class TopicRepo:
             self.db.rollback()
             if 'topics_title' in str(e.orig):
                 raise ExistingResourceError("Topic with the same title already exists")
+            if "topics_branch_id" in str(e.orig):
+                raise NotFoundError("Branch not found")
             raise
                 
     def get_topic(self, topic_id: int) -> Topic:

@@ -22,7 +22,6 @@ class TokenData(BaseModel):
 class User(BaseModel):
     id: int
     username: str
-    email: str
     role: Role
     bio: str | None = None
     created_at: datetime
