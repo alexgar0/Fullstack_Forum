@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -30,6 +31,10 @@ class BranchRepo:
         if not branch:
             raise NotFoundError("Branch not found")
         return branch
+    
+    def get_all_branches(self) -> List[Branch]:
+        branches = self.db.query(Branch).all()
+        return branches
     
     def update_branch(self, branch: Branch) -> Branch:
         self.db.add(branch)

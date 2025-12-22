@@ -1,4 +1,5 @@
 from datetime import timedelta, datetime, timezone
+from typing import List
 from sqlalchemy.orm import Session
 
 from ...exceptions import NotFoundError, PermissionDeniedError
@@ -16,6 +17,9 @@ class BranchService:
     def get_branch(self, branch_id: int) -> Branch:
         return self.repo.get_branch(branch_id)
     
+    def get_all_branches(self) -> List[Branch]:
+        return self.repo.get_all_branches()
+        
     def create_branch(self, user: User, branch: BranchCreate) -> Branch:
         if not user.is_admin:
             raise PermissionDeniedError("Only admin can create a branch")

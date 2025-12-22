@@ -1,5 +1,5 @@
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
 import jwt
@@ -10,11 +10,22 @@ from ..database import get_db
 from .database.service import UserService
 from .database.models import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
+def get_token_from_cookie(request: Request) -> str:
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    if token.startswith("Bearer "):
+        token = token[7:]
+    return token
 
 
 def get_current_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+    token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -46,7 +57,7 @@ def get_current_user(
 
 
 def get_current_user_for_activity(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+    token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)
 ) -> User:
     user = get_current_user(token=token, db=db)
     user_service = UserService(db)
@@ -55,7 +66,7 @@ def get_current_user_for_activity(
 
 
 def get_current_user_from_refresh_token(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+    token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

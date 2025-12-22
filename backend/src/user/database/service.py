@@ -9,6 +9,8 @@ from ..security import hash_password, verify_password
 from .models import User, Role
 from .repo import UserRepo
 
+from ...config import USERNAME_LENGTH_BOUNDS
+
 def password_complexity_check(password) -> tuple[bool, str]:
     if len(password) < 8:
         return False, "Password must be at least 8 characters long"
@@ -23,6 +25,11 @@ def password_complexity_check(password) -> tuple[bool, str]:
 class PasswordTooWeakError(AppException):
     def __init__(self, message: str = "Password does not meet complexity requirements"):
         super().__init__(message)
+        
+class WrongUsernameLength(AppException):
+    def __init__(self, message: str = f"Username length must be beetween {USERNAME_LENGTH_BOUNDS[0]} and {USERNAME_LENGTH_BOUNDS[1]} characters long"):
+        super().__init__(message)
+
 
 class UserService:
     def __init__(self, db: Session):
@@ -32,6 +39,9 @@ class UserService:
         return self.repo.get_user_by_id(user_id)
         
     def create_user(self, user: UserCreate) -> User:
+        if len(user.username) < USERNAME_LENGTH_BOUNDS[0] or len(user.username) > USERNAME_LENGTH_BOUNDS[1]:
+            raise WrongUsernameLength()
+        
         pwd_check = password_complexity_check(user.password)
         if not pwd_check[0]:
             raise PasswordTooWeakError(pwd_check[1])

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { login } from '../api/users';
+import { login } from '../api/endpoints';
 
 const username = ref('');
 const password = ref('');
@@ -35,14 +35,16 @@ async function handleLogin() {
 
     <p v-if="error" class="text-text-error mb-4">{{ error }}</p>
 
-    <div class="flex flex-col gap-4 w-64">
+    <div class="flex flex-col gap-4">
       <input type="text" placeholder="Username" v-model="username"
         class="p-2 rounded border border-primary-alt  bg-surface-alt" />
 
       <input type="password" placeholder="Password" v-model="password"
         class="p-2 rounded border border-primary-alt  bg-surface-alt" />
       <button @click="handleLogin"
-        class="p-2 cursor-pointer rounded border border-primary-alt bg-primary text-text-primary">Login</button>
+        class="p-2 cursor-pointer rounded border border-primary-alt bg-primary">Login</button>
+      <p class="text-sm text-text-secondary">If you don't have an account, you can <a class="text-accent"
+          href="/register">register</a></p>
     </div>
   </div>
 </template>
