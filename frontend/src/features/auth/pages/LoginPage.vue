@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { login } from '../api/endpoints';
+import { REGISTER_PATH } from '../router';
 
 const username = ref('');
 const password = ref('');
@@ -44,7 +45,7 @@ async function handleLogin() {
       <button @click="handleLogin"
         class="p-2 cursor-pointer rounded border border-primary-alt bg-primary">Login</button>
       <p class="text-sm text-text-secondary">If you don't have an account, you can <a class="text-accent"
-          href="/register">register</a></p>
+          :href="REGISTER_PATH">register</a></p>
     </div>
   </div>
 </template>

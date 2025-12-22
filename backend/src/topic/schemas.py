@@ -1,15 +1,15 @@
 from datetime import datetime
 from pydantic import BaseModel
 
-class TopicCreate(BaseModel):
+class TopicCreateDTO(BaseModel):
     title: str
     description: str | None = None
     branch_id: int
 
-class TopicUpdate(BaseModel):
+class TopicUpdateDTO(BaseModel):
     description: str
     
-class Topic(BaseModel):
+class TopicDTO(BaseModel):
     id: int
     branch_id: int
     title: str

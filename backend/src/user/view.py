@@ -19,6 +19,12 @@ from .. import config
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
+@router.get("/me", response_model=User)
+async def me(current_user: User = Depends(get_current_user_for_activity)):
+    return current_user
+
+
+
 @router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
 def register(
     user: UserCreate,
@@ -89,11 +95,6 @@ async def read_user(
     user_service = UserService(db)
     user = user_service.get_user(user_id)
     return user
-
-
-@router.get("/me", response_model=User)
-async def me(current_user: User = Depends(get_current_user_for_activity)):
-    return current_user
 
 
 @router.post("/logout")

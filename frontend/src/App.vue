@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import { ref } from 'vue';
-import type { UserDTO } from './features/auth/api/dto';
 import { logout, me } from './features/auth/api/endpoints';
 import { user } from './features/auth/session';
 

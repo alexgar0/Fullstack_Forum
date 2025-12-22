@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { register } from '../api/endpoints';
-
+import { LOGIN_PATH, COMPLETE_REGISTRATION_PATH } from '../router';
 const username = ref('');
 const email = ref('');
 const password = ref('');
@@ -11,7 +11,7 @@ const error = ref('');
 async function handleRegister() {
     try {
         await register(username.value, email.value, password.value, password_check.value);
-        window.location.href = '/complete_registration';
+        window.location.href = COMPLETE_REGISTRATION_PATH;
     }
     catch (e: any) {
         console.log(e);
@@ -51,7 +51,7 @@ async function handleRegister() {
             <button @click="handleRegister"
                 class="p-2 cursor-pointer rounded border border-primary-alt bg-primary">Login</button>
             <p class="text-sm text-text-secondary">If you already have an account, you can <a class="text-accent"
-                    href="/login">login</a></p>
+                    :href="LOGIN_PATH" >login</a></p>
         </div>
     </div>
 </template>

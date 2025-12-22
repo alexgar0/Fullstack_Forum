@@ -3,13 +3,13 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class BranchCreate(BaseModel):
+class BranchCreateDTO(BaseModel):
     title: str
     description: Optional[str] = None
     parent_id: Optional[int] = None
 
 
-class Branch(BaseModel):
+class BranchDTO(BaseModel):
     id: int
     title: str
     description: Optional[str] = None

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from ...exceptions import NotFoundError, PermissionDeniedError
 
 from ...user.database.models import User
-from ..schemas import TopicCreate, TopicUpdate
+from ..schemas import TopicCreateDTO, TopicUpdateDTO
 
 from .repo import TopicRepo
 from .models import Topic
@@ -21,7 +21,7 @@ class TopicService:
     def get_topic(self, topic_id: int) -> Topic | None:
         return self.repo.get_topic(topic_id)
     
-    def create_topic(self, user: User, topic: TopicCreate) -> Topic:
+    def create_topic(self, user: User, topic: TopicCreateDTO) -> Topic:
         if not (TITLE_MIN_LENGTH <= len(topic.title) <= TITLE_MAX_LENGTH):
             raise ValueError(
                 f"Title must be between {TITLE_MIN_LENGTH} and {TITLE_MAX_LENGTH} characters long")
@@ -34,7 +34,7 @@ class TopicService:
         )
         return self.repo.create_topic(new_topic)
 
-    def edit_topic(self, user: User, topic_id: int, payload: TopicUpdate) -> Topic:
+    def edit_topic(self, user: User, topic_id: int, payload: TopicUpdateDTO) -> Topic:
         topic = self.repo.get_topic(topic_id)
         
         if topic.creator_id != user.id and not user.is_admin:

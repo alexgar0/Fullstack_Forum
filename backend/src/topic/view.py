@@ -8,7 +8,7 @@ from ..user.database.models import User
 from ..user.session import get_current_user, get_current_user_for_activity
 
 from .database.service import TopicService
-from .schemas import Topic, TopicUpdate, TopicCreate
+from .schemas import TopicDTO, TopicUpdateDTO, TopicCreateDTO
 
 
 def get_topic_service(db: Session = Depends(get_db)) -> Generator[TopicService, None, None]:
@@ -22,7 +22,7 @@ def get_topic_service(db: Session = Depends(get_db)) -> Generator[TopicService, 
 router = APIRouter(prefix="/topics", tags=["Topics"])
 
 
-@router.get("/{topic_id}", response_model=Topic)
+@router.get("/{topic_id}", response_model=TopicDTO)
 def read_topic(
     topic_id: int,
     current_user: User = Depends(get_current_user),
@@ -32,9 +32,9 @@ def read_topic(
     return topic
 
 
-@router.post("/", response_model=Topic, status_code=201)
+@router.post("/", response_model=TopicDTO, status_code=201)
 def create_topic(
-    topic: TopicCreate,
+    topic: TopicCreateDTO,
     current_user: User = Depends(get_current_user_for_activity),
     topic_service: TopicService = Depends(get_topic_service)
 ):
@@ -42,10 +42,10 @@ def create_topic(
     return new_topic
 
 
-@router.put("/{topic_id}", response_model=Topic)
+@router.put("/{topic_id}", response_model=TopicDTO)
 def update_topic(
     topic_id: int,
-    payload: TopicUpdate,
+    payload: TopicUpdateDTO,
     current_user: User = Depends(get_current_user),
     topic_service: TopicService = Depends(get_topic_service)
 ):

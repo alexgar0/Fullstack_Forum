@@ -57,13 +57,13 @@ def get_current_user(
 
 
 def get_current_user_for_activity(
-    token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)
+    token: str = Depends(get_token_from_cookie),
+    db: Session = Depends(get_db)
 ) -> User:
     user = get_current_user(token=token, db=db)
     user_service = UserService(db)
     user_service.update_last_activity(user.id)
     return user
-
 
 def get_current_user_from_refresh_token(
     token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)

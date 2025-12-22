@@ -7,7 +7,7 @@ from ..user.database.models import User
 from ..user.session import get_current_user, get_current_user_for_activity
 
 from .database.service import BranchService
-from .schemas import Branch, BranchCreate
+from .schemas import BranchDTO, BranchCreateDTO
 
 
 def get_branch_service(db: Session = Depends(get_db)) -> Generator[BranchService, None, None]:
@@ -21,7 +21,7 @@ def get_branch_service(db: Session = Depends(get_db)) -> Generator[BranchService
 router = APIRouter(prefix="/branches", tags=["Branches"])
 
 
-@router.get("/", response_class=List[Branch])
+@router.get("/", response_class=List[BranchDTO])
 async def read_all_branches(
     current_user: User = Depends(get_current_user),
     branch_service: BranchService = Depends(get_branch_service)
@@ -29,7 +29,7 @@ async def read_all_branches(
     return branch_service.get_all_branches()
 
 
-@router.get("/{branch_id}", response_model=Branch)
+@router.get("/{branch_id}", response_model=BranchDTO)
 async def read_branch(
     branch_id: int,
     current_user: User = Depends(get_current_user),
@@ -39,9 +39,9 @@ async def read_branch(
     return branch
 
 
-@router.post("/", response_model=Branch, status_code=201)
+@router.post("/", response_model=BranchDTO, status_code=201)
 async def create_branch(
-    branch: BranchCreate,
+    branch: BranchCreateDTO,
     current_user: User = Depends(get_current_user),
     branch_service: BranchService = Depends(get_branch_service)
 ):
