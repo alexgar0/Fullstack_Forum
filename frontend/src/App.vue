@@ -2,20 +2,22 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { logout, me } from './features/auth/api/endpoints';
 import { user } from './features/auth/session';
+import { onMounted } from 'vue';
 
-async function get_user() {
-  const response = await me();
-  user.value = response;
-  console.log(response);
-}
+
+onMounted(async () => {
+  try {
+    user.value = await me();
+  } catch (e) {
+    console.error(e);
+  }
+});
 
 async function handle_logout() {
   await logout();
   user.value = undefined;
   window.location.href = '/login';
 }
-
-get_user();
 
 </script>
 
@@ -26,7 +28,7 @@ get_user();
         Home
       </RouterLink>
       <div class="flex gap-4 ml-auto">
-        <p v-if="user" >{{ user?.username }}</p>
+        <p v-if="user">{{ user?.username }}</p>
         <RouterLink v-if="!user" to="/login" class="hover:underline">Login</RouterLink>
         <RouterLink v-if="!user" to="/register" class="hover:underline">Register</RouterLink>
         <button v-else @click="handle_logout" class="hover:underline">Logout</button>

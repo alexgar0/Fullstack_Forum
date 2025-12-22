@@ -21,7 +21,7 @@ def get_branch_service(db: Session = Depends(get_db)) -> Generator[BranchService
 router = APIRouter(prefix="/branches", tags=["Branches"])
 
 
-@router.get("/", response_class=List[BranchDTO])
+@router.get("/", response_model=List[BranchDTO])
 async def read_all_branches(
     current_user: User = Depends(get_current_user),
     branch_service: BranchService = Depends(get_branch_service)
