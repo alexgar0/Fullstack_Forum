@@ -37,10 +37,10 @@ class TopicService:
     def edit_topic(self, user: User, topic_id: int, payload: TopicUpdate) -> Topic:
         topic = self.repo.get_topic(topic_id)
         
-        if topic.creator_id != user.id and user.role != "admin":
+        if topic.creator_id != user.id and not user.is_admin:
             raise PermissionDeniedError("Only the creator or admin can edit the topic")
         
-        if datetime.now(timezone.utc) - topic.created_at > timedelta(minutes=TOPIC_EDITION_TIMEFRAME_MINUTES) and user.role != "admin":
+        if datetime.now(timezone.utc) - topic.created_at > timedelta(minutes=TOPIC_EDITION_TIMEFRAME_MINUTES) and not user.is_admin:
             raise PermissionDeniedError("Topic can no longer be edited")
 
         topic.description = payload.description
@@ -49,7 +49,7 @@ class TopicService:
     def delete_topic(self, user: User, topic_id: int) -> None:
         topic = self.repo.get_topic(topic_id)
         
-        if topic.creator_id != user.id and user.role != "admin":
+        if topic.creator_id != user.id and not user.is_admin:
             raise PermissionDeniedError("Only the creator or admin can delete the topic")
         
         topic.is_active = False

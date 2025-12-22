@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.13-slim
 
 # базовые настройки Python и pip
 ENV PYTHONDONTWRITEBYTECODE=1 \

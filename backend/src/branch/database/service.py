@@ -17,7 +17,7 @@ class BranchService:
         return self.repo.get_branch(branch_id)
     
     def create_branch(self, user: User, branch: BranchCreate) -> Branch:
-        if user.role != "admin":
+        if not user.is_admin:
             raise PermissionDeniedError("Only admin can create a branch")
         
         new_branch = Branch(**branch.model_dump(), creator_id=user.id)
@@ -26,7 +26,7 @@ class BranchService:
     def delete_branch(self, user: User, branch_id: int) -> None:
         branch = self.repo.get_branch(branch_id)
         
-        if user.role != "admin":
+        if not user.is_admin:
             raise PermissionDeniedError("Only admin can delete the branch")
         
         branch.is_active = False
