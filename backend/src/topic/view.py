@@ -21,7 +21,6 @@ def get_topic_service(db: Session = Depends(get_db)) -> Generator[TopicService, 
 
 router = APIRouter(prefix="/topics", tags=["Topics"])
 
-
 @router.get("/{topic_id}", response_model=TopicDTO)
 def read_topic(
     topic_id: int,

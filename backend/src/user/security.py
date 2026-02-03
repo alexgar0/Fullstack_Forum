@@ -11,7 +11,6 @@ from .. import config
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> str:
-    # нормализуем пароль SHA-256 → фиксированные 32 байта
     digest = hashlib.sha256(password.encode("utf-8")).digest()
     return pwd_context.hash(digest)
 

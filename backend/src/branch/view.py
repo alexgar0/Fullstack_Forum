@@ -33,7 +33,7 @@ async def read_all_branches(
 async def read_branch(
     branch_id: int,
     current_user: User = Depends(get_current_user),
-    branch_service=Depends(get_branch_service)
+    branch_service: BranchService = Depends(get_branch_service)
 ):
     branch = branch_service.get_branch(branch_id)
     return branch

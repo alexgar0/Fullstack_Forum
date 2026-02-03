@@ -22,6 +22,10 @@ class Branch(Base):
     @property
     def topic_ids(self):
         return [obj[0] for obj in self.topics.with_entities(Topic.id)]
+    
+    @property
+    def topic_titles(self):
+        return[obj[0] for obj in self.topics.with_entities(Topic.title)]
 
     @property
     def children_ids(self):

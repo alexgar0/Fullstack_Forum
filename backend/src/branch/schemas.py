@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 
 
@@ -18,8 +18,9 @@ class BranchDTO(BaseModel):
     created_at: datetime
     parent_id: Optional[int] = None
 
-    children_ids: list[int] = []
-    topic_ids: list[int] = []
+    children_ids: List[int] = []
+    topic_ids: List[int] = []
+    topic_titles: List[str] = []
 
     class Config:
         from_attributes = True
