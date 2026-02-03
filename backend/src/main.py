@@ -2,9 +2,9 @@ import logging
 from time import sleep
 from fastapi import FastAPI
 import uvicorn
-from .user.view import router as user_router
-from .topic.view import router as topic_router
-from .branch.view import router as branch_router
+from .features.user.view import router as user_router
+from .features.topic.view import router as topic_router
+from .features.branch.view import router as branch_router
 from .log import initialize_logger
 from .exceptions import register_exception_handlers
 

@@ -2,7 +2,7 @@ from typing import Generator, List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ..database import get_db
+from ...database import get_db
 from ..user.database.models import User
 from ..user.session import get_current_user, get_current_user_for_activity
 

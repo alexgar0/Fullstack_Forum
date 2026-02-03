@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
 from ...topic.database.models import Topic
-from ...exceptions import ExistingResourceError, NotFoundError
+from ....exceptions import ExistingResourceError, NotFoundError
 
 from .models import Branch
 

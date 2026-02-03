@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime, timezone
 from sqlalchemy.orm import Session
 
-from ...exceptions import NotFoundError, PermissionDeniedError
+from ....exceptions import NotFoundError, PermissionDeniedError
 
 from ...user.database.models import User
 from ..schemas import TopicCreateDTO, TopicUpdateDTO

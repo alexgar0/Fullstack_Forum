@@ -2,11 +2,11 @@ from datetime import timedelta, datetime, timezone
 from typing import List
 from sqlalchemy.orm import Session
 
-from ...exceptions import AppException, NotFoundError, PermissionDeniedError
+from ....exceptions import AppException, NotFoundError, PermissionDeniedError
 
 from ...user.database.models import Role, User
 
-from ...config import BRANCH_NAME_LENGTH_BOUNDS
+from ....config import BRANCH_NAME_LENGTH_BOUNDS
 
 from .repo import BranchRepo
 from .models import Branch

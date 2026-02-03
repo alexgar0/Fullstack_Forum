@@ -5,8 +5,8 @@ from jose import JWTError
 import jwt
 from sqlalchemy.orm import Session
 
-from .. import config
-from ..database import get_db
+from ... import config
+from ...database import get_db
 from .database.service import UserService
 from .database.models import User
 

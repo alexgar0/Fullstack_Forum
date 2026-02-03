@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from ..database import get_db
+from ...database import get_db
 from .database.service import UserService
 from .schemas import Token, UserCreate, User
 from .security import (
@@ -13,7 +13,7 @@ from .security import (
     create_refresh_token
 )
 from .session import get_current_user, get_current_user_for_activity, get_current_user_from_refresh_token
-from .. import config
+from ... import config
 
 
 router = APIRouter(prefix="/users", tags=["Users"])

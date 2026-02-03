@@ -5,8 +5,8 @@ import os
 import pytest_asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from src.user.session import get_current_user, get_current_user_for_activity
-from src.user.database.models import User
+from src.features.user.session import get_current_user, get_current_user_for_activity
+from src.features.user.database.models import User
 from src.main import app
 from src.database import Base, get_db
 

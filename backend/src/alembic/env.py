@@ -15,9 +15,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from src.database import Base
 from src.config import DATABASE_URL
-import src.user.database.models
-import src.topic.database.models
-import src.branch.database.models
+import src.features.user.database.models
+import src.features.topic.database.models
+import src.features.branch.database.models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

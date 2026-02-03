@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
 from .models import Topic
-from ...exceptions import ExistingResourceError, NotFoundError
+from ....exceptions import ExistingResourceError, NotFoundError
 class TopicRepo:
     def __init__(self, db: Session):
         self.db = db

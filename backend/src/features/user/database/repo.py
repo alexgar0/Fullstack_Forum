@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from ...exceptions import ExistingResourceError
+from ....exceptions import ExistingResourceError
 
 from .models import User
 
