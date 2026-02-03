@@ -1,17 +1,20 @@
 from datetime import timedelta, datetime, timezone
-from typing import List
+from typing import Generator, List
+from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from ....exceptions import AppException, NotFoundError, PermissionDeniedError
-
-from ...user.database.models import Role, User
 
 from ....config import BRANCH_NAME_LENGTH_BOUNDS
 
+from ....database import get_db
+from ....exceptions import AppException, NotFoundError, PermissionDeniedError
+
+from ...user.database.models import Role, User
+from ...query import PaginationQuery
+
 from .repo import BranchRepo
 from .models import Branch
-from ..schemas import BranchDTO
-from ..schemas import BranchCreateDTO
+from ..schemas import BranchDTO, BranchCreateDTO
 
 
 class WrongBranchTitleLength(AppException):
@@ -21,7 +24,7 @@ class WrongBranchTitleLength(AppException):
 
 class BranchService:
     def __init__(self, db: Session) -> None:
-        self.repo = BranchRepo(db)
+        self.repo: BranchRepo = BranchRepo(db)
 
     def get_branch(self, user: User, branch_id: int) -> BranchDTO:
         branch = self.repo.get_branch(branch_id)
@@ -52,3 +55,11 @@ class BranchService:
 
         branch.is_active = False
         self.repo.update_branch(branch)
+
+
+def get_branch_service(db: Session = Depends(get_db)) -> Generator[BranchService, None, None]:
+    try:
+        branch_service = BranchService(db)
+        yield branch_service
+    finally:
+        pass

@@ -3,6 +3,10 @@ import type { BranchCreateDTO, BranchDTO } from "../api/dto";
 import { onMounted, ref } from "vue";
 import { create_branch, get_all_branches } from "../api/endpoints";
 
+import BaseButton from "../../../components/ui/BaseButton.vue";
+import BaseInput from "../../../components/ui/BaseInput.vue";
+import BaseTextArea from "../../../components/ui/BaseTextArea.vue";
+
 const title = ref<string>('');
 const description = ref<string>('');
 const parent_id = ref<number | undefined>(undefined);
@@ -52,11 +56,11 @@ async function handle_create() {
         <h2 class="text-2xl mb-4 font-thin">Create new branch</h2>
         <div class="border  border-primary-alt flex flex-col p-4 items-left gap-2 justify-center">
             <p class="font-bold text-sm">Title</p>
-            <input type="text" v-model="title"
-                class="w-100 p-1 mb-4 rounded border border-primary-alt  bg-primary-alt" />
+            <BaseInput v-model="title" class="bg-primary-alt w-100 mb-4"></BaseInput>
 
             <p class="font-bold text-sm">Parent branch</p>
-            <select class="text-sm text-text-secondary rounded border border-primary-alt mb-4 bg-primary-alt" v-model="parent_id">
+            <select class="text-sm text-text-secondary rounded border border-primary-alt mb-4 bg-primary-alt"
+                v-model="parent_id">
                 <option :value="undefined">Root branch (no parent)</option>
                 <option v-for="branch in all_branches" :key="branch.id" :value="branch.id">
                     {{ branch.title }}
@@ -64,12 +68,12 @@ async function handle_create() {
             </select>
 
             <p class="font-bold text-sm">Description</p>
-            <textarea type="text" v-model="description"
-                class="w-full  h-80 resize-none p-1 rounded border border-primary-alt  bg-primary-alt" />
+            <BaseTextArea class="bg-primary-alt" v-model="description"></BaseTextArea>
             <p v-if="error" class="text-text-error">{{ error }}</p>
             <p v-if="success" class="text-accent">{{ success }}</p>
-            <button @click="handle_create"
-                class="w-60 h-10 m-2 cursor-pointer rounded border border-primary-alt bg-primary-alt">Create</button>
+            <BaseButton class="w-70" @click="handle_create">
+                Create
+            </BaseButton>
         </div>
     </div>
 </template>

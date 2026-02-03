@@ -1,7 +1,10 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
+from ...user.database.models import User
+
 from .models import Topic
+from ...query import PaginationQuery
 from ....exceptions import ExistingResourceError, NotFoundError
 class TopicRepo:
     def __init__(self, db: Session):
@@ -27,11 +30,18 @@ class TopicRepo:
             raise NotFoundError("Topic not found")
         return topic
     
+    
     def get_topics_by_creator(self, creator_id: int) -> list[Topic]:
         return self.db.query(Topic).filter(Topic.creator_id == creator_id).all()
     
-    def get_topics_by_branch(self, branch_id: int) -> list[Topic]:
-        return self.db.query(Topic).filter(Topic.branch_id == branch_id).all()
+    def get_topics_by_branch(self, branch_id: int, pagination: PaginationQuery | None) -> list[Topic]:
+        query = self.db.query(Topic).filter(Topic.branch_id == branch_id).order_by(Topic.created_at.desc())
+        
+        if pagination:
+            offset_value = (pagination.page - 1) * pagination.limit
+            query = query.offset(offset_value).limit(pagination.limit)
+        
+        return query.all()
     
     def update_topic(self, topic: Topic) -> Topic:
         self.db.add(topic)

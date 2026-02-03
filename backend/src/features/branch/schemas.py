@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
 
+from ..topic.schemas import SmallTopicDTO
 
 class BranchCreateDTO(BaseModel):
     title: str
@@ -17,10 +18,11 @@ class BranchDTO(BaseModel):
     is_active: bool
     created_at: datetime
     parent_id: Optional[int] = None
-
+    topic_count: int
     children_ids: List[int] = []
-    topic_ids: List[int] = []
-    topic_titles: List[str] = []
 
     class Config:
         from_attributes = True
+        
+class BranchWithSmallTopicsDTO(BranchDTO):
+    small_topics: List[SmallTopicDTO]

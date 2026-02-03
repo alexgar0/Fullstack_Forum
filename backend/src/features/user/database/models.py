@@ -26,6 +26,7 @@ class User(Base):
     
     created_topics = relationship("Topic", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic")
     created_branches = relationship("Branch", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic")
+    created_replies = relationship("Reply", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic")
     
     @property
     def is_admin(self):

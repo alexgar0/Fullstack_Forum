@@ -30,7 +30,8 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+          postgres:
+            condition: service_healthy
     restart: unless-stopped
 
   frontend:

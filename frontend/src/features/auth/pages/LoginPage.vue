@@ -2,6 +2,8 @@
 import { ref } from 'vue';
 import { login } from '../api/endpoints';
 import { REGISTER_PATH } from '../router';
+import BaseButton from '../../../components/ui/BaseButton.vue';
+import BaseInput from '../../../components/ui/BaseInput.vue';
 
 const username = ref('');
 const password = ref('');
@@ -27,25 +29,26 @@ async function handleLogin() {
   }
 }
 
+function handleSubmit(e?: Event) {
+  e?.preventDefault(); // Предотвращаем перезагрузку страницы
+  handleLogin();
+}
+
 </script>
 
 
 <template>
   <div class="flex flex-col items-center justify-center" style="height: calc(100vh - 64px);">
     <h1 class="text-3xl font-bold mb-4">Welcome</h1>
-
     <p v-if="error" class="text-text-error mb-4">{{ error }}</p>
-
-    <div class="flex flex-col gap-4">
-      <input type="text" placeholder="Username" v-model="username"
-        class="p-2 rounded border border-primary-alt  bg-surface-alt" />
-
-      <input type="password" placeholder="Password" v-model="password"
-        class="p-2 rounded border border-primary-alt  bg-surface-alt" />
-      <button @click="handleLogin"
-        class="p-2 cursor-pointer rounded border border-primary-alt bg-primary">Login</button>
+    <form @submit="handleSubmit" class="flex flex-col gap-4">
+      <BaseInput v-model="username" placeholder="Username" type="text" class="w-full" />
+      <BaseInput v-model="password" placeholder="Password" type="password" class="w-full" />
+      <BaseButton type="submit" class="border-primary-alt bg-primary w-full">
+        Login
+      </BaseButton>
       <p class="text-sm text-text-secondary">If you don't have an account, you can <a class="text-accent"
           :href="REGISTER_PATH">register</a></p>
-    </div>
+    </form>
   </div>
 </template>

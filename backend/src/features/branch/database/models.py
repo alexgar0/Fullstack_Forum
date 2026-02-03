@@ -30,3 +30,7 @@ class Branch(Base):
     @property
     def children_ids(self):
         return [obj[0] for obj in self.children.with_entities(self.__class__.id)]
+    
+    @property
+    def topic_count(self) -> int:
+        return self.topics.count()

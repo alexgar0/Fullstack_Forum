@@ -17,3 +17,4 @@ class Topic(Base):
     
     creator = relationship("User", back_populates="created_topics")
     branch = relationship("Branch", back_populates="topics")
+    replies = relationship("Reply", back_populates="topic", cascade="all, delete-orphan", lazy="dynamic")

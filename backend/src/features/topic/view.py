@@ -7,21 +7,12 @@ from ...database import get_db
 from ..user.database.models import User
 from ..user.session import get_current_user, get_current_user_for_activity
 
-from .database.service import TopicService
-from .schemas import TopicDTO, TopicUpdateDTO, TopicCreateDTO
-
-
-def get_topic_service(db: Session = Depends(get_db)) -> Generator[TopicService, None, None]:
-    try:
-        topic_service = TopicService(db)
-        yield topic_service
-    finally:
-        pass
-
+from .database.service import TopicService, get_topic_service
+from .schemas import FullTopicDTO, TopicUpdateDTO, TopicCreateDTO
 
 router = APIRouter(prefix="/topics", tags=["Topics"])
 
-@router.get("/{topic_id}", response_model=TopicDTO)
+@router.get("/{topic_id}", response_model=FullTopicDTO)
 def read_topic(
     topic_id: int,
     current_user: User = Depends(get_current_user),
@@ -31,7 +22,7 @@ def read_topic(
     return topic
 
 
-@router.post("/", response_model=TopicDTO, status_code=201)
+@router.post("/", response_model=FullTopicDTO, status_code=201)
 def create_topic(
     topic: TopicCreateDTO,
     current_user: User = Depends(get_current_user_for_activity),
@@ -41,7 +32,7 @@ def create_topic(
     return new_topic
 
 
-@router.put("/{topic_id}", response_model=TopicDTO)
+@router.put("/{topic_id}", response_model=FullTopicDTO)
 def update_topic(
     topic_id: int,
     payload: TopicUpdateDTO,
