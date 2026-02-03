@@ -1,0 +1,25 @@
+services:
+  db_test:
+    image: postgres:17.1
+    environment:
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+      - POSTGRES_DB=test_db
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d test_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pytest:
+    build: ./backend
+    container_name: pytest_container
+    environment:
+      - DATABASE_URL=postgresql://test_user:test_password@db_test:5432/test_db
+    depends_on:
+      db_test:
+        condition: service_healthy
+    command: >
+        sh -c "alembic -c src/alembic.ini upgrade head && python -m pytest src/tests"

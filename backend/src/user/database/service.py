@@ -24,12 +24,19 @@ def password_complexity_check(password) -> tuple[bool, str]:
 
 class PasswordTooWeakError(AppException):
     def __init__(self, message: str = "Password does not meet complexity requirements"):
-        super().__init__(message)
+        super().__init__(message, status_code=422)
         
 class WrongUsernameLength(AppException):
     def __init__(self, message: str = f"Username length must be beetween {USERNAME_LENGTH_BOUNDS[0]} and {USERNAME_LENGTH_BOUNDS[1]} characters long"):
-        super().__init__(message)
+        super().__init__(message, status_code=422)
 
+class EmailAlreadyRegistered(ExistingResourceError):
+    def __init__(self, message: str = f"Email is already registered"):
+        super().__init__(message)
+        
+class UsernameAlreadyTaken(ExistingResourceError):
+    def __init__(self, message: str = f"Username is already taken"):
+        super().__init__(message)
 
 class UserService:
     def __init__(self, db: Session):
@@ -45,6 +52,12 @@ class UserService:
         pwd_check = password_complexity_check(user.password)
         if not pwd_check[0]:
             raise PasswordTooWeakError(pwd_check[1])
+        
+        if self.repo.get_user_by_email(user.email):
+            raise EmailAlreadyRegistered()
+        
+        if self.repo.get_user_by_username(user.username):
+            raise UsernameAlreadyTaken()
         
         hashed_pass = hash_password(user.password)
         db_user = User(

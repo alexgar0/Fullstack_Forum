@@ -3,7 +3,6 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { get_branch } from '../api/endpoints';
 import type { BranchDTO } from '../api/dto';
-import { CREATE_TOPIC_PATH } from '../../topic/router';
 
 const route = useRoute()
 const branch_id = computed(() => Number(route.params.id))

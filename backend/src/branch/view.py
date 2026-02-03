@@ -35,7 +35,7 @@ async def read_branch(
     current_user: User = Depends(get_current_user),
     branch_service: BranchService = Depends(get_branch_service)
 ):
-    branch = branch_service.get_branch(branch_id)
+    branch = branch_service.get_branch(current_user, branch_id)
     return branch
 
 
