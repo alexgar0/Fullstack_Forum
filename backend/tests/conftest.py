@@ -51,11 +51,12 @@ def test_user_admin(db_session):
         hashed_password="fake_password",
         created_at=now,
         last_activity=now,
-        last_login=now
+        last_login=now,
     )
     db_session.add(user)
     db_session.flush()
     return user
+
 
 @pytest.fixture(autouse=True)
 def override_auth(test_user_admin):
@@ -65,10 +66,10 @@ def override_auth(test_user_admin):
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_current_user_for_activity, None)
 
+
 @pytest_asyncio.fixture
 async def client():
     async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://test"
+        transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:
         yield ac

@@ -22,23 +22,33 @@ class TopicService:
     def get_topic(self, topic_id: int) -> Topic | None:
         return self.repo.get_topic(topic_id)
 
-    def get_small_topics_from_branch_with_pagination(self, branch_id: int, pagination: PaginationQuery) -> List[SmallTopicDTO]:
-        active_topics = [topic for topic in self.repo.get_topics_by_branch(
-            branch_id, pagination) if topic.is_active]
+    def get_small_topics_from_branch_with_pagination(
+        self, branch_id: int, pagination: PaginationQuery
+    ) -> List[SmallTopicDTO]:
+        active_topics = [
+            topic
+            for topic in self.repo.get_topics_by_branch(branch_id, pagination)
+            if topic.is_active
+        ]
         return active_topics
 
     def create_topic(self, user: User, topic: TopicCreateDTO) -> Topic:
-        if not (TOPIC_TITLE_LENGTH_BOUNDS[0] <= len(topic.title) <= TOPIC_TITLE_LENGTH_BOUNDS[1]):
+        if not (
+            TOPIC_TITLE_LENGTH_BOUNDS[0]
+            <= len(topic.title)
+            <= TOPIC_TITLE_LENGTH_BOUNDS[1]
+        ):
             raise InvalidLengthError(
                 min_length=TOPIC_TITLE_LENGTH_BOUNDS[0],
                 max_length=TOPIC_TITLE_LENGTH_BOUNDS[1],
-                message=f"Title must be between {TOPIC_TITLE_LENGTH_BOUNDS[0]} and {TOPIC_TITLE_LENGTH_BOUNDS[1]} characters long")
+                message=f"Title must be between {TOPIC_TITLE_LENGTH_BOUNDS[0]} and {TOPIC_TITLE_LENGTH_BOUNDS[1]} characters long",
+            )
 
         new_topic = Topic(
             title=topic.title,
             description=topic.description,
             branch_id=topic.branch_id,
-            creator_id=user.id
+            creator_id=user.id,
         )
         return self.repo.create_topic(new_topic)
 
@@ -46,10 +56,13 @@ class TopicService:
         topic = self.repo.get_topic(topic_id)
 
         if topic.creator_id != user.id and not user.is_admin:
-            raise PermissionDeniedError(
-                "Only the creator or admin can edit the topic")
+            raise PermissionDeniedError("Only the creator or admin can edit the topic")
 
-        if datetime.now(timezone.utc) - topic.created_at > timedelta(minutes=TOPIC_EDITION_TIMEFRAME_MINUTES) and not user.is_admin:
+        if (
+            datetime.now(timezone.utc) - topic.created_at
+            > timedelta(minutes=TOPIC_EDITION_TIMEFRAME_MINUTES)
+            and not user.is_admin
+        ):
             raise PermissionDeniedError("Topic can no longer be edited")
 
         topic.description = payload.description
@@ -60,13 +73,16 @@ class TopicService:
 
         if topic.creator_id != user.id and not user.is_admin:
             raise PermissionDeniedError(
-                "Only the creator or admin can delete the topic")
+                "Only the creator or admin can delete the topic"
+            )
 
         topic.is_active = False
         self.repo.update_topic(topic)
 
 
-def get_topic_service(db: Session = Depends(get_db)) -> Generator[TopicService, None, None]:
+def get_topic_service(
+    db: Session = Depends(get_db),
+) -> Generator[TopicService, None, None]:
     try:
         topic_service = TopicService(db)
         yield topic_service

@@ -3,7 +3,7 @@ import pytest
 
 create_branch_mock = {
     "title": "Test Branch Title",
-    "description": "Test Branch Description"
+    "description": "Test Branch Description",
 }
 
 
@@ -70,7 +70,7 @@ async def test_branch_topic_pagination(client, db_session):
         new_topic = {
             "title": str(topic_number) * 5,
             "description": "TOPIC",
-            "branch_id": branch_id
+            "branch_id": branch_id,
         }
         response = await client.post("/topics/", json=new_topic)
         assert response.status_code == 201
@@ -79,10 +79,7 @@ async def test_branch_topic_pagination(client, db_session):
     limit = 30
     total_pages = math.ceil(topic_count / limit)
     for page_number in range(1, total_pages + 1):
-        pagination = {
-            "page": page_number,
-            "limit": limit
-        }
+        pagination = {"page": page_number, "limit": limit}
         response = await client.get(f"/branches/{branch_id}", params=pagination)
         assert response.status_code == 200
         data = response.json()

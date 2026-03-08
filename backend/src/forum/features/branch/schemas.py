@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from forum.features.topic.schemas import SmallTopicDTO
 
+
 class BranchCreateDTO(BaseModel):
     title: str
     description: Optional[str] = None
@@ -23,6 +24,7 @@ class BranchDTO(BaseModel):
 
     class Config:
         from_attributes = True
-        
+
+
 class BranchWithSmallTopicsDTO(BranchDTO):
     small_topics: List[SmallTopicDTO]

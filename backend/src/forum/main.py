@@ -19,9 +19,11 @@ app.include_router(user_router)
 app.include_router(topic_router)
 app.include_router(branch_router)
 
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to Forum API!"}
+
 
 def main():
     initialize_logger()

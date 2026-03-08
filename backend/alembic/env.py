@@ -18,7 +18,7 @@ from forum.config import DATABASE_URL
 import forum.features.user.database.models
 import forum.features.topic.database.models
 import forum.features.branch.database.models
-import  forum.features.reply.database.models
+import forum.features.reply.database.models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -80,9 +80,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

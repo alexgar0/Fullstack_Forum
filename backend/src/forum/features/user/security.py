@@ -10,9 +10,11 @@ from forum import config
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 def hash_password(password: str) -> str:
     digest = hashlib.sha256(password.encode("utf-8")).hexdigest()
     return pwd_context.hash(digest)
+
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     digest = hashlib.sha256(plain_password.encode("utf-8")).hexdigest()
@@ -43,4 +45,3 @@ def create_refresh_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire, "token_type": "refresh"})
     encoded_jwt = jwt.encode(to_encode, config.SECRET_KEY, algorithm=config.ALGORITHM)
     return encoded_jwt
-

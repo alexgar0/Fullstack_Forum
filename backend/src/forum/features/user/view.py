@@ -8,11 +8,12 @@ from sqlalchemy.orm import Session
 from forum.database import get_db
 from forum.features.user.database.service import UserService
 from forum.features.user.schemas import Token, UserCreate, User
-from forum.features.user.security import (
-    create_access_token,
-    create_refresh_token
+from forum.features.user.security import create_access_token, create_refresh_token
+from forum.features.user.session import (
+    get_current_user,
+    get_current_user_for_activity,
+    get_current_user_from_refresh_token,
 )
-from forum.features.user.session import get_current_user, get_current_user_for_activity, get_current_user_from_refresh_token
 from forum import config
 
 
@@ -24,12 +25,8 @@ async def me(current_user: User = Depends(get_current_user_for_activity)):
     return current_user
 
 
-
 @router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
-def register(
-    user: UserCreate,
-    db: Session = Depends(get_db)
-):
+def register(user: UserCreate, db: Session = Depends(get_db)):
     user_service = UserService(db)
     new_user = user_service.create_user(user)
     return new_user
@@ -37,8 +34,7 @@ def register(
 
 @router.post("/login", response_model=Token)
 async def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db)
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
     user_service = UserService(db)
     user = user_service.authenticate_user(
@@ -62,7 +58,7 @@ async def login(
         httponly=True,
         secure=True,
         samesite="lax",
-        max_age=config.REFRESH_TOKEN_EXPIRE_MINUTES * 60
+        max_age=config.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
     )
     response.set_cookie(
         key="refresh_token",
@@ -70,14 +66,16 @@ async def login(
         httponly=True,
         secure=True,
         samesite="lax",
-        max_age=config.REFRESH_TOKEN_EXPIRE_MINUTES * 60
+        max_age=config.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
     )
 
     return response
 
 
 @router.post("/refresh", response_model=Token)
-async def refresh_access_token(current_user: User = Depends(get_current_user_from_refresh_token)):
+async def refresh_access_token(
+    current_user: User = Depends(get_current_user_from_refresh_token),
+):
     access_token = create_access_token(data={"sub": current_user.username})
     return {
         "access_token": access_token,
@@ -90,7 +88,7 @@ async def refresh_access_token(current_user: User = Depends(get_current_user_fro
 async def read_user(
     user_id: int,
     current_user: User = Depends(get_current_user_for_activity),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     user_service = UserService(db)
     user = user_service.get_user(user_id)

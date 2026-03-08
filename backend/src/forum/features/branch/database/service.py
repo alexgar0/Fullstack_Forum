@@ -16,8 +16,12 @@ from forum.features.branch.database.repo import BranchRepo
 from forum.features.branch.database.models import Branch
 from forum.features.branch.schemas import BranchDTO, BranchCreateDTO
 
+
 class WrongBranchTitleLength(AppException):
-    def __init__(self, message=f"Branch title must be beetween {BRANCH_NAME_LENGTH_BOUNDS[0]} and {BRANCH_NAME_LENGTH_BOUNDS[1]} characters long"):
+    def __init__(
+        self,
+        message=f"Branch title must be beetween {BRANCH_NAME_LENGTH_BOUNDS[0]} and {BRANCH_NAME_LENGTH_BOUNDS[1]} characters long",
+    ):
         super().__init__(message)
 
 
@@ -39,11 +43,13 @@ class BranchService:
         if not user.is_admin:
             raise PermissionDeniedError("Only admin can create a branch")
 
-        if len(branch.title) < BRANCH_NAME_LENGTH_BOUNDS[0] or len(branch.title) > BRANCH_NAME_LENGTH_BOUNDS[1]:
+        if (
+            len(branch.title) < BRANCH_NAME_LENGTH_BOUNDS[0]
+            or len(branch.title) > BRANCH_NAME_LENGTH_BOUNDS[1]
+        ):
             raise WrongBranchTitleLength
 
-        new_branch = Branch(**branch.model_dump(),
-                            is_active=True, creator_id=user.id)
+        new_branch = Branch(**branch.model_dump(), is_active=True, creator_id=user.id)
         return self.repo.create_branch(new_branch)
 
     def delete_branch(self, user: User, branch_id: int) -> None:
@@ -56,7 +62,9 @@ class BranchService:
         self.repo.update_branch(branch)
 
 
-def get_branch_service(db: Session = Depends(get_db)) -> Generator[BranchService, None, None]:
+def get_branch_service(
+    db: Session = Depends(get_db),
+) -> Generator[BranchService, None, None]:
     try:
         branch_service = BranchService(db)
         yield branch_service

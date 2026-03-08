@@ -5,6 +5,7 @@ from forum.exceptions import ExistingResourceError
 
 from forum.features.user.database.models import User
 
+
 class UserRepo:
     def __init__(self, db: Session):
         self.db = db
@@ -17,9 +18,9 @@ class UserRepo:
             return user
         except IntegrityError as e:
             self.db.rollback()
-            if 'users_email' in str(e.orig):
+            if "users_email" in str(e.orig):
                 raise ExistingResourceError("Email already registered")
-            if 'users_username' in str(e.orig):
+            if "users_username" in str(e.orig):
                 raise ExistingResourceError("Username already taken")
             raise
 
