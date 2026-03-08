@@ -13,12 +13,12 @@ from alembic import context
 # Add the parent directory of 'src' to the path, so that 'src' is treated as a package
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from src.database import Base
-from src.config import DATABASE_URL
-import src.features.user.database.models
-import src.features.topic.database.models
-import src.features.branch.database.models
-import  src.features.reply.database.models
+from forum.database import Base
+from forum.config import DATABASE_URL
+import forum.features.user.database.models
+import forum.features.topic.database.models
+import forum.features.branch.database.models
+import  forum.features.reply.database.models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
