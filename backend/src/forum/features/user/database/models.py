@@ -3,7 +3,7 @@ from enum import Enum
 from sqlalchemy import Column, Integer, String, Text, Boolean, Enum as SqlEnum, DateTime, func
 from sqlalchemy.orm import relationship
 
-from ....database import Base
+from forum.database import Base
 
 class Role(str, Enum):
     admin = "admin"

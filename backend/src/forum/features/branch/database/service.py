@@ -4,18 +4,17 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 
-from ....config import BRANCH_NAME_LENGTH_BOUNDS
+from forum.config import BRANCH_NAME_LENGTH_BOUNDS
 
-from ....database import get_db
-from ....exceptions import AppException, NotFoundError, PermissionDeniedError
+from forum.database import get_db
+from forum.exceptions import AppException, NotFoundError, PermissionDeniedError
 
-from ...user.database.models import Role, User
-from ...query import PaginationQuery
+from forum.features.user.database.models import Role, User
+from forum.features.query import PaginationQuery
 
-from .repo import BranchRepo
-from .models import Branch
-from ..schemas import BranchDTO, BranchCreateDTO
-
+from forum.features.branch.database.repo import BranchRepo
+from forum.features.branch.database.models import Branch
+from forum.features.branch.schemas import BranchDTO, BranchCreateDTO
 
 class WrongBranchTitleLength(AppException):
     def __init__(self, message=f"Branch title must be beetween {BRANCH_NAME_LENGTH_BOUNDS[0]} and {BRANCH_NAME_LENGTH_BOUNDS[1]} characters long"):

@@ -3,12 +3,12 @@ from typing import Generator
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from ...database import get_db
-from ..user.database.models import User
-from ..user.session import get_current_user, get_current_user_for_activity
+from forum.database import get_db
+from forum.features.user.database.models import User
+from forum.features.user.session import get_current_user, get_current_user_for_activity
 
-from .database.service import TopicService, get_topic_service
-from .schemas import FullTopicDTO, TopicUpdateDTO, TopicCreateDTO
+from forum.features.topic.database.service import TopicService, get_topic_service
+from forum.features.topic.schemas import FullTopicDTO, TopicUpdateDTO, TopicCreateDTO
 
 router = APIRouter(prefix="/topics", tags=["Topics"])
 

@@ -2,7 +2,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 
-from .database.models import Role
+from forum.features.user.database.models import Role
 
 class UserBase(BaseModel):
     username: str

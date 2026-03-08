@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import relationship
-from ....database import Base
+from forum.database import Base
 
 class Topic(Base):
     __tablename__ = "topics"

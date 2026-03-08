@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
 
-from ..topic.schemas import SmallTopicDTO
+from forum.features.topic.schemas import SmallTopicDTO
 
 class BranchCreateDTO(BaseModel):
     title: str

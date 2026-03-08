@@ -5,10 +5,10 @@ from jose import JWTError
 import jwt
 from sqlalchemy.orm import Session
 
-from ... import config
-from ...database import get_db
-from .database.service import UserService
-from .database.models import User
+from forum import config
+from forum.database import get_db
+from forum.features.user.database.service import UserService
+from forum.features.user.database.models import User
 
 def get_token_from_cookie(request: Request) -> str:
     token = request.cookies.get("access_token")

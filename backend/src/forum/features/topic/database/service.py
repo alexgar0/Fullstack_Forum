@@ -3,16 +3,16 @@ from typing import Generator, List
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from ....config import TOPIC_TITLE_LENGTH_BOUNDS, TOPIC_EDITION_TIMEFRAME_MINUTES
-from ....database import get_db
-from ....exceptions import InvalidLengthError, NotFoundError, PermissionDeniedError
+from forum.config import TOPIC_TITLE_LENGTH_BOUNDS, TOPIC_EDITION_TIMEFRAME_MINUTES
+from forum.database import get_db
+from forum.exceptions import InvalidLengthError, NotFoundError, PermissionDeniedError
 
-from ...query import PaginationQuery
-from ...user.database.models import User
-from ..schemas import SmallTopicDTO, TopicCreateDTO, TopicUpdateDTO
+from forum.features.query import PaginationQuery
+from forum.features.user.database.models import User
+from forum.features.topic.schemas import SmallTopicDTO, TopicCreateDTO, TopicUpdateDTO
 
-from .repo import TopicRepo
-from .models import Topic
+from forum.features.topic.database.repo import TopicRepo
+from forum.features.topic.database.models import Topic
 
 
 class TopicService:

@@ -1,10 +1,9 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from ....exceptions import ExistingResourceError
+from forum.exceptions import ExistingResourceError
 
-from .models import User
-
+from forum.features.user.database.models import User
 
 class UserRepo:
     def __init__(self, db: Session):

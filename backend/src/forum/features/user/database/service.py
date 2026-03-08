@@ -3,13 +3,13 @@ from fastapi import HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from ....exceptions import AppException, ExistingResourceError, PermissionDeniedError
-from ..schemas import UserCreate
-from ..security import hash_password, verify_password
-from .models import User, Role
-from .repo import UserRepo
+from forum.exceptions import AppException, ExistingResourceError, PermissionDeniedError
+from forum.features.user.schemas import UserCreate
+from forum.features.user.security import hash_password, verify_password
+from forum.features.user.database.models import User, Role
+from forum.features.user.database.repo import UserRepo
 
-from ....config import USERNAME_LENGTH_BOUNDS
+from forum.config import USERNAME_LENGTH_BOUNDS
 
 def password_complexity_check(password) -> tuple[bool, str]:
     if len(password) < 8:

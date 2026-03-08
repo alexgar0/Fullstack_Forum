@@ -2,15 +2,15 @@ from typing import Generator, List, Optional
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ...database import get_db
-from ..query import PaginationQuery
-from ..user.database.models import User
-from ..user.session import get_current_user, get_current_user_for_activity
+from forum.database import get_db
+from forum.features.query import PaginationQuery
+from forum.features.user.database.models import User
+from forum.features.user.session import get_current_user, get_current_user_for_activity
 
-from .database.service import BranchService, get_branch_service
-from .schemas import BranchDTO, BranchCreateDTO, BranchWithSmallTopicsDTO
+from forum.features.branch.database.service import BranchService, get_branch_service
+from forum.features.branch.schemas import BranchDTO, BranchCreateDTO, BranchWithSmallTopicsDTO
 
-from ..topic.database.service import TopicService, get_topic_service
+from forum.features.topic.database.service import TopicService, get_topic_service
 
 router = APIRouter(prefix="/branches", tags=["Branches"])
 

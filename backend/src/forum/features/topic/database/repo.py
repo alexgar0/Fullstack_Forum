@@ -1,11 +1,12 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from ...user.database.models import User
+from forum.features.user.database.models import User
 
-from .models import Topic
-from ...query import PaginationQuery
-from ....exceptions import ExistingResourceError, NotFoundError
+from forum.features.topic.database.models import Topic
+from forum.features.query import PaginationQuery
+from forum.exceptions import ExistingResourceError, NotFoundError
+
 class TopicRepo:
     def __init__(self, db: Session):
         self.db = db

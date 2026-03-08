@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import relationship, backref
-from ....database import Base
-from ...topic.database.models import Topic
+from forum.database import Base
+from forum.features.topic.database.models import Topic
 class Branch(Base):
     __tablename__ = "branches"
     

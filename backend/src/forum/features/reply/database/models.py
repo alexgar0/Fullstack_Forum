@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.orm import relationship
 
-from ....database import Base
+from forum.database import Base
 
 
 class Reply(Base):
