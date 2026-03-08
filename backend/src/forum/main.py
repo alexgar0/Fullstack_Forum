@@ -2,11 +2,11 @@ import logging
 from time import sleep
 from fastapi import FastAPI
 import uvicorn
-from .features.user.view import router as user_router
-from .features.topic.view import router as topic_router
-from .features.branch.view import router as branch_router
-from .log import initialize_logger
-from .exceptions import register_exception_handlers
+from forum.features.user.view import router as user_router
+from forum.features.topic.view import router as topic_router
+from forum.features.branch.view import router as branch_router
+from forum.log import initialize_logger
+from forum.exceptions import register_exception_handlers
 
 app = FastAPI(
     title="Forum API",
