@@ -47,7 +47,8 @@ class Branch(Base, IdMixin):
         "Topic", back_populates="branch", cascade="all, delete-orphan", lazy="dynamic"
     )
     parent: Mapped[Optional["Branch"]] = relationship(
-        "Branch", remote_side=[id], backref=backref("children", lazy="dynamic")
+        "Branch", remote_side=["id"], # type: ignore[list-item]
+        backref=backref("children", lazy="dynamic")
     )
 
     if TYPE_CHECKING:
