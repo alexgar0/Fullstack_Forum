@@ -38,3 +38,11 @@ def update_topic(
 ) -> FullTopicDTO:
     edited_topic = topic_service.edit_topic(current_user, topic_id, payload)
     return edited_topic
+
+@router.delete("/{topic_id}", response_model=None)
+def delete_topic(
+    topic_id: int,
+    current_user: User = Depends(get_current_user_for_activity),
+    topic_service: TopicService = Depends(get_topic_service),
+) -> None:
+    topic_service.delete_topic(current_user, topic_id)
