@@ -24,14 +24,14 @@ class Topic(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     branch_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("branches.id"), index=True, nullable=False)
-    title: Mapped[str] = mapped_column(
-        String, unique=True, index=True, nullable=False)
+        Integer, ForeignKey("branches.id"), index=True, nullable=False
+    )
+    title: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text)
     creator_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("users.id"), index=True, nullable=False)
-    is_active: Mapped[bool] = mapped_column(
-        Boolean, default=True, nullable=False)
+        Integer, ForeignKey("users.id"), index=True, nullable=False
+    )
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -44,8 +44,7 @@ class Topic(Base):
 
     view_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
-    creator: Mapped[User] = relationship(
-        "User", back_populates="created_topics")
+    creator: Mapped[User] = relationship("User", back_populates="created_topics")
     branch: Mapped[Branch] = relationship("Branch", back_populates="topics")
     replies: DynamicMapped[Reply] = relationship(
         "Reply", back_populates="topic", cascade="all, delete-orphan", lazy="dynamic"

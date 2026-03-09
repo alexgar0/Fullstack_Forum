@@ -21,8 +21,7 @@ class BranchDTO(BaseModel):
     parent_id: Optional[int] = None
     topic_count: int
     children_ids: List[int] = []
-    
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 

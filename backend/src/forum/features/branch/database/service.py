@@ -27,7 +27,7 @@ class WrongBranchTitleLength(AppException):
 class BranchService:
     def __init__(self, db: Session) -> None:
         self.repo: BranchRepo = BranchRepo(db)
-        
+
     def _branch_to_dto(self, branch: Branch) -> Dict[str, Any]:
         return {
             "id": branch.id,
@@ -80,7 +80,6 @@ class BranchService:
 
         branch.is_active = False
         self.repo.update_branch(branch)
-        
 
 
 def get_branch_service(

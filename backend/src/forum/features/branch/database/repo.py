@@ -44,5 +44,3 @@ class BranchRepo:
 
     def get_topics(self, branch: Branch) -> List[Topic]:
         return self.db.query(Topic).filter(Topic.branch_id == branch.id).all()
-
-    

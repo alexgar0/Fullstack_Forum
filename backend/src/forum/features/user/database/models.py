@@ -24,6 +24,7 @@ if TYPE_CHECKING:
     from forum.features.branch.database.models import Branch
     from forum.features.reply.database.models import Reply
 
+
 class Role(str, Enum):
     admin = "admin"
     premium = "premium"
@@ -35,8 +36,10 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    username: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
-    email: Mapped[str]= mapped_column(String, unique=True, index=True, nullable=False)
+    username: Mapped[str] = mapped_column(
+        String, unique=True, index=True, nullable=False
+    )
+    email: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String, nullable=False)
     role: Mapped[Role] = mapped_column(SqlEnum(Role), default=Role.user, nullable=False)
     bio: Mapped[Optional[str]] = mapped_column(Text)
@@ -52,14 +55,14 @@ class User(Base):
         onupdate=func.now(),
         nullable=False,
     )
-    
+
     def __init__(
         self,
         username: str,
         email: str,
         role: Role,
         hashed_password: str,
-        bio: Optional[str] = None
+        bio: Optional[str] = None,
     ) -> None:
         self.username = username
         self.email = email
@@ -67,7 +70,7 @@ class User(Base):
         self.role = role
         self.hashed_password = hashed_password
 
-    created_topics : DynamicMapped["Topic"] = relationship(
+    created_topics: DynamicMapped["Topic"] = relationship(
         "Topic", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic"
     )
     created_branches: DynamicMapped["Branch"] = relationship(

@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from forum.features.topic.database.models import Topic
     from forum.features.user.database.models import User
 
+
 class Reply(Base):
     __tablename__ = "replies"
 

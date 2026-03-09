@@ -2,7 +2,12 @@ from datetime import datetime
 from typing import Optional, Tuple
 from sqlalchemy.orm import Session
 
-from forum.exceptions import AppException, ExistingResourceError, NotFoundError, PermissionDeniedError
+from forum.exceptions import (
+    AppException,
+    ExistingResourceError,
+    NotFoundError,
+    PermissionDeniedError,
+)
 from forum.features.user.schemas import UserCreate, UserDTO
 from forum.features.user.security import hash_password, verify_password
 from forum.features.user.database.models import User, Role
@@ -73,7 +78,10 @@ class UserService:
 
         hashed_pass = hash_password(user.password)
         db_user = User(
-            username=user.username, role=Role.user, email=user.email, hashed_password=hashed_pass
+            username=user.username,
+            role=Role.user,
+            email=user.email,
+            hashed_password=hashed_pass,
         )
         orm_user = self.repo.create_user(db_user)
         return UserDTO.model_validate(orm_user)

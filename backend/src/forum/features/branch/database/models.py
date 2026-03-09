@@ -22,20 +22,25 @@ if TYPE_CHECKING:
     from forum.features.topic.database.models import Topic
     from forum.features.user.database.models import User
 
+
 class Branch(Base):
     __tablename__ = "branches"
 
-    id: Mapped[int]= mapped_column(Integer, primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-    creator_id: Mapped[int]= mapped_column(Integer, ForeignKey("users.id"), index=True, nullable=False)
+    creator_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id"), index=True, nullable=False
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
-    parent_id: Mapped[int] = mapped_column(Integer, ForeignKey("branches.id"), index=True, nullable=True)
+    parent_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("branches.id"), index=True, nullable=True
+    )
 
     creator: Mapped["User"] = relationship("User", back_populates="created_branches")
     topics: DynamicMapped["Topic"] = relationship(
@@ -44,6 +49,6 @@ class Branch(Base):
     parent: Mapped[Optional["Branch"]] = relationship(
         "Branch", remote_side=[id], backref=backref("children", lazy="dynamic")
     )
-    
+
     if TYPE_CHECKING:
         children: DynamicMapped["Branch"]

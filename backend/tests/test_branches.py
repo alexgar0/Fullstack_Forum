@@ -86,37 +86,32 @@ async def test_branch_topic_pagination(client, db_session):
         small_topics = data["small_topics"]
         assert len(small_topics) <= limit
 
+
 @pytest.mark.asyncio
 async def test_branch_relationship(client, branch_service, test_user_admin):
     response = await client.post("/branches/", json=create_branch_mock)
     assert response.status_code == 201
-    
+
     parent_branch_id = response.json()["id"]
-    
-    child1 = {
-        "title": "child1",
-        "parent_id": parent_branch_id
-    }
-    
-    child2 = {
-        "title": "child2",
-        "parent_id": parent_branch_id
-    }
-    
+
+    child1 = {"title": "child1", "parent_id": parent_branch_id}
+
+    child2 = {"title": "child2", "parent_id": parent_branch_id}
+
     response = await client.post("/branches/", json=child1)
     assert response.status_code == 201
     child1_id = response.json()["id"]
-    
+
     response = await client.post("/branches/", json=child2)
     assert response.status_code == 201
     child2_id = response.json()["id"]
-    
+
     dto = branch_service.get_branch(test_user_admin, parent_branch_id)
     assert child1_id in dto.children_ids
     assert child2_id in dto.children_ids
-    
+
     dto = branch_service.get_branch(test_user_admin, child1_id)
     assert dto.parent_id == parent_branch_id
-    
+
     dto = branch_service.get_branch(test_user_admin, child2_id)
     assert dto.parent_id == parent_branch_id

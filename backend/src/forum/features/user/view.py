@@ -76,11 +76,7 @@ async def refresh_access_token(
     current_user: UserDTO = Depends(get_current_user_from_refresh_token),
 ) -> Token:
     access_token = create_access_token(data={"sub": current_user.username})
-    return Token(
-        access_token=access_token,
-        refresh_token="",
-        token_type="bearer"
-        )
+    return Token(access_token=access_token, refresh_token="", token_type="bearer")
 
 
 @router.get("/{user_id}", response_model=UserDTO)

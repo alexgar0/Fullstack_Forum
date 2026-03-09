@@ -67,10 +67,12 @@ def override_auth(test_user_admin):
 @pytest.fixture
 def branch_repo(db_session):
     yield BranchRepo(db_session)
-    
+
+
 @pytest.fixture
 def branch_service(db_session):
     yield BranchService(db_session)
+
 
 @pytest_asyncio.fixture
 async def client():

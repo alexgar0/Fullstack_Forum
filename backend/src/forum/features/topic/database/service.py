@@ -9,7 +9,12 @@ from forum.exceptions import InvalidLengthError, NotFoundError, PermissionDenied
 
 from forum.features.query import PaginationQuery
 from forum.features.user.database.models import User
-from forum.features.topic.schemas import FullTopicDTO, SmallTopicDTO, TopicCreateDTO, TopicUpdateDTO
+from forum.features.topic.schemas import (
+    FullTopicDTO,
+    SmallTopicDTO,
+    TopicCreateDTO,
+    TopicUpdateDTO,
+)
 
 from forum.features.topic.database.repo import TopicRepo
 from forum.features.topic.database.models import Topic
@@ -33,11 +38,11 @@ class TopicService:
             for topic in self.repo.get_topics_by_branch(branch_id, pagination)
             if topic.is_active
         ]
-        
+
         result = []
         for orm_topic in active_topics:
             result.append(SmallTopicDTO.model_validate(orm_topic))
-            
+
         return result
 
     def create_topic(self, user: User, topic: TopicCreateDTO) -> FullTopicDTO:
@@ -61,12 +66,14 @@ class TopicService:
         created = self.repo.create_topic(new_topic)
         return FullTopicDTO.model_validate(created)
 
-    def edit_topic(self, user: User, topic_id: int, payload: TopicUpdateDTO) -> FullTopicDTO:
+    def edit_topic(
+        self, user: User, topic_id: int, payload: TopicUpdateDTO
+    ) -> FullTopicDTO:
         topic = self.repo.get_topic(topic_id)
-        
+
         if not topic:
             raise NotFoundError("Topic not found")
-            
+
         if topic.creator_id != user.id and not user.is_admin:
             raise PermissionDeniedError("Only the creator or admin can edit the topic")
 
@@ -86,7 +93,7 @@ class TopicService:
 
         if topic is None:
             raise NotFoundError("Topic not found")
-        
+
         if topic.creator_id != user.id and not user.is_admin:
             raise PermissionDeniedError(
                 "Only the creator or admin can delete the topic"
