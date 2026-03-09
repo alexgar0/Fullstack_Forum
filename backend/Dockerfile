@@ -13,8 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-install-project
+
 COPY . .
-RUN uv sync --dev
+RUN uv sync --no-dev
 
 
 RUN useradd -m appuser && chown -R appuser /app
