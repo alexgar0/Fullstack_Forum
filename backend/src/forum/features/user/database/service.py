@@ -1,10 +1,11 @@
 from datetime import datetime
+from typing import Optional, Tuple
 from fastapi import HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from forum.exceptions import AppException, ExistingResourceError, PermissionDeniedError
-from forum.features.user.schemas import UserCreate
+from forum.exceptions import AppException, ExistingResourceError, NotFoundError, PermissionDeniedError
+from forum.features.user.schemas import UserCreate, UserDTO
 from forum.features.user.security import hash_password, verify_password
 from forum.features.user.database.models import User, Role
 from forum.features.user.database.repo import UserRepo
@@ -12,7 +13,7 @@ from forum.features.user.database.repo import UserRepo
 from forum.config import USERNAME_LENGTH_BOUNDS
 
 
-def password_complexity_check(password) -> tuple[bool, str]:
+def password_complexity_check(password: str) -> Tuple[bool, str]:
     if len(password) < 8:
         return False, "Password must be at least 8 characters long"
     if not any(char.isupper() for char in password):
@@ -51,10 +52,11 @@ class UserService:
     def __init__(self, db: Session):
         self.repo = UserRepo(db)
 
-    def get_user(self, user_id: int) -> User:
-        return self.repo.get_user_by_id(user_id)
+    def get_user(self, user_id: int) -> UserDTO:
+        orm_user = self.repo.get_user_by_id(user_id)
+        return UserDTO.model_validate(orm_user)
 
-    def create_user(self, user: UserCreate) -> User:
+    def create_user(self, user: UserCreate) -> UserDTO:
         if (
             len(user.username) < USERNAME_LENGTH_BOUNDS[0]
             or len(user.username) > USERNAME_LENGTH_BOUNDS[1]
@@ -73,11 +75,12 @@ class UserService:
 
         hashed_pass = hash_password(user.password)
         db_user = User(
-            username=user.username, email=user.email, hashed_password=hashed_pass
+            username=user.username, role=Role.user, email=user.email, hashed_password=hashed_pass
         )
-        return self.repo.create_user(db_user)
+        orm_user = self.repo.create_user(db_user)
+        return UserDTO.model_validate(orm_user)
 
-    def authenticate_user(self, username: str, password: str) -> User | None:
+    def authenticate_user(self, username: str, password: str) -> Optional[UserDTO]:
         user = self.repo.get_user_by_username(username)
         if not user:
             user = self.repo.get_user_by_email(username)
@@ -85,25 +88,29 @@ class UserService:
             return None
         if not verify_password(password, user.hashed_password):
             return None
-        return user
+        return UserDTO.model_validate(user)
 
     def update_user_role(
         self, initiator_user: User, user_to_update: User, role: Role
-    ) -> User:
+    ) -> UserDTO:
         if not initiator_user.is_admin:
             raise PermissionDeniedError("You are not an admin")
         user_to_update.role = role
-        self.repo.update_user(user_to_update)
-        return user_to_update
+        orm_user = self.repo.update_user(user_to_update)
+        return UserDTO.model_validate(orm_user)
 
-    def update_last_activity(self, user_id) -> User:
+    def update_last_activity(self, user_id: int) -> UserDTO:
         user = self.repo.get_user_by_id(user_id)
+        if not user:
+            raise NotFoundError("User not found")
         user.last_activity = datetime.now()
-        self.repo.update_user(user)
-        return user
+        orm_user = self.repo.update_user(user)
+        return UserDTO.model_validate(orm_user)
 
-    def update_last_login(self, user_id) -> User:
+    def update_last_login(self, user_id: int) -> UserDTO:
         user = self.repo.get_user_by_id(user_id)
+        if not user:
+            raise NotFoundError("User not found")
         user.last_login = datetime.now()
-        self.repo.update_user(user)
-        return user
+        orm_user = self.repo.update_user(user)
+        return UserDTO.model_validate(orm_user)

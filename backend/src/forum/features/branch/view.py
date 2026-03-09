@@ -23,7 +23,7 @@ router = APIRouter(prefix="/branches", tags=["Branches"])
 async def read_all_branches(
     current_user: User = Depends(get_current_user),
     branch_service: BranchService = Depends(get_branch_service),
-):
+) -> List[BranchDTO]:
     return branch_service.get_all_branches()
 
 
@@ -34,7 +34,7 @@ async def read_branch(
     current_user: User = Depends(get_current_user),
     branch_service: BranchService = Depends(get_branch_service),
     topic_service: TopicService = Depends(get_topic_service),
-):
+) -> BranchWithSmallTopicsDTO:
     branch = branch_service.get_branch(current_user, branch_id)
     small_topics = topic_service.get_small_topics_from_branch_with_pagination(
         branch_id, pagination
@@ -49,7 +49,7 @@ async def create_branch(
     branch: BranchCreateDTO,
     current_user: User = Depends(get_current_user),
     branch_service: BranchService = Depends(get_branch_service),
-):
+) -> BranchDTO:
     new_branch = branch_service.create_branch(current_user, branch)
     return new_branch
 
@@ -59,5 +59,5 @@ async def delete_branch(
     branch_id: int,
     current_user: User = Depends(get_current_user),
     branch_service: BranchService = Depends(get_branch_service),
-):
+) -> None:
     branch_service.delete_branch(current_user, branch_id)

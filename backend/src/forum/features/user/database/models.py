@@ -1,4 +1,9 @@
+from __future__ import annotations
+
+from datetime import datetime
 from enum import Enum
+from typing import TYPE_CHECKING, List, Optional
+
 
 from sqlalchemy import (
     Column,
@@ -9,11 +14,18 @@ from sqlalchemy import (
     Enum as SqlEnum,
     DateTime,
     func,
+    select,
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import DynamicMapped, Mapped, Session, mapped_column, relationship
 
 from forum.database import Base
 
+__all__ = ["Role", "User"]
+
+if TYPE_CHECKING:
+    from forum.features.topic.database.models import Topic
+    from forum.features.branch.database.models import Branch
+    from forum.features.reply.database.models import Reply
 
 class Role(str, Enum):
     admin = "admin"
@@ -25,47 +37,53 @@ class Role(str, Enum):
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True, nullable=False)
-    email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    role = Column(SqlEnum(Role), default=Role.user, nullable=False)
-    bio = Column(Text)
-    created_at = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+    email: Mapped[str]= mapped_column(String, unique=True, index=True, nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String, nullable=False)
+    role: Mapped[Role] = mapped_column(SqlEnum(Role), default=Role.user, nullable=False)
+    bio: Mapped[Optional[str]] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    last_login = Column(
+    last_login: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    last_activity = Column(
+    last_activity: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
     )
+    
+    def __init__(
+        self,
+        username: str,
+        email: str,
+        role: Role,
+        hashed_password: str,
+        bio: Optional[str] = None
+    ) -> None:
+        self.username = username
+        self.email = email
+        self.bio = bio
+        self.role = role
+        self.hashed_password = hashed_password
 
-    created_topics = relationship(
+    created_topics : DynamicMapped["Topic"] = relationship(
         "Topic", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic"
     )
-    created_branches = relationship(
+    created_branches: DynamicMapped["Branch"] = relationship(
         "Branch", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic"
     )
-    created_replies = relationship(
+    created_replies: DynamicMapped["Reply"] = relationship(
         "Reply", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic"
     )
 
     @property
-    def is_admin(self):
+    def is_admin(self) -> bool:
         return self.role == Role.admin
 
     @property
-    def is_premium(self):
+    def is_premium(self) -> bool:
         return self.role == Role.premium
-
-    @property
-    def created_topics_ids(self):
-        return [topic.id for topic in self.created_topics]
-
-    @property
-    def created_branches_ids(self):
-        return [branch.id for branch in self.created_branches]

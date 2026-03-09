@@ -1,3 +1,9 @@
+from __future__ import annotations
+
+from datetime import datetime
+from typing import TYPE_CHECKING, List, Optional, Self
+
+from forum.features.user.database.models import User
 from sqlalchemy import (
     Boolean,
     Column,
@@ -7,47 +13,36 @@ from sqlalchemy import (
     String,
     Text,
     func,
+    select,
 )
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import DynamicMapped, Mapped, Query, Session, mapped_column, relationship, backref
 from forum.database import Base
-from forum.features.topic.database.models import Topic
 
+__all__ = ["Branch"]
+
+if TYPE_CHECKING:
+    from forum.features.topic.database.models import Topic
+    from forum.features.user.database.models import User
 
 class Branch(Base):
     __tablename__ = "branches"
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, unique=True, index=True, nullable=False)
-    description = Column(Text, nullable=True)
+    id: Mapped[int]= mapped_column(Integer, primary_key=True, index=True)
+    title: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-    creator_id = Column(Integer, ForeignKey("users.id"), index=True, nullable=False)
-    created_at = Column(
+    creator_id: Mapped[int]= mapped_column(Integer, ForeignKey("users.id"), index=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    is_active = Column(Boolean, default=True, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
-    parent_id = Column(Integer, ForeignKey("branches.id"), index=True, nullable=True)
+    parent_id: Mapped[int] = mapped_column(Integer, ForeignKey("branches.id"), index=True, nullable=True)
 
-    creator = relationship("User", back_populates="created_branches")
-    topics = relationship(
+    creator: Mapped["User"] = relationship("User", back_populates="created_branches")
+    topics: DynamicMapped["Topic"] = relationship(
         "Topic", back_populates="branch", cascade="all, delete-orphan", lazy="dynamic"
     )
-    parent = relationship(
+    parent: Mapped[Optional["Branch"]] = relationship(
         "Branch", remote_side=[id], backref=backref("children", lazy="dynamic")
     )
-
-    @property
-    def topic_ids(self):
-        return [obj[0] for obj in self.topics.with_entities(Topic.id)]
-
-    @property
-    def topic_titles(self):
-        return [obj[0] for obj in self.topics.with_entities(Topic.title)]
-
-    @property
-    def children_ids(self):
-        return [obj[0] for obj in self.children.with_entities(self.__class__.id)]
-
-    @property
-    def topic_count(self) -> int:
-        return self.topics.count()

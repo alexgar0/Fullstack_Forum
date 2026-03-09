@@ -1,8 +1,17 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, List
+
 from sqlalchemy import Column, ForeignKey, Integer, Text
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 from forum.database import Base
 
+__all__ = ["Reply"]
+
+if TYPE_CHECKING:
+    from forum.features.topic.database.models import Topic
+    from forum.features.user.database.models import User
 
 class Reply(Base):
     __tablename__ = "replies"
@@ -15,5 +24,5 @@ class Reply(Base):
     )
     creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    topic = relationship("Topic", back_populates="replies")
-    creator = relationship("User", back_populates="created_replies")
+    topic: Mapped["Topic"] = relationship("Topic", back_populates="replies")
+    creator: Mapped["User"] = relationship("User", back_populates="created_replies")

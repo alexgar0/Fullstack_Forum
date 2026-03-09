@@ -23,7 +23,7 @@ class TokenData(BaseModel):
     username: str | None = None
 
 
-class User(BaseModel):
+class UserDTO(BaseModel):
     id: int
     username: str
     role: Role

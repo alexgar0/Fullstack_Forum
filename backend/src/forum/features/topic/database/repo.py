@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -26,10 +28,8 @@ class TopicRepo:
                 raise NotFoundError("Branch not found")
             raise
 
-    def get_topic(self, topic_id: int) -> Topic:
+    def get_topic(self, topic_id: int) -> Optional[Topic]:
         topic = self.db.query(Topic).filter(Topic.id == topic_id).first()
-        if topic is None:
-            raise NotFoundError("Topic not found")
         return topic
 
     def get_topics_by_creator(self, creator_id: int) -> list[Topic]:
