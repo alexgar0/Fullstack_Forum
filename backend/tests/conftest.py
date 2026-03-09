@@ -1,14 +1,16 @@
 from datetime import datetime, timezone
+from forum.features.branch.database.repo import BranchRepo
+from forum.features.branch.database.service import BranchService
 from httpx import ASGITransport, AsyncClient
 import pytest
 import os
 import pytest_asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from src.features.user.session import get_current_user, get_current_user_for_activity
-from src.features.user.database.models import User
-from src.main import app
-from src.database import Base, get_db
+from forum.features.user.session import get_current_user, get_current_user_for_activity
+from forum.features.user.database.models import Role, User
+from forum.main import app
+from forum.database import Base, get_db
 
 
 @pytest.fixture(scope="session")
@@ -45,13 +47,10 @@ def override_dependency(db_session):
 def test_user_admin(db_session):
     now = datetime.now(timezone.utc)
     user = User(
-        role="admin",
+        role=Role.admin,
         email="test@test.com",
         username="testuser",
         hashed_password="fake_password",
-        created_at=now,
-        last_activity=now,
-        last_login=now,
     )
     db_session.add(user)
     db_session.flush()
@@ -66,6 +65,14 @@ def override_auth(test_user_admin):
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_current_user_for_activity, None)
 
+
+@pytest.fixture
+def branch_repo(db_session):
+    yield BranchRepo(db_session)
+    
+@pytest.fixture
+def branch_service(db_session):
+    yield BranchService(db_session)
 
 @pytest_asyncio.fixture
 async def client():
