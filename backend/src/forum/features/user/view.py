@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Dict
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.responses import JSONResponse
@@ -7,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from forum.database import get_db
 from forum.features.user.database.service import UserService
-from forum.features.user.schemas import Token, UserCreate, User
+from forum.features.user.schemas import Token, UserCreate, UserDTO
 from forum.features.user.security import create_access_token, create_refresh_token
 from forum.features.user.session import (
     get_current_user,
@@ -20,22 +21,22 @@ from forum import config
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.get("/me", response_model=User)
-async def me(current_user: User = Depends(get_current_user_for_activity)):
+@router.get("/me", response_model=UserDTO)
+async def me(current_user: UserDTO = Depends(get_current_user_for_activity)) -> UserDTO:
     return current_user
 
 
-@router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
-def register(user: UserCreate, db: Session = Depends(get_db)):
+@router.post("/register", response_model=UserDTO, status_code=status.HTTP_201_CREATED)
+def register(user: UserCreate, db: Session = Depends(get_db)) -> UserDTO:
     user_service = UserService(db)
     new_user = user_service.create_user(user)
     return new_user
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=None)
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
-):
+) -> JSONResponse:
     user_service = UserService(db)
     user = user_service.authenticate_user(
         username=form_data.username, password=form_data.password
@@ -74,29 +75,29 @@ async def login(
 
 @router.post("/refresh", response_model=Token)
 async def refresh_access_token(
-    current_user: User = Depends(get_current_user_from_refresh_token),
-):
+    current_user: UserDTO = Depends(get_current_user_from_refresh_token),
+) -> Token:
     access_token = create_access_token(data={"sub": current_user.username})
-    return {
-        "access_token": access_token,
-        "refresh_token": "",  # Or return the same refresh token
-        "token_type": "bearer",
-    }
+    return Token(
+        access_token=access_token,
+        refresh_token="",
+        token_type="bearer"
+        )
 
 
-@router.get("/{user_id}", response_model=User)
+@router.get("/{user_id}", response_model=UserDTO)
 async def read_user(
     user_id: int,
-    current_user: User = Depends(get_current_user_for_activity),
+    current_user: UserDTO = Depends(get_current_user_for_activity),
     db: Session = Depends(get_db),
-):
+) -> UserDTO:
     user_service = UserService(db)
     user = user_service.get_user(user_id)
     return user
 
 
 @router.post("/logout")
-async def logout(response: Response):
+async def logout(response: Response) -> Dict[str, str]:
     response.delete_cookie(key="access_token")
     response.delete_cookie(key="refresh_token")
     return {"status": "success"}

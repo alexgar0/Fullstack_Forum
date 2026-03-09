@@ -1,6 +1,7 @@
 import logging
 from time import sleep
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 import uvicorn
 from forum.features.user.view import router as user_router
 from forum.features.topic.view import router as topic_router
@@ -20,12 +21,12 @@ app.include_router(topic_router)
 app.include_router(branch_router)
 
 
-@app.get("/")
-async def root():
-    return {"message": "Welcome to Forum API!"}
+@app.get("/", response_model=None)
+async def root() -> JSONResponse:
+    return JSONResponse({"message": "Welcome to Forum API!"})
 
 
-def main():
+def main() -> None:
     initialize_logger()
     uvicorn.run(app, host="0.0.0.0", port=8080)
 

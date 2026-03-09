@@ -36,7 +36,7 @@ def get_current_user(
         payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
         if payload.get("token_type") != "access":
             raise credentials_exception
-        username: str = payload.get("sub")
+        username: str | None = payload.get("sub")
         if username is None:
             raise credentials_exception
     except JWTError:
@@ -66,7 +66,7 @@ def get_current_user_for_activity(
 
 def get_current_user_from_refresh_token(
     token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)
-):
+) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials for refresh",
@@ -76,7 +76,7 @@ def get_current_user_from_refresh_token(
         payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
         if payload.get("token_type") != "refresh":
             raise credentials_exception
-        username: str = payload.get("sub")
+        username: str | None = payload.get("sub")
         if username is None:
             raise credentials_exception
     except JWTError:
