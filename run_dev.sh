@@ -15,13 +15,13 @@ trap cleanup SIGINT
 sudo docker compose up -d postgres
 
 echo "Waiting for DB"
-until [ "$(docker inspect -f {{.State.Health.Status}} postgres_container)"=="healthy" ]; do
+until [ "$(sudo docker inspect -f '{{.State.Health.Status}}' postgres_container)" == "healthy" ]; do
     sleep 1
 done
 
 # Run backend
-source ./backend/venv/bin/activate
-python -m backend.src.main & 
+source ./backend/.venv/bin/activate
+start & 
 BACKEND_PID=$!
 
 # Run frontend
