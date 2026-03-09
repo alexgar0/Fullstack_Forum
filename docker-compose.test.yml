@@ -22,4 +22,4 @@ services:
       db_test:
         condition: service_healthy
     command: >
-        sh -c "alembic -c src/alembic.ini upgrade head && python -m pytest src/tests"
+        sh -c "uv run alembic upgrade head && uv run pytest"

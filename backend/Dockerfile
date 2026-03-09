@@ -13,13 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-COPY requirements.txt .
-
-RUN uv pip install -r requirements.txt
-
 COPY . .
+RUN uv sync --dev
+
 
 RUN useradd -m appuser && chown -R appuser /app
 USER appuser
 
-CMD ["python", "-m", "src.main"]
+CMD ["uv", "run", "start"]
