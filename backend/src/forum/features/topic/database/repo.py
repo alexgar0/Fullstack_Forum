@@ -3,7 +3,6 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from forum.features.user.database.models import User
 
 from forum.features.topic.database.models import Topic
 from forum.features.query import PaginationQuery

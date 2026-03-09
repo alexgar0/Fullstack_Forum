@@ -53,7 +53,7 @@ async def test_delete_branch(client, db_session):
 
     response = await client.get(f"/branches/{branch_id}")
     data = response.json()
-    assert data["is_active"] == False
+    assert not data["is_active"]
 
 
 @pytest.mark.asyncio

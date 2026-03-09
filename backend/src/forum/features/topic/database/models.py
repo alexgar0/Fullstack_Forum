@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from forum.features.branch.database.models import Branch
 from forum.features.reply.database.models import Reply
 from forum.features.user.database.models import User
 from sqlalchemy import (
     Boolean,
-    Column,
     DateTime,
     ForeignKey,
     Integer,

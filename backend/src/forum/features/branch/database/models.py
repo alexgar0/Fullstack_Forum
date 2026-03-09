@@ -1,21 +1,19 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Optional, Self
+from typing import TYPE_CHECKING, Optional
 
 from forum.features.user.database.models import User
 from sqlalchemy import (
     Boolean,
-    Column,
     DateTime,
     ForeignKey,
     Integer,
     String,
     Text,
     func,
-    select,
 )
-from sqlalchemy.orm import DynamicMapped, Mapped, Query, Session, mapped_column, relationship, backref
+from sqlalchemy.orm import DynamicMapped, Mapped, mapped_column, relationship, backref
 from forum.database import Base
 
 __all__ = ["Branch"]

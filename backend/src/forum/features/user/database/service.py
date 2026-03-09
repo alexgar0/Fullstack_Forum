@@ -1,7 +1,5 @@
 from datetime import datetime
 from typing import Optional, Tuple
-from fastapi import HTTPException, status
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from forum.exceptions import AppException, ExistingResourceError, NotFoundError, PermissionDeniedError
@@ -39,12 +37,12 @@ class WrongUsernameLength(AppException):
 
 
 class EmailAlreadyRegistered(ExistingResourceError):
-    def __init__(self, message: str = f"Email is already registered"):
+    def __init__(self, message: str = "Email is already registered"):
         super().__init__(message)
 
 
 class UsernameAlreadyTaken(ExistingResourceError):
-    def __init__(self, message: str = f"Username is already taken"):
+    def __init__(self, message: str = "Username is already taken"):
         super().__init__(message)
 
 

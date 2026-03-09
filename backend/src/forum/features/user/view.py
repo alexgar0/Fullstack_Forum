@@ -1,4 +1,3 @@
-from datetime import timedelta
 from typing import Dict
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -11,7 +10,6 @@ from forum.features.user.database.service import UserService
 from forum.features.user.schemas import Token, UserCreate, UserDTO
 from forum.features.user.security import create_access_token, create_refresh_token
 from forum.features.user.session import (
-    get_current_user,
     get_current_user_for_activity,
     get_current_user_from_refresh_token,
 )

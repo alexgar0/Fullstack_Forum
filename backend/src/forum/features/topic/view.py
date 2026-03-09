@@ -1,8 +1,5 @@
-from typing import Generator
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends
 
-from forum.database import get_db
 from forum.features.user.database.models import User
 from forum.features.user.session import get_current_user, get_current_user_for_activity
 

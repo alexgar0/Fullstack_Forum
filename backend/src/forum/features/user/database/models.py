@@ -2,21 +2,18 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Optional
 
 
 from sqlalchemy import (
-    Column,
     Integer,
     String,
     Text,
-    Boolean,
     Enum as SqlEnum,
     DateTime,
     func,
-    select,
 )
-from sqlalchemy.orm import DynamicMapped, Mapped, Session, mapped_column, relationship
+from sqlalchemy.orm import DynamicMapped, Mapped, mapped_column, relationship
 
 from forum.database import Base
 

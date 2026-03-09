@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, relationship

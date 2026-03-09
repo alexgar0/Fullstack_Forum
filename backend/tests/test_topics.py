@@ -25,7 +25,7 @@ async def test_topic(client, db_session, test_user_admin):
     assert response.json()["id"] == topic_id
     assert response.json()["title"] == new_topic_mock["title"]
     assert response.json()["description"] == new_topic_mock["description"]
-    assert response.json()["is_active"] == True
+    assert response.json()["is_active"]
     assert response.json()["creator_id"] == test_user_admin.id
 
     # Read the topic
@@ -34,7 +34,7 @@ async def test_topic(client, db_session, test_user_admin):
     assert response.json()["id"] == topic_id
     assert response.json()["title"] == new_topic_mock["title"]
     assert response.json()["description"] == new_topic_mock["description"]
-    assert response.json()["is_active"] == True
+    assert response.json()["is_active"]
     assert response.json()["creator_id"] == test_user_admin.id
 
     # Update topic

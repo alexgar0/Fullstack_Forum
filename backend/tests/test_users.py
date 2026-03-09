@@ -70,8 +70,6 @@ async def test_wrong_credentials(client, db_session):
 
 @pytest.mark.asyncio
 async def test_weak_password_registration(client, db_session):
-    username = "test_user"
-    email = "test@test.com"
     weak_passwords = [
         "qwerty",
         "123456",

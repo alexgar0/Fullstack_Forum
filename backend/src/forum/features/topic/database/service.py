@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime, timezone
-from typing import Generator, List, Optional
+from typing import Generator, List
 from fastapi import Depends
 from sqlalchemy.orm import Session
 

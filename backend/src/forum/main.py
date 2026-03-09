@@ -1,5 +1,3 @@
-import logging
-from time import sleep
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import uvicorn

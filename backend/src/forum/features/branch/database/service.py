@@ -1,4 +1,3 @@
-from datetime import timedelta, datetime, timezone
 from typing import Any, Dict, Generator, List, cast
 from fastapi import Depends
 from forum.features.topic.database.models import Topic
@@ -8,10 +7,9 @@ from sqlalchemy.orm import Query, Session
 from forum.config import BRANCH_NAME_LENGTH_BOUNDS
 
 from forum.database import get_db
-from forum.exceptions import AppException, NotFoundError, PermissionDeniedError
+from forum.exceptions import AppException, PermissionDeniedError
 
 from forum.features.user.database.models import Role, User
-from forum.features.query import PaginationQuery
 
 from forum.features.branch.database.repo import BranchRepo
 from forum.features.branch.database.models import Branch

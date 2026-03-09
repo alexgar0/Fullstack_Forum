@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 from forum.features.branch.database.repo import BranchRepo
 from forum.features.branch.database.service import BranchService
 from httpx import ASGITransport, AsyncClient
@@ -45,7 +44,6 @@ def override_dependency(db_session):
 
 @pytest.fixture
 def test_user_admin(db_session):
-    now = datetime.now(timezone.utc)
     user = User(
         role=Role.admin,
         email="test@test.com",

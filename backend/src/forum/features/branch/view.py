@@ -1,11 +1,9 @@
-from typing import Generator, List, Optional
+from typing import List
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
-from forum.database import get_db
 from forum.features.query import PaginationQuery
 from forum.features.user.database.models import User
-from forum.features.user.session import get_current_user, get_current_user_for_activity
+from forum.features.user.session import get_current_user
 
 from forum.features.branch.database.service import BranchService, get_branch_service
 from forum.features.branch.schemas import (
