@@ -46,3 +46,6 @@ class Branch(Base):
     parent: Mapped[Optional["Branch"]] = relationship(
         "Branch", remote_side=[id], backref=backref("children", lazy="dynamic")
     )
+    
+    if TYPE_CHECKING:
+        children: DynamicMapped["Branch"]

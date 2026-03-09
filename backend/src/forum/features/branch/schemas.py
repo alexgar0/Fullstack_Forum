@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from forum.features.topic.schemas import SmallTopicDTO
 
@@ -21,9 +21,9 @@ class BranchDTO(BaseModel):
     parent_id: Optional[int] = None
     topic_count: int
     children_ids: List[int] = []
-
-    class Config:
-        from_attributes = True
+    
+    
+    model_config = ConfigDict(from_attributes=True)
 
 
 class BranchWithSmallTopicsDTO(BranchDTO):
