@@ -5,6 +5,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
 
+from forum.features.common.mixins import IdMixin
 from sqlalchemy import (
     Integer,
     String,
@@ -32,10 +33,9 @@ class Role(str, Enum):
     guest = "guest"
 
 
-class User(Base):
+class User(Base, IdMixin):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     username: Mapped[str] = mapped_column(
         String, unique=True, index=True, nullable=False
     )

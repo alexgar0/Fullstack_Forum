@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from forum.features.common.mixins import IdMixin
 from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, relationship
 
@@ -14,10 +15,9 @@ if TYPE_CHECKING:
     from forum.features.user.database.models import User
 
 
-class Reply(Base):
+class Reply(Base, IdMixin):
     __tablename__ = "replies"
 
-    id = Column(Integer, primary_key=True)
     content = Column(Text, nullable=False)
 
     topic_id = Column(

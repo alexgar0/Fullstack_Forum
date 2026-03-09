@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 from forum.features.branch.database.models import Branch
+from forum.features.common.mixins import IdMixin
 from forum.features.reply.database.models import Reply
 from forum.features.user.database.models import User
 from sqlalchemy import (
@@ -19,10 +20,9 @@ from sqlalchemy.orm import DynamicMapped, Mapped, mapped_column, relationship
 from forum.database import Base
 
 
-class Topic(Base):
+class Topic(Base, IdMixin):
     __tablename__ = "topics"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     branch_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("branches.id"), index=True, nullable=False
     )

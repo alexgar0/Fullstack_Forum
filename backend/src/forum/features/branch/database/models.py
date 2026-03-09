@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
+from forum.features.common.mixins import IdMixin
 from forum.features.user.database.models import User
 from sqlalchemy import (
     Boolean,
@@ -23,10 +24,9 @@ if TYPE_CHECKING:
     from forum.features.user.database.models import User
 
 
-class Branch(Base):
+class Branch(Base, IdMixin):
     __tablename__ = "branches"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
