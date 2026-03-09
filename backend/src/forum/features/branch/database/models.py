@@ -47,7 +47,7 @@ class Branch(Base, IdMixin):
         "Topic", back_populates="branch", cascade="all, delete-orphan", lazy="dynamic"
     )
     parent: Mapped[Optional["Branch"]] = relationship(
-        "Branch", remote_side=["id"], # type: ignore[list-item]
+        "Branch", remote_side=lambda: [Branch.__table__.c.id],
         backref=backref("children", lazy="dynamic")
     )
 
