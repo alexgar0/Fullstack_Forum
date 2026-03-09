@@ -9,17 +9,13 @@ from sqlalchemy.orm import Session
 
 from forum import config
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 def hash_password(password: str) -> str:
-    digest = hashlib.sha256(password.encode("utf-8")).hexdigest()
-    return pwd_context.hash(digest)
-
+    return pwd_context.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    digest = hashlib.sha256(plain_password.encode("utf-8")).hexdigest()
-    return pwd_context.verify(digest, hashed_password)
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 def create_access_token(data: Dict[str, str], expires_delta: Optional[timedelta] = None) -> str:
