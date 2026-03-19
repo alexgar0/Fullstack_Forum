@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from forum.features.common.entities import ViewableEntity, OwnableEntity
 from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin, ViewsMixin
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from forum.features.topic.database.models import Topic
     from forum.features.user.database.models import User
 
-class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtTimestampMixin, ViewsMixin):
+class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtTimestampMixin):
     __tablename__ = "branches"
 
     title: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
@@ -42,6 +42,14 @@ class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtTimestampMixin, Views
         "Branch", remote_side=lambda: [Branch.__table__.c.id],
         backref=backref("children", lazy="dynamic")
     )
+    
+    @property
+    def topic_count(self) -> int:
+        return self.topics.count() 
+    
+    @property
+    def children_ids(self) -> List[int]:
+        return [child.id for child in self.children]
 
     if TYPE_CHECKING:
         children: DynamicMapped["Branch"]

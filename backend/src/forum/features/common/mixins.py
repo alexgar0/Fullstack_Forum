@@ -22,6 +22,10 @@ class OwnableByUserMixin:
     @declared_attr
     def creator(cls: Any) -> Mapped[User]:
         return relationship("User", back_populates=f"created_{cls.__tablename__}")
+    
+    @property
+    def creator_username(self) -> str:
+        return self.creator.username
 
 class CreatedAtTimestampMixin:
     created_at: Mapped[datetime] = mapped_column(
