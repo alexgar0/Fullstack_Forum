@@ -1,32 +1,52 @@
 #!/bin/bash
 
-# Stop on Ctrl+c
-cleanup() {
-    echo -e "\nStopping services"
-    kill $BACKEND_PID $FRONTEND_PID 2>/dev/null
-    sudo docker compose stop postgres
-    echo "Stopped"
-    exit
-}
+set -e
 
-trap cleanup SIGINT
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
 
-# Run DB
-sudo docker compose up -d postgres
+PROJECT_NAME="forum-dev"
+COMPOSE_FILE="./docker-compose.dev.yml"
+BUILD=false
+DETACHED=true
 
-echo "Waiting for DB"
-until [ "$(sudo docker inspect -f '{{.State.Health.Status}}' postgres_container)" == "healthy" ]; do
-    sleep 1
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --build|-b)
+            BUILD=true
+            shift
+            ;;
+        --attach|-a)
+            DETACHED=false
+            shift
+            ;;
+        --help|-h)
+            echo -e "${BLUE}Usage:${NC} $0 [options]"
+            echo -e "Options:"
+            echo -e "  -b, --build     Force rebuild images"
+            echo -e "  -a, --attach    Run in attached mode (show logs)"
+            echo -e "  -h, --help      Show this help"
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}Unknown option: $1${NC}"
+            exit 1
+            ;;
+    esac
 done
 
-# Run backend
-source ./backend/.venv/bin/activate
-start & 
-BACKEND_PID=$!
 
-# Run frontend
-cd ./frontend/
-npm run dev &
-FRONTEND_PID=$!
+echo -e "${BLUE} Starting development environment: ${PROJECT_NAME}${NC}"
 
-wait
+DC="sudo docker compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE}"
+
+if [ "$BUILD" = true ]; then
+    echo -e "${YELLOW}Building images...${NC}"
+    $DC build
+fi
+
+echo -e "${YELLOW}Starting services in attached mode (Ctrl+C to stop)...${NC}"
+$DC up

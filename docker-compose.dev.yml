@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:17.1
+    container_name: forum_postgres_container_dev
+    environment:
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres_user -d postgres_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+
+volumes:
+  postgres_data_dev:
