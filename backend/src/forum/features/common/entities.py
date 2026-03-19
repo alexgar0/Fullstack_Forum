@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+from datetime import datetime
+from typing import TYPE_CHECKING
+
 from forum.features.common.mixins import (
     CreatedAtMixin,
     EditableMixin,
@@ -5,6 +10,9 @@ from forum.features.common.mixins import (
     ViewsMixin,
     OwnableByUserMixin,
 )
+
+if TYPE_CHECKING:
+    from forum.features.common.repo import CRUDRepo
 
 
 class BaseEntity(IdMixin):
@@ -24,4 +32,5 @@ class CreatedAtEntity(BaseEntity, CreatedAtMixin):
 
 
 class EditableEntity(CreatedAtEntity, EditableMixin):
-    pass
+    def edited(self, repo: "CRUDRepo"):
+        repo.update(self.id, last_edited_at=datetime.now())
