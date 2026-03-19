@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from forum.features.common.entities import CreatedAtEntity, ViewableEntity, OwnableEntity
+from forum.features.common.entities import (
+    CreatedAtEntity,
+    ViewableEntity,
+    OwnableEntity,
+)
 from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, relationship
 

@@ -1,4 +1,3 @@
-
 from forum.features.common.repo import CRUDRepo, OwnableRepo, ViewableRepo
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError

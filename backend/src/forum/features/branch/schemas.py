@@ -1,5 +1,10 @@
 from typing import List, Optional
-from forum.features.common.schemas import BaseEntityDTO, CreatedAtDTO, OwnableDTO, ViewsDTO
+from forum.features.common.schemas import (
+    BaseEntityDTO,
+    CreatedAtDTO,
+    OwnableDTO,
+    ViewsDTO,
+)
 from pydantic import BaseModel, ConfigDict
 
 from forum.features.topic.schemas import SmallTopicDTO

@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional, cast
 
-from forum.features.common.entities import CreatedAtEntity, ViewableEntity, OwnableEntity
+from forum.features.common.entities import (
+    CreatedAtEntity,
+    ViewableEntity,
+    OwnableEntity,
+)
 from sqlalchemy import (
     Boolean,
     ForeignKey,
@@ -23,12 +27,10 @@ if TYPE_CHECKING:
 class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):
     __tablename__ = "branches"
 
-    title: Mapped[str] = mapped_column(
-        String, unique=True, index=True, nullable=False)
+    title: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-    is_active: Mapped[bool] = mapped_column(
-        Boolean, default=True, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     parent_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("branches.id"), index=True, nullable=True
@@ -38,8 +40,9 @@ class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):
         "Topic", back_populates="branch", cascade="all, delete-orphan", lazy="dynamic"
     )
     parent: Mapped[Optional["Branch"]] = relationship(
-        "Branch", remote_side=lambda: [Branch.__table__.c.id],
-        backref=backref("children", lazy="dynamic")
+        "Branch",
+        remote_side=lambda: [Branch.__table__.c.id],
+        backref=backref("children", lazy="dynamic"),
     )
 
     @property
@@ -49,6 +52,6 @@ class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):
     @property
     def children_ids(self) -> List[int]:
         return [child.id for child in self.children]
-    
+
     if TYPE_CHECKING:
         children: DynamicMapped["Branch"]

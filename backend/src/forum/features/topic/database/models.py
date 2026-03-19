@@ -3,7 +3,11 @@ from __future__ import annotations
 from typing import Optional
 
 from forum.features.branch.database.models import Branch
-from forum.features.common.entities import CreatedAtEntity, ViewableEntity, OwnableEntity
+from forum.features.common.entities import (
+    CreatedAtEntity,
+    ViewableEntity,
+    OwnableEntity,
+)
 from forum.features.reply.database.models import Reply
 from sqlalchemy import (
     Boolean,

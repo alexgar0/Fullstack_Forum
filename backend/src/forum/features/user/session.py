@@ -32,7 +32,9 @@ def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(
+            token, settings.secret_key, algorithms=[settings.algorithm]
+        )
         if payload.get("token_type") != "access":
             raise credentials_exception
         username: str | None = payload.get("sub")
@@ -72,7 +74,9 @@ def get_current_user_from_refresh_token(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(
+            token, settings.secret_key, algorithms=[settings.algorithm]
+        )
         if payload.get("token_type") != "refresh":
             raise credentials_exception
         username: str | None = payload.get("sub")

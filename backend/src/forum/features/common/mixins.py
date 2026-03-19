@@ -12,7 +12,10 @@ if TYPE_CHECKING:
 
 
 class IdMixin:
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, unique=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, index=True, unique=True, autoincrement=True
+    )
+
 
 class OwnableByUserMixin:
     creator_id: Mapped[int] = mapped_column(
@@ -22,15 +25,17 @@ class OwnableByUserMixin:
     @declared_attr
     def creator(cls: Any) -> Mapped[User]:
         return relationship("User", back_populates=f"created_{cls.__tablename__}")
-    
+
     @property
     def creator_username(self) -> str:
         return self.creator.username
+
 
 class CreatedAtMixin:
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    
+
+
 class ViewsMixin:
     view_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

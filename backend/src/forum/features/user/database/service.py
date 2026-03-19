@@ -58,7 +58,7 @@ class UserService:
     def get_user(self, user_id: int) -> UserDTO:
         orm_user = self.repo.get_by_id(user_id)
         return UserDTO.model_validate(orm_user)
-    
+
     def view_user(self, user_id: int) -> UserDTO:
         dto = self.get_user(user_id)
         self.repo.increment_views(user_id)
@@ -106,7 +106,7 @@ class UserService:
     ) -> UserDTO:
         if not initiator_user.is_admin:
             raise PermissionDeniedError("You are not an admin")
-        
+
         orm_user = self.repo.update(user_id, role=role)
         if not orm_user:
             raise NotFoundError("User not found")

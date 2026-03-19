@@ -39,6 +39,7 @@ def update_topic(
     edited_topic = topic_service.edit_topic(current_user, topic_id, payload)
     return edited_topic
 
+
 @router.delete("/{topic_id}", response_model=None)
 def delete_topic(
     topic_id: int,

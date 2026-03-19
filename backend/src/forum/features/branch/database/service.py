@@ -27,12 +27,11 @@ class BranchService:
     def __init__(self, db: Session) -> None:
         self.repo: BranchRepo = BranchRepo(db)
 
-
     def get_branch(self, user: User, branch_id: int) -> BranchDTO:
         branch = self.repo.get_by_id(branch_id)
         if not branch:
             raise NotFoundError("Branch not found")
-        
+
         if user.role != Role.admin and not branch.is_active:
             raise PermissionDeniedError(message="Branch is not active")
         self.repo.increment_views(branch_id)
@@ -63,10 +62,11 @@ class BranchService:
     def delete_branch(self, user: User, branch_id: int) -> None:
         if not user.is_admin:
             raise PermissionDeniedError("Only admin can delete the branch")
-        
+
         updated_branch = self.repo.update(entity_id=branch_id, is_active=False)
         if not updated_branch:
             raise NotFoundError("Branch not found")
+
 
 def get_branch_service(
     db: Session = Depends(get_db),

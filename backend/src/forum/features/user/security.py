@@ -27,7 +27,9 @@ def create_access_token(
             minutes=settings.access_token_expire_minutes
         )
     to_encode.update({"exp": int(expire.timestamp()), "token_type": "access"})
-    encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.secret_key, algorithm=settings.algorithm
+    )
     return encoded_jwt
 
 
@@ -42,5 +44,7 @@ def create_refresh_token(
             minutes=settings.refresh_token_expire_minutes
         )
     to_encode.update({"exp": int(expire.timestamp()), "token_type": "refresh"})
-    encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.secret_key, algorithm=settings.algorithm
+    )
     return encoded_jwt
