@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from forum.features.common.entities import CreatedAtEntity, ViewableEntity, OwnableEntity
-from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtMixin, ViewsMixin
 from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, relationship
 
@@ -13,7 +12,6 @@ __all__ = ["Reply"]
 
 if TYPE_CHECKING:
     from forum.features.topic.database.models import Topic
-    from forum.features.user.database.models import User
 
 
 class Reply(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):

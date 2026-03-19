@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Optional
 
 from forum.features.branch.database.models import Branch
 from forum.features.common.entities import CreatedAtEntity, ViewableEntity, OwnableEntity
-from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtMixin, ViewsMixin
 from forum.features.reply.database.models import Reply
-from forum.features.user.database.models import User
 from sqlalchemy import (
     Boolean,
     DateTime,

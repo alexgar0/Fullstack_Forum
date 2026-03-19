@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List, Optional
 from forum.features.common.schemas import BaseEntityDTO, CreatedAtDTO, OwnableDTO, ViewsDTO
 from pydantic import BaseModel, ConfigDict

@@ -1,18 +1,14 @@
 from __future__ import annotations
 
-from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional, cast
 
 from forum.features.common.entities import CreatedAtEntity, ViewableEntity, OwnableEntity
-from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtMixin, ViewsMixin
 from sqlalchemy import (
     Boolean,
-    DateTime,
     ForeignKey,
     Integer,
     String,
     Text,
-    func,
 )
 from sqlalchemy.orm import DynamicMapped, Mapped, mapped_column, relationship, backref
 from sqlalchemy.orm.dynamic import AppenderQuery
@@ -22,7 +18,6 @@ __all__ = ["Branch"]
 
 if TYPE_CHECKING:
     from forum.features.topic.database.models import Topic
-    from forum.features.user.database.models import User
 
 
 class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):

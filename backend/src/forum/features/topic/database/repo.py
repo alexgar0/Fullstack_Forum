@@ -1,6 +1,4 @@
-from typing import Optional
 
-from forum.features.common.mixins import IdMixin
 from forum.features.common.repo import CRUDRepo, OwnableRepo, ViewableRepo
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError

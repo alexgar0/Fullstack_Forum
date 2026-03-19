@@ -6,7 +6,6 @@ from forum.features.topic.database.service import TopicService
 from forum.features.topic.schemas import TopicCreateDTO
 from httpx import ASGITransport, AsyncClient
 import pytest
-import os
 import pytest_asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

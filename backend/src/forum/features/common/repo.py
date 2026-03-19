@@ -1,6 +1,6 @@
 
 from abc import ABC
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
+from typing import Any, Generic, List, Optional, Type, TypeVar
 from forum.features.common.entities import BaseEntity, OwnableEntity, ViewableEntity
 from forum.features.query import PaginationQuery
 from forum.features.user.database.models import User

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import AliasPath, BaseModel, Field
+from pydantic import BaseModel
 
 class BaseEntityDTO(BaseModel):
     id: int

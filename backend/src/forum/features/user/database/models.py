@@ -6,9 +6,7 @@ from typing import TYPE_CHECKING, Optional
 
 
 from forum.features.common.entities import CreatedAtEntity, ViewableEntity
-from forum.features.common.mixins import IdMixin, CreatedAtMixin, ViewsMixin
 from sqlalchemy import (
-    Integer,
     String,
     Text,
     Enum as SqlEnum,

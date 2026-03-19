@@ -1,7 +1,6 @@
 from datetime import datetime
 from forum.features.common.schemas import BaseEntityDTO, CreatedAtDTO, OwnableDTO, ViewsDTO
-from forum.features.topic.database.models import Topic
-from pydantic import AliasPath, BaseModel, Field
+from pydantic import BaseModel
 
 
 class TopicCreateDTO(BaseModel):

@@ -1,7 +1,6 @@
-from typing import Any, Dict, Generator, List, cast
+from typing import Generator, List
 from fastapi import Depends
-from forum.features.topic.database.models import Topic
-from sqlalchemy.orm import Query, Session
+from sqlalchemy.orm import Session
 
 
 from forum.config import settings

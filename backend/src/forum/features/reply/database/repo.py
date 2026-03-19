@@ -1,4 +1,3 @@
-from typing import List, Optional
 
 from forum.features.common.repo import CRUDRepo, OwnableRepo, ViewableRepo
 from forum.features.reply.database.models import Reply
