@@ -3,7 +3,7 @@ import type { BaseEntityDTO, CreatedAtDTO, OwnableDTO, ViewsDTO } from "../../co
 export interface SmallTopicDTO extends BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO {
     branch_id: number;
     title: string;
-    last_edited_at: string;
+    last_edited_at: Date;
 }
 
 export interface TopicDTO extends SmallTopicDTO {

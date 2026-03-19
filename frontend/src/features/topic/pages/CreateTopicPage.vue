@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TopicDTO, CreateTopicDTO } from "../api/dto";
 import { onMounted, ref } from "vue";
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { create_topic } from "../api/endpoints";
 import type { BranchDTO } from "../../branch/api/dto";
 import { get_all_branches } from "../../branch/api/endpoints";
@@ -11,6 +11,7 @@ import BaseTextArea from "../../../components/ui/BaseTextArea.vue";
 import BaseInput from "../../../components/ui/BaseInput.vue";
 
 const route = useRoute()
+const router = useRouter();
 
 const title = ref<string>('');
 const description = ref<string>('');
@@ -41,6 +42,12 @@ async function handle_create() {
         }
         let created_topic: TopicDTO = await create_topic(new_topic);
         success.value = `Topic ${created_topic.title} created`
+        setTimeout(() => {
+            router.push({
+                name: 'topic_view',
+                params: { id: created_topic.id }
+            });
+        }, 1000);
     }
     catch (e: any) {
         console.log(e);

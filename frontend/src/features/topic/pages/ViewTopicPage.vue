@@ -11,7 +11,7 @@ const topic_id = computed(() => Number(route.params.id));
 const topic = ref<TopicDTO>();
 const error = ref<boolean>(false);
 
-const formattedDate = (dateStr: string) => {
+const formattedDate = (dateStr: string | Date) => {
     return new Date(dateStr).toLocaleString('ru-RU', {
         day: '2-digit',
         month: '2-digit',
@@ -20,6 +20,13 @@ const formattedDate = (dateStr: string) => {
         minute: '2-digit'
     });
 };
+
+function back_to_branch() {
+    router.push({
+        name: 'branch_detail',
+        params: { id: topic.value?.branch_id }
+    });
+}
 
 onMounted(async () => {
     if (!topic_id.value) {
@@ -37,7 +44,8 @@ onMounted(async () => {
 <template>
     <div class="p-8 flex flex-col gap-6 max-w-5xl mx-auto">
         <div class="flex items-center gap-4">
-            <button @click="router.back()" class="text-text-secondary hover:text-accent cursor-pointer transition-colors text-sm">
+            <button @click="back_to_branch"
+                class="text-text-secondary hover:text-accent cursor-pointer transition-colors text-sm">
                 &larr; Back to branch
             </button>
         </div>
@@ -49,7 +57,7 @@ onMounted(async () => {
         <div v-if="topic" class="flex flex-col gap-8">
             <header class="border-b border-primary-alt pb-6">
                 <h1 class="text-4xl font-thin mb-4">{{ topic.title }}</h1>
-                
+
                 <div class="flex items-center gap-6 text-sm">
                     <div class="flex flex-col">
                         <span class="text-[10px] font-bold uppercase tracking-widest text-text-secondary">Author</span>
@@ -57,7 +65,8 @@ onMounted(async () => {
                     </div>
                     <div class="h-8 border-l border-primary-alt"></div>
                     <div class="flex flex-col">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-text-secondary">Created at</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-text-secondary">Created
+                            at</span>
                         <span class="font-mono text-text-secondary">{{ formattedDate(topic.created_at) }}</span>
                     </div>
                     <div v-if="topic.last_edited_at !== topic.created_at" class="flex flex-col">
