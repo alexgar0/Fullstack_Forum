@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import uvicorn
+
 from forum.features.user.view import router as user_router
 from forum.features.topic.view import router as topic_router
 from forum.features.branch.view import router as branch_router
+from forum.features.reply.view import router as reply_router
+
 from forum.log import initialize_logger
 from forum.exceptions import register_exception_handlers
 from forum.config import settings
@@ -18,6 +21,7 @@ register_exception_handlers(app)
 app.include_router(user_router)
 app.include_router(topic_router)
 app.include_router(branch_router)
+app.include_router(reply_router)
 
 
 @app.get("/", response_model=None)

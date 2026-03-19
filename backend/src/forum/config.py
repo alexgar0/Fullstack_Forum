@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     branch_name_length_bounds: Tuple[int, int] = (2, 30)
     topic_title_length_bounds: Tuple[int, int] = (5, 60)
     topic_edition_timeframe_minutes: int = 30
+    reply_content_length_bounds: Tuple[int, int] = (1, 10000)
 
     model_config = SettingsConfigDict(
         env_file=".env",

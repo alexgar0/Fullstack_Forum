@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 
+from forum.features.query import PaginationQuery
 from forum.features.user.database.models import User
 from forum.features.user.session import get_current_user, get_current_user_for_activity
 
@@ -12,10 +13,11 @@ router = APIRouter(prefix="/topics", tags=["Topics"])
 @router.get("/{topic_id}", response_model=FullTopicDTO)
 def read_topic(
     topic_id: int,
+    pagination: PaginationQuery = Depends(PaginationQuery),
     current_user: User = Depends(get_current_user),
     topic_service: TopicService = Depends(get_topic_service),
 ) -> FullTopicDTO:
-    topic = topic_service.get_topic(topic_id)
+    topic = topic_service.get_topic(topic_id, pagination)
     return topic
 
 

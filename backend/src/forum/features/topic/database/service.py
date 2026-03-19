@@ -1,6 +1,7 @@
 from datetime import timedelta, datetime, timezone
-from typing import Generator, List
+from typing import Generator, List, Optional
 from fastapi import Depends
+from forum.features.reply.database.service import ReplyService
 from sqlalchemy.orm import Session
 
 from forum.config import settings
@@ -22,14 +23,19 @@ from forum.features.topic.database.models import Topic
 
 class TopicService:
     def __init__(self, db: Session):
+        self.db = db
         self.repo = TopicRepo(db)
 
-    def get_topic(self, topic_id: int) -> FullTopicDTO:
+    def get_topic(self, topic_id: int, pagination: Optional[PaginationQuery] = None) -> FullTopicDTO:
         topic = self.repo.get_by_id(topic_id)
         if not topic:
             raise NotFoundError("Topic not found")
         self.repo.increment_views(topic_id)
-        return FullTopicDTO.model_validate(topic)
+        dto = FullTopicDTO.model_validate(topic)
+        
+        reply_service = ReplyService(self.db)
+        dto.replies = reply_service.get_by_topic(topic_id, pagination=pagination)
+        return dto
 
     def get_small_topics_from_branch_with_pagination(
         self, branch_id: int, pagination: PaginationQuery

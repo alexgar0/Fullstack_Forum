@@ -9,6 +9,7 @@ export interface SmallTopicDTO extends BaseEntityDTO, ViewsDTO, OwnableDTO, Crea
 export interface TopicDTO extends SmallTopicDTO {
     description: string;
     is_active: boolean;
+    replies: ReplyDTO[];
 }
 
 export interface CreateTopicDTO {
@@ -19,5 +20,15 @@ export interface CreateTopicDTO {
 
 export interface UpdateTopicDTO {
     description: string;
+}
+
+export interface ReplyDTO extends BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO {
+    content: string;
+    topic_id: number;
+}
+
+export interface ReplyCreateDTO {
+    content: string;
+    topic_id: number;
 }
 

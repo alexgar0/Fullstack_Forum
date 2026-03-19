@@ -9,7 +9,7 @@ from forum.features.common.entities import (
     OwnableEntity,
 )
 from sqlalchemy import Column, ForeignKey, Integer, Text
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from forum.database import Base
 
@@ -22,9 +22,15 @@ if TYPE_CHECKING:
 class Reply(Base, ViewableEntity, OwnableEntity, EditableEntity):
     __tablename__ = "replies"
 
-    content = Column(Text, nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
 
-    topic_id = Column(
+    topic_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("topics.id", ondelete="CASCADE"), nullable=False
     )
     topic: Mapped["Topic"] = relationship("Topic", back_populates="replies")
+
+    
+    def __init__(self, content: str, topic_id: int, creator_id: int) -> None:
+        self.content = content
+        self.topic_id = topic_id
+        self.creator_id = creator_id

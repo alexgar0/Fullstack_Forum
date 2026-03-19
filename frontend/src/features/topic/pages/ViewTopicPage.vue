@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { get_topic_by_id } from '../api/endpoints';
-import type { TopicDTO } from '../api/dto';
+import { create_reply, get_topic_by_id } from '../api/endpoints';
+import type { ReplyCreateDTO, ReplyDTO, TopicDTO } from '../api/dto';
 import BaseButton from '../../../components/ui/BaseButton.vue';
+import BaseTextArea from '../../../components/ui/BaseTextArea.vue';
 
 const route = useRoute();
 const router = useRouter();
 const topic_id = computed(() => Number(route.params.id));
 const topic = ref<TopicDTO>();
+const reply_content = ref<string>('');
+const reply_success = ref<string>('');
+const reply_error = ref<string>('');
 const error = ref<boolean>(false);
 
 const formattedDate = (dateStr: string | Date) => {
@@ -26,6 +30,33 @@ function back_to_branch() {
         name: 'branch_detail',
         params: { id: topic.value?.branch_id }
     });
+}
+
+async function send_reply() {
+    try {
+        if (!topic.value) return;
+        reply_error.value = '';
+        reply_success.value = '';
+
+        const new_reply: ReplyCreateDTO = {
+            content: reply_content.value,
+            topic_id: topic.value?.id
+        };
+        let created_reply: ReplyDTO = await create_reply(new_reply);
+        reply_success.value = `Reply created`
+        setTimeout(() => {
+            router.go(0);
+        }, 1000);
+    }
+    catch (e: any) {
+        console.log(e);
+        const detail = e.response?.data?.message;
+        if (detail) {
+            reply_error.value = detail;
+        } else {
+            reply_error.value = "Unexpected error";
+        }
+    }
 }
 
 onMounted(async () => {
@@ -82,13 +113,51 @@ onMounted(async () => {
                 </p>
             </article>
 
-            <footer class="flex justify-end gap-4 border-t border-primary-alt pt-6">
-                <BaseButton class="bg-transparent border-primary-alt hover:bg-primary-alt w-32">
-                    Report
-                </BaseButton>
-                <BaseButton class="w-40">
-                    Reply
-                </BaseButton>
+            <section class="flex flex-col gap-4">
+                <div class="flex items-center gap-2 border-b border-primary-alt pb-4">
+                    <h2 class="text-xl font-thin text-text-main">Replies</h2>
+                    <span class="text-xs text-text-secondary bg-primary-alt px-2 py-0.5 rounded-full">
+                        {{ topic.replies?.length || 0 }}
+                    </span>
+                </div>
+
+                <div v-if="topic.replies && topic.replies.length > 0" class="flex flex-col gap-4">
+                    <div v-for="reply in topic.replies" :key="reply.id" 
+                         class="bg-primary/50 p-5 border border-primary-alt/50 rounded-sm hover:border-primary-alt transition-colors">
+                        
+                        <div class="flex justify-between items-center mb-3 text-sm border-b border-primary-alt/30 pb-2">
+                            <span class="text-accent font-medium">{{ reply.creator_username }}</span>
+                            <span class="font-mono text-xs text-text-secondary">
+                                {{ formattedDate(reply.created_at) }}
+                            </span>
+                        </div>
+
+                        <p class="whitespace-pre-wrap leading-relaxed text-text-main font-light">
+                            {{ reply.content }}
+                        </p>
+                    </div>
+                </div>
+
+                <div v-else class="text-center py-8 border border-dashed border-primary-alt/50 rounded-sm">
+                    <p class="text-text-secondary font-light">No replies yet. Be the first to comment!</p>
+                </div>
+            </section>
+
+            <footer class="flex flex-col gap-4 border-t border-primary-alt pt-6">
+                <div class="w-full">
+                    <p class="font-bold text-sm mb-1">Leave your reply</p>
+                    <BaseTextArea class="bg-primary-alt w-full" v-model="reply_content"></BaseTextArea>
+                </div>
+                <div class="flex gap-2 self-end">
+                    <BaseButton class="bg-transparent border-primary-alt hover:bg-primary-alt w-32">
+                        Report
+                    </BaseButton>
+                    <BaseButton @click="send_reply" class="w-40">
+                        Reply
+                    </BaseButton>
+                </div>
+                <p v-if="reply_error" class="text-text-error">{{ reply_error }}</p>
+                <p v-if="reply_success" class="text-accent">{{ reply_success }}</p>
             </footer>
         </div>
     </div>

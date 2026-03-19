@@ -1,10 +1,12 @@
 from datetime import datetime
+from typing import List
 from forum.features.common.schemas import (
     BaseEntityDTO,
     CreatedAtDTO,
     OwnableDTO,
     ViewsDTO,
 )
+from forum.features.reply.schemas import ReplyDTO
 from pydantic import BaseModel
 
 
@@ -30,3 +32,4 @@ class SmallTopicDTO(BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO):
 class FullTopicDTO(SmallTopicDTO):
     is_active: bool
     description: str | None = None
+    replies: List[ReplyDTO]
