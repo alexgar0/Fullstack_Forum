@@ -35,6 +35,10 @@ async def test_register_login_logout(client, db_session):
 
     assert response.status_code == 200
     assert response.json() == {"status": "success"}
+    
+    # Test me endpoint
+    response = await client.get("/users/me")
+    assert response.status_code == 200
 
     # Cookies
     access_token_cookie = response.cookies.get("access_token")
