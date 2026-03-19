@@ -3,7 +3,7 @@ from jose import JWTError
 import jwt
 from sqlalchemy.orm import Session
 
-from forum import config
+from forum.config import settings
 from forum.database import get_db
 from forum.features.user.database.service import UserService
 from forum.features.user.database.models import User
@@ -32,7 +32,7 @@ def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
         if payload.get("token_type") != "access":
             raise credentials_exception
         username: str | None = payload.get("sub")
@@ -72,7 +72,7 @@ def get_current_user_from_refresh_token(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
         if payload.get("token_type") != "refresh":
             raise credentials_exception
         username: str | None = payload.get("sub")

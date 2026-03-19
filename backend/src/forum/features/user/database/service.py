@@ -13,7 +13,7 @@ from forum.features.user.security import hash_password, verify_password
 from forum.features.user.database.models import User, Role
 from forum.features.user.database.repo import UserRepo
 
-from forum.config import USERNAME_LENGTH_BOUNDS
+from forum.config import settings
 
 
 def password_complexity_check(password: str) -> Tuple[bool, str]:
@@ -36,7 +36,7 @@ class PasswordTooWeakError(AppException):
 class WrongUsernameLength(AppException):
     def __init__(
         self,
-        message: str = f"Username length must be beetween {USERNAME_LENGTH_BOUNDS[0]} and {USERNAME_LENGTH_BOUNDS[1]} characters long",
+        message: str = f"Username length must be beetween {settings.username_length_bounds[0]} and {settings.username_length_bounds[1]} characters long",
     ):
         super().__init__(message, status_code=422)
 
@@ -61,8 +61,8 @@ class UserService:
 
     def create_user(self, user: UserCreate) -> UserDTO:
         if (
-            len(user.username) < USERNAME_LENGTH_BOUNDS[0]
-            or len(user.username) > USERNAME_LENGTH_BOUNDS[1]
+            len(user.username) < settings.username_length_bounds[0]
+            or len(user.username) > settings.username_length_bounds[1]
         ):
             raise WrongUsernameLength()
 

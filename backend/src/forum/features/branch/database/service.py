@@ -4,7 +4,7 @@ from forum.features.topic.database.models import Topic
 from sqlalchemy.orm import Query, Session
 
 
-from forum.config import BRANCH_NAME_LENGTH_BOUNDS
+from forum.config import settings
 
 from forum.database import get_db
 from forum.exceptions import AppException, NotFoundError, PermissionDeniedError
@@ -19,7 +19,7 @@ from forum.features.branch.schemas import BranchDTO, BranchCreateDTO
 class WrongBranchTitleLength(AppException):
     def __init__(
         self,
-        message: str = f"Branch title must be beetween {BRANCH_NAME_LENGTH_BOUNDS[0]} and {BRANCH_NAME_LENGTH_BOUNDS[1]} characters long",
+        message: str = f"Branch title must be beetween {settings.branch_name_length_bounds[0]} and {settings.branch_name_length_bounds[1]} characters long",
     ) -> None:
         super().__init__(message)
 
@@ -65,8 +65,8 @@ class BranchService:
             raise PermissionDeniedError("Only admin can create a branch")
 
         if (
-            len(branch.title) < BRANCH_NAME_LENGTH_BOUNDS[0]
-            or len(branch.title) > BRANCH_NAME_LENGTH_BOUNDS[1]
+            len(branch.title) < settings.branch_name_length_bounds[0]
+            or len(branch.title) > settings.branch_name_length_bounds[1]
         ):
             raise WrongBranchTitleLength
 

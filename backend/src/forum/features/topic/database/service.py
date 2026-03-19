@@ -3,7 +3,7 @@ from typing import Generator, List
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from forum.config import TOPIC_TITLE_LENGTH_BOUNDS, TOPIC_EDITION_TIMEFRAME_MINUTES
+from forum.config import settings
 from forum.database import get_db
 from forum.exceptions import InvalidLengthError, NotFoundError, PermissionDeniedError
 
@@ -47,14 +47,14 @@ class TopicService:
 
     def create_topic(self, user: User, topic: TopicCreateDTO) -> FullTopicDTO:
         if not (
-            TOPIC_TITLE_LENGTH_BOUNDS[0]
+            settings.topic_title_length_bounds[0]
             <= len(topic.title)
-            <= TOPIC_TITLE_LENGTH_BOUNDS[1]
+            <= settings.topic_title_length_bounds[1]
         ):
             raise InvalidLengthError(
-                min_length=TOPIC_TITLE_LENGTH_BOUNDS[0],
-                max_length=TOPIC_TITLE_LENGTH_BOUNDS[1],
-                message=f"Title must be between {TOPIC_TITLE_LENGTH_BOUNDS[0]} and {TOPIC_TITLE_LENGTH_BOUNDS[1]} characters long",
+                min_length=settings.topic_title_length_bounds[0],
+                max_length=settings.topic_title_length_bounds[1],
+                message=f"Title must be between {settings.topic_title_length_bounds[0]} and {settings.topic_title_length_bounds[1]} characters long",
             )
 
         new_topic = Topic(
@@ -79,7 +79,7 @@ class TopicService:
 
         if (
             datetime.now(timezone.utc) - topic.created_at
-            > timedelta(minutes=TOPIC_EDITION_TIMEFRAME_MINUTES)
+            > timedelta(minutes=settings.topic_edition_timeframe_minutes)
             and not user.is_admin
         ):
             raise PermissionDeniedError("Topic can no longer be edited")

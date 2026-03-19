@@ -1,19 +1,39 @@
-import os
-from dotenv import load_dotenv
+from functools import lru_cache
+from typing import Tuple
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv()
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL", "postgresql://postgres_user:password@localhost:5432/postgres_db"
-)
-SECRET_KEY = os.getenv(
-    "SECRET_KEY", "03a0e4d297086a50fd853f8b0067432aade9b4b2a9f98c123d3da387b2e2ae5a"
-)
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
-USERNAME_LENGTH_BOUNDS = (4, 15)
-BRANCH_NAME_LENGTH_BOUNDS = (2, 30)
-TOPIC_TITLE_LENGTH_BOUNDS = (5, 60)
-TOPIC_EDITION_TIMEFRAME_MINUTES = 30
+class Settings(BaseSettings):
+    database_url: str
+    secret_key: str
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    refresh_token_expire_minutes: int = 60 * 24 * 7     # 7 Days
+    
+    username_length_bounds: Tuple[int, int] = (4, 15)
+    branch_name_length_bounds: Tuple[int, int] = (2, 30)
+    topic_title_length_bounds: Tuple[int, int] =  (5, 60)
+    topic_edition_timeframe_minutes: int = 30
+    
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
+    
+@lru_cache(maxsize=1)
+def get_settings() -> Settings:
+    """Gets the application settings.
+
+    This function returns a cached instance of the Settings class, ensuring that the settings
+    are loaded only once.
+
+    Returns:
+        The application settings.
+    """
+    return Settings()  # type: ignore[call-arg]
+
+
+settings = get_settings()

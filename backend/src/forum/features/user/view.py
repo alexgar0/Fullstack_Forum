@@ -13,7 +13,7 @@ from forum.features.user.session import (
     get_current_user_for_activity,
     get_current_user_from_refresh_token,
 )
-from forum import config
+from forum.config import settings
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -57,7 +57,7 @@ async def login(
         httponly=True,
         secure=True,
         samesite="lax",
-        max_age=config.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
+        max_age=settings.refresh_token_expire_minutes* 60,
     )
     response.set_cookie(
         key="refresh_token",
@@ -65,7 +65,7 @@ async def login(
         httponly=True,
         secure=True,
         samesite="lax",
-        max_age=config.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
+        max_age=settings.refresh_token_expire_minutes * 60,
     )
 
     return response

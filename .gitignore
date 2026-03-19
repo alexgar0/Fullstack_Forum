@@ -5,3 +5,4 @@
 **/dist
 **/forum_api.egg-info
 /postgres_data
+*/.env
