@@ -51,5 +51,9 @@ class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):
     def topic_count(self) -> int:
         return cast(AppenderQuery["Topic"], self.topics).count()
 
+    @property
+    def children_ids(self) -> List[int]:
+        return [child.id for child in self.children]
+    
     if TYPE_CHECKING:
         children: DynamicMapped["Branch"]
