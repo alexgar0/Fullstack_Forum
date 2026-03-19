@@ -1,10 +1,10 @@
 from typing import List, Optional
 
-from forum.features.common.repo import CRUDRepo
+from forum.features.common.repo import CRUDRepo, ViewableRepo
 from forum.features.reply.database.models import Reply
 from sqlalchemy.orm import Session
 
-class ReplyRepo(CRUDRepo[Reply]):
+class ReplyRepo(CRUDRepo[Reply], ViewableRepo[Reply]):
     def __init__(self, db: Session):
         super().__init__(db, Reply)
         

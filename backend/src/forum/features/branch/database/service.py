@@ -49,6 +49,7 @@ class BranchService:
         if user.role != Role.admin and not branch.is_active:
             raise PermissionDeniedError(message="Branch is not active")
         data = self._branch_to_dto(branch)
+        self.repo.increment_views(branch_id)
         return BranchDTO.model_validate(data)
 
     def get_all_branches(self) -> List[BranchDTO]:

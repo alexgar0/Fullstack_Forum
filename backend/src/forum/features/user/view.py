@@ -86,7 +86,7 @@ async def read_user(
     db: Session = Depends(get_db),
 ) -> UserDTO:
     user_service = UserService(db)
-    user = user_service.get_user(user_id)
+    user = user_service.view_user(user_id)
     return user
 
 

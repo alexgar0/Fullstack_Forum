@@ -28,6 +28,7 @@ class TopicService:
         topic = self.repo.get_by_id(topic_id)
         if not topic:
             raise NotFoundError("Topic not found")
+        self.repo.increment_views(topic_id)
         return FullTopicDTO.model_validate(topic)
 
     def get_small_topics_from_branch_with_pagination(

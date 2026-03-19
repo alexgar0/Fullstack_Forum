@@ -1,6 +1,6 @@
 from typing import Optional
 
-from forum.features.common.repo import CRUDRepo
+from forum.features.common.repo import CRUDRepo, ViewableRepo
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -9,7 +9,7 @@ from forum.exceptions import ExistingResourceError
 from forum.features.user.database.models import User
 
 
-class UserRepo(CRUDRepo[User]):
+class UserRepo(CRUDRepo[User], ViewableRepo[User]):
     def __init__(self, db: Session):
         super().__init__(db, User)
 

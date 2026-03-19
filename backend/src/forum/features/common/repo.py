@@ -1,12 +1,12 @@
 
 from abc import ABC
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
-from forum.features.common.mixins import IdMixin
+from forum.features.common.entities import BaseEntity, ViewableEntity
 from forum.features.query import PaginationQuery
-from sqlalchemy.orm import DeclarativeBase, Session
+from sqlalchemy import update
+from sqlalchemy.orm import Session
 
-T = TypeVar("T", bound=IdMixin)
-
+T = TypeVar("T", bound=BaseEntity)
 
 class BaseRepo(ABC, Generic[T]):
     def __init__(self, db: Session, model: Type[T]):
@@ -14,8 +14,6 @@ class BaseRepo(ABC, Generic[T]):
         self.model = model
         
 class CRUDRepo(BaseRepo[T]):
-    def __init__(self, db: Session, model: Type[T]):
-        super().__init__(db, model)
         
     def create(self, entity: T) -> T:
         self.db.add(entity)
@@ -52,3 +50,17 @@ class CRUDRepo(BaseRepo[T]):
         self.db.delete(entity)
         self.db.commit()
         return True
+
+V = TypeVar("V", bound=ViewableEntity)
+
+class ViewableRepo(BaseRepo[V]):
+    def increment_views(self, entity_id: int) -> Optional[int]:
+        stmt = (
+            update(self.model)
+            .where(self.model.id == entity_id)
+            .values(view_count=self.model.view_count + 1)
+            .returning(self.model.view_count)
+        )
+        result = self.db.execute(stmt)
+        self.db.commit() 
+        return result.scalar_one_or_none()
