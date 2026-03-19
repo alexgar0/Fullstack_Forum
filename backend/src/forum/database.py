@@ -14,5 +14,11 @@ def get_db() -> Generator[Session, Any, Any]:
     db = SessionLocal()
     try:
         yield db
+        db.commit()
+        
+    except Exception:
+        db.rollback()
+        raise
+    
     finally:
         db.close()

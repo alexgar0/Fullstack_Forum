@@ -17,7 +17,7 @@ class CRUDRepo(BaseRepo[T]):
         
     def create(self, entity: T) -> T:
         self.db.add(entity)
-        self.db.commit()
+        self.db.flush()
         self.db.refresh(entity)
         return entity
     
@@ -39,7 +39,7 @@ class CRUDRepo(BaseRepo[T]):
         for key, value in kwargs.items():
             if hasattr(entity, key):
                 setattr(entity, key, value)
-        self.db.commit()
+        self.db.flush()
         self.db.refresh(entity)
         return entity
     
@@ -48,7 +48,7 @@ class CRUDRepo(BaseRepo[T]):
         if not entity:
             return False
         self.db.delete(entity)
-        self.db.commit()
+        self.db.flush()
         return True
 
 V = TypeVar("V", bound=ViewableEntity)
@@ -62,5 +62,5 @@ class ViewableRepo(BaseRepo[V]):
             .returning(self.model.view_count)
         )
         result = self.db.execute(stmt)
-        self.db.commit() 
+        self.db.flush() 
         return result.scalar_one_or_none()
