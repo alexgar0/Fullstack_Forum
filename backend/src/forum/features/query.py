@@ -2,5 +2,5 @@ from pydantic import BaseModel
 
 
 class PaginationQuery(BaseModel):
-    page: int = 1
+    offset: int = 0
     limit: int = 30

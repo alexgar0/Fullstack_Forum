@@ -1,5 +1,7 @@
 from typing import Optional
 
+from forum.features.common.mixins import IdMixin
+from forum.features.common.repo import CRUDRepo
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -9,16 +11,13 @@ from forum.features.query import PaginationQuery
 from forum.exceptions import ExistingResourceError, NotFoundError
 
 
-class TopicRepo:
+class TopicRepo(CRUDRepo[Topic]):
     def __init__(self, db: Session):
-        self.db = db
+        super().__init__(db, Topic)
 
-    def create_topic(self, topic: Topic) -> Topic:
+    def create(self, entity: Topic) -> Topic:
         try:
-            self.db.add(topic)
-            self.db.commit()
-            self.db.refresh(topic)
-            return topic
+            return super().create(entity)
         except IntegrityError as e:
             self.db.rollback()
             if "topics_title" in str(e.orig):
@@ -26,10 +25,6 @@ class TopicRepo:
             if "topics_branch_id" in str(e.orig):
                 raise NotFoundError("Branch not found")
             raise
-
-    def get_topic(self, topic_id: int) -> Optional[Topic]:
-        topic = self.db.query(Topic).filter(Topic.id == topic_id).first()
-        return topic
 
     def get_topics_by_creator(self, creator_id: int) -> list[Topic]:
         return self.db.query(Topic).filter(Topic.creator_id == creator_id).all()
@@ -44,13 +39,6 @@ class TopicRepo:
         )
 
         if pagination:
-            offset_value = (pagination.page - 1) * pagination.limit
-            query = query.offset(offset_value).limit(pagination.limit)
+            query = query.offset(pagination.limit).limit(pagination.limit)
 
         return query.all()
-
-    def update_topic(self, topic: Topic) -> Topic:
-        self.db.add(topic)
-        self.db.commit()
-        self.db.refresh(topic)
-        return topic

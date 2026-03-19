@@ -25,7 +25,7 @@ class TopicService:
         self.repo = TopicRepo(db)
 
     def get_topic(self, topic_id: int) -> FullTopicDTO:
-        topic = self.repo.get_topic(topic_id)
+        topic = self.repo.get_by_id(topic_id)
         if not topic:
             raise NotFoundError("Topic not found")
         return FullTopicDTO.model_validate(topic)
@@ -63,13 +63,13 @@ class TopicService:
             branch_id=topic.branch_id,
             creator_id=user.id,
         )
-        created = self.repo.create_topic(new_topic)
+        created = self.repo.create(new_topic)
         return FullTopicDTO.model_validate(created)
 
     def edit_topic(
         self, user: User, topic_id: int, payload: TopicUpdateDTO
     ) -> FullTopicDTO:
-        topic = self.repo.get_topic(topic_id)
+        topic = self.repo.get_by_id(topic_id)
 
         if not topic:
             raise NotFoundError("Topic not found")
@@ -85,11 +85,11 @@ class TopicService:
             raise PermissionDeniedError("Topic can no longer be edited")
 
         topic.description = payload.description
-        updated = self.repo.update_topic(topic)
+        updated = self.repo.update(topic_id, **payload.model_dump())
         return FullTopicDTO.model_validate(updated)
 
     def delete_topic(self, user: User, topic_id: int) -> None:
-        topic = self.repo.get_topic(topic_id)
+        topic = self.repo.get_by_id(topic_id)
 
         if topic is None:
             raise NotFoundError("Topic not found")
@@ -99,8 +99,7 @@ class TopicService:
                 "Only the creator or admin can delete the topic"
             )
 
-        topic.is_active = False
-        self.repo.update_topic(topic)
+        self.repo.update(topic_id, is_active=False)
 
 
 def get_topic_service(

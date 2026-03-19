@@ -7,7 +7,7 @@ from sqlalchemy.orm import Query, Session
 from forum.config import BRANCH_NAME_LENGTH_BOUNDS
 
 from forum.database import get_db
-from forum.exceptions import AppException, PermissionDeniedError
+from forum.exceptions import AppException, NotFoundError, PermissionDeniedError
 
 from forum.features.user.database.models import Role, User
 
@@ -42,7 +42,10 @@ class BranchService:
         }
 
     def get_branch(self, user: User, branch_id: int) -> BranchDTO:
-        branch = self.repo.get_branch(branch_id)
+        branch = self.repo.get_by_id(branch_id)
+        if not branch:
+            raise NotFoundError("Branch not found")
+        
         if user.role != Role.admin and not branch.is_active:
             raise PermissionDeniedError(message="Branch is not active")
         data = self._branch_to_dto(branch)
@@ -50,7 +53,7 @@ class BranchService:
 
     def get_all_branches(self) -> List[BranchDTO]:
         result = []
-        orm_branches = self.repo.get_all_branches()
+        orm_branches = self.repo.get_all()
         for orm_branch in orm_branches:
             data = self._branch_to_dto(orm_branch)
             result.append(BranchDTO.model_validate(data))
@@ -68,19 +71,17 @@ class BranchService:
             raise WrongBranchTitleLength
 
         new_branch = Branch(**branch.model_dump(), creator=user)
-        orm_branch = self.repo.create_branch(new_branch)
+        orm_branch = self.repo.create(new_branch)
         data = self._branch_to_dto(orm_branch)
         return BranchDTO.model_validate(data)
 
     def delete_branch(self, user: User, branch_id: int) -> None:
-        branch = self.repo.get_branch(branch_id)
-
         if not user.is_admin:
             raise PermissionDeniedError("Only admin can delete the branch")
-
-        branch.is_active = False
-        self.repo.update_branch(branch)
-
+        
+        updated_branch = self.repo.update(entity_id=branch_id, is_active=False)
+        if not updated_branch:
+            raise NotFoundError("Branch not found")
 
 def get_branch_service(
     db: Session = Depends(get_db),

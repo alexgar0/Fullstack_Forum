@@ -56,7 +56,7 @@ class UserService:
         self.repo = UserRepo(db)
 
     def get_user(self, user_id: int) -> UserDTO:
-        orm_user = self.repo.get_user_by_id(user_id)
+        orm_user = self.repo.get_by_id(user_id)
         return UserDTO.model_validate(orm_user)
 
     def create_user(self, user: UserCreate) -> UserDTO:
@@ -83,7 +83,7 @@ class UserService:
             email=user.email,
             hashed_password=hashed_pass,
         )
-        orm_user = self.repo.create_user(db_user)
+        orm_user = self.repo.create(db_user)
         return UserDTO.model_validate(orm_user)
 
     def authenticate_user(self, username: str, password: str) -> Optional[UserDTO]:
@@ -97,26 +97,26 @@ class UserService:
         return UserDTO.model_validate(user)
 
     def update_user_role(
-        self, initiator_user: User, user_to_update: User, role: Role
+        self, initiator_user: User, user_id: int, role: Role
     ) -> UserDTO:
         if not initiator_user.is_admin:
             raise PermissionDeniedError("You are not an admin")
-        user_to_update.role = role
-        orm_user = self.repo.update_user(user_to_update)
+        
+        orm_user = self.repo.update(user_id, role=role)
+        if not orm_user:
+            raise NotFoundError("User not found")
         return UserDTO.model_validate(orm_user)
 
     def update_last_activity(self, user_id: int) -> UserDTO:
-        user = self.repo.get_user_by_id(user_id)
-        if not user:
+        now = datetime.now()
+        orm_user = self.repo.update(user_id, last_activity=now)
+        if not orm_user:
             raise NotFoundError("User not found")
-        user.last_activity = datetime.now()
-        orm_user = self.repo.update_user(user)
         return UserDTO.model_validate(orm_user)
 
     def update_last_login(self, user_id: int) -> UserDTO:
-        user = self.repo.get_user_by_id(user_id)
-        if not user:
+        now = datetime.now()
+        orm_user = self.repo.update(user_id, last_login=now)
+        if not orm_user:
             raise NotFoundError("User not found")
-        user.last_login = datetime.now()
-        orm_user = self.repo.update_user(user)
         return UserDTO.model_validate(orm_user)
