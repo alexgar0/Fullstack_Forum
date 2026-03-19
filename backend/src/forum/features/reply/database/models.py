@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from forum.features.common.entities import (
     CreatedAtEntity,
+    EditableEntity,
     ViewableEntity,
     OwnableEntity,
 )
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
     from forum.features.topic.database.models import Topic
 
 
-class Reply(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):
+class Reply(Base, ViewableEntity, OwnableEntity, EditableEntity):
     __tablename__ = "replies"
 
     content = Column(Text, nullable=False)

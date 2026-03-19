@@ -36,6 +36,12 @@ class CreatedAtMixin:
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
+class EditableMixin:
+    last_edited_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
 
 class ViewsMixin:
     view_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

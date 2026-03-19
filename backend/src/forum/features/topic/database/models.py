@@ -5,6 +5,7 @@ from typing import Optional
 from forum.features.branch.database.models import Branch
 from forum.features.common.entities import (
     CreatedAtEntity,
+    EditableEntity,
     ViewableEntity,
     OwnableEntity,
 )
@@ -22,7 +23,7 @@ from sqlalchemy.orm import DynamicMapped, Mapped, mapped_column, relationship
 from forum.database import Base
 
 
-class Topic(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):
+class Topic(Base, ViewableEntity, OwnableEntity, EditableEntity):
     __tablename__ = "topics"
 
     branch_id: Mapped[int] = mapped_column(
@@ -31,12 +32,7 @@ class Topic(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):
     title: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    last_edited_at: Mapped[DateTime] = mapped_column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False,
-    )
+
 
     branch: Mapped[Branch] = relationship("Branch", back_populates="topics")
     replies: DynamicMapped[Reply] = relationship(

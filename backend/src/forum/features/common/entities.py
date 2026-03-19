@@ -1,5 +1,6 @@
 from forum.features.common.mixins import (
     CreatedAtMixin,
+    EditableMixin,
     IdMixin,
     ViewsMixin,
     OwnableByUserMixin,
@@ -19,4 +20,8 @@ class OwnableEntity(BaseEntity, OwnableByUserMixin):
 
 
 class CreatedAtEntity(BaseEntity, CreatedAtMixin):
+    pass
+
+
+class EditableEntity(CreatedAtEntity, EditableMixin):
     pass
