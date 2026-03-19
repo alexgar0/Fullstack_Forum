@@ -10,10 +10,10 @@ async def test_views_on_topic(client, mock_topic):
     assert response.json()["view_count"] == 1
     
 @pytest.mark.asyncio
-async def test_views_on_branch(client, mock_bransh):
-    assert mock_bransh.view_count == 0
+async def test_views_on_branch(client, mock_branch):
+    assert mock_branch.view_count == 0
     
-    response = await client.get(f"/branches/{mock_bransh.id}")
+    response = await client.get(f"/branches/{mock_branch.id}")
     assert response.json()["view_count"] == 1
     
 @pytest.mark.asyncio
