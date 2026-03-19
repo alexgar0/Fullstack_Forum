@@ -1,5 +1,5 @@
 from datetime import datetime
-from forum.features.common.schemas import BaseEntityDTO, ViewsDTO
+from forum.features.common.schemas import BaseEntityDTO, CreatedAtDTO, ViewsDTO
 from pydantic import BaseModel
 
 from forum.features.user.database.models import Role
@@ -24,11 +24,10 @@ class TokenData(BaseModel):
     username: str | None = None
 
 
-class UserDTO(BaseEntityDTO, ViewsDTO):
+class UserDTO(BaseEntityDTO, ViewsDTO, CreatedAtDTO):
     username: str
     role: Role
     bio: str | None = None
-    created_at: datetime
     last_login: datetime
     last_activity: datetime
 

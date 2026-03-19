@@ -4,8 +4,8 @@ from datetime import datetime
 from typing import Optional
 
 from forum.features.branch.database.models import Branch
-from forum.features.common.entities import ViewableEntity, OwnableEntity
-from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin, ViewsMixin
+from forum.features.common.entities import CreatedAtEntity, ViewableEntity, OwnableEntity
+from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtMixin, ViewsMixin
 from forum.features.reply.database.models import Reply
 from forum.features.user.database.models import User
 from sqlalchemy import (
@@ -21,7 +21,7 @@ from sqlalchemy.orm import DynamicMapped, Mapped, mapped_column, relationship
 from forum.database import Base
 
 
-class Topic(Base, ViewableEntity, OwnableEntity, CreatedAtTimestampMixin):
+class Topic(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):
     __tablename__ = "topics"
 
     branch_id: Mapped[int] = mapped_column(
