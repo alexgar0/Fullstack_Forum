@@ -14,7 +14,7 @@ from alembic import context
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from forum.database import Base
-from forum.config import DATABASE_URL
+from forum.config import settings
 import forum.features.user.database.models
 import forum.features.topic.database.models
 import forum.features.branch.database.models
@@ -23,7 +23,7 @@ import forum.features.reply.database.models
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-config.set_main_option("sqlalchemy.url", DATABASE_URL)
+config.set_main_option("sqlalchemy.url", settings.database_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -55,7 +55,7 @@ def run_migrations_offline() -> None:
 
     """
     context.configure(
-        url=DATABASE_URL,
+        url=settings.database_url,
         target_metadata=target_metadata,
         literal_binds=True,
         compare_type=True,
