@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 from forum.features.branch.database.models import Branch
-from forum.features.common.mixins import IdMixin
+from forum.features.common.mixins import IdMixin, OwnableByUserMixin
 from forum.features.reply.database.models import Reply
 from forum.features.user.database.models import User
 from sqlalchemy import (
@@ -20,7 +20,7 @@ from sqlalchemy.orm import DynamicMapped, Mapped, mapped_column, relationship
 from forum.database import Base
 
 
-class Topic(Base, IdMixin):
+class Topic(Base, IdMixin, OwnableByUserMixin):
     __tablename__ = "topics"
 
     branch_id: Mapped[int] = mapped_column(
@@ -28,9 +28,6 @@ class Topic(Base, IdMixin):
     )
     title: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text)
-    creator_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("users.id"), index=True, nullable=False
-    )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
@@ -44,7 +41,6 @@ class Topic(Base, IdMixin):
 
     view_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
-    creator: Mapped[User] = relationship("User", back_populates="created_topics")
     branch: Mapped[Branch] = relationship("Branch", back_populates="topics")
     replies: DynamicMapped[Reply] = relationship(
         "Reply", back_populates="topic", cascade="all, delete-orphan", lazy="dynamic"
