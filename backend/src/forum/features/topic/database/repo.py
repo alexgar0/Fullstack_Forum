@@ -1,3 +1,5 @@
+from typing import List
+
 from forum.features.common.repo import CRUDRepo, OwnableRepo, ViewableRepo
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -25,7 +27,7 @@ class TopicRepo(CRUDRepo[Topic], ViewableRepo[Topic], OwnableRepo[Topic]):
 
     def get_topics_by_branch(
         self, branch_id: int, pagination: PaginationQuery | None
-    ) -> list[Topic]:
+    ) -> List[Topic]:
         query = (
             self.db.query(Topic)
             .filter(Topic.branch_id == branch_id)
@@ -33,6 +35,6 @@ class TopicRepo(CRUDRepo[Topic], ViewableRepo[Topic], OwnableRepo[Topic]):
         )
 
         if pagination:
-            query = query.offset(pagination.limit).limit(pagination.limit)
-
+            query = query.offset(pagination.offset).limit(pagination.limit)
+        print(pagination)
         return query.all()
