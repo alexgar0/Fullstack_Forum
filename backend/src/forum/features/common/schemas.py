@@ -18,3 +18,9 @@ class OwnableDTO(BaseModel):
 
 class CreatedAtDTO(BaseModel):
     created_at: datetime
+    
+class PaginationDTO(BaseModel):
+    current_offset: int
+    limit: int
+    total_items: int
+    

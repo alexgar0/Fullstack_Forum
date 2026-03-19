@@ -24,17 +24,3 @@ class TopicRepo(CRUDRepo[Topic], ViewableRepo[Topic], OwnableRepo[Topic]):
             if "topics_branch_id" in str(e.orig):
                 raise NotFoundError("Branch not found")
             raise
-
-    def get_topics_by_branch(
-        self, branch_id: int, pagination: PaginationQuery | None
-    ) -> List[Topic]:
-        query = (
-            self.db.query(Topic)
-            .filter(Topic.branch_id == branch_id)
-            .order_by(Topic.created_at.desc())
-        )
-
-        if pagination:
-            query = query.offset(pagination.offset).limit(pagination.limit)
-        print(pagination)
-        return query.all()

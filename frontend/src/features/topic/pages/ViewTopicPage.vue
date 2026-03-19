@@ -15,6 +15,36 @@ const reply_success = ref<string>('');
 const reply_error = ref<string>('');
 const error = ref<boolean>(false);
 
+const currentPage = ref(1);
+const limit = 10;
+
+const totalPages = computed(() => {
+    if (!topic.value?.pagination) return 1;
+    return Math.ceil(topic.value.pagination.total_items / topic.value.pagination.limit);
+});
+
+async function fetchTopic(page: number) {
+    if (!topic_id.value) return;
+
+    if (page < 1 || (topic.value && page > totalPages.value && totalPages.value > 0)) return;
+
+    error.value = false;
+    const offset = (page - 1) * limit;
+
+    try {
+        topic.value = await get_topic_by_id(topic_id.value, offset, limit);
+        currentPage.value = page;
+    } catch (e) {
+        error.value = true;
+    }
+}
+
+function change_page(page: number) {
+    fetchTopic(page);
+    document.querySelector('#replies-section')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+
 const formattedDate = (dateStr: string | Date) => {
     return new Date(dateStr).toLocaleString('ru-RU', {
         day: '2-digit',
@@ -59,16 +89,8 @@ async function send_reply() {
     }
 }
 
-onMounted(async () => {
-    if (!topic_id.value) {
-        error.value = true;
-        return;
-    }
-    try {
-        topic.value = await get_topic_by_id(topic_id.value);
-    } catch (e) {
-        error.value = true;
-    }
+onMounted(() => {
+    fetchTopic(1);
 });
 </script>
 
@@ -117,14 +139,14 @@ onMounted(async () => {
                 <div class="flex items-center gap-2 border-b border-primary-alt pb-4">
                     <h2 class="text-xl font-thin text-text-main">Replies</h2>
                     <span class="text-xs text-text-secondary bg-primary-alt px-2 py-0.5 rounded-full">
-                        {{ topic.replies?.length || 0 }}
+                        {{ topic.pagination?.total_items || 0 }}
                     </span>
                 </div>
 
                 <div v-if="topic.replies && topic.replies.length > 0" class="flex flex-col gap-4">
-                    <div v-for="reply in topic.replies" :key="reply.id" 
-                         class="bg-primary/50 p-5 border border-primary-alt/50 rounded-sm hover:border-primary-alt transition-colors">
-                        
+                    <div v-for="reply in topic.replies" :key="reply.id"
+                        class="bg-primary/50 p-5 border border-primary-alt/50 rounded-sm hover:border-primary-alt transition-colors">
+
                         <div class="flex justify-between items-center mb-3 text-sm border-b border-primary-alt/30 pb-2">
                             <span class="text-accent font-medium">{{ reply.creator_username }}</span>
                             <span class="font-mono text-xs text-text-secondary">
@@ -135,6 +157,22 @@ onMounted(async () => {
                         <p class="whitespace-pre-wrap leading-relaxed text-text-main font-light">
                             {{ reply.content }}
                         </p>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-4 pt-4 border-t border-primary-alt">
+                        <span class="text-sm text-text-secondary">
+                            Page {{ currentPage }} of {{ totalPages }}
+                        </span>
+                        <div class="flex gap-2">
+                            <BaseButton @click="change_page(currentPage - 1)" :disabled="currentPage <= 1"
+                                class="bg-transparent border-primary-alt hover:bg-primary-alt w-32 disabled:opacity-50 disabled:cursor-not-allowed">
+                                &larr; Prev
+                            </BaseButton>
+                            <BaseButton @click="change_page(currentPage + 1)" :disabled="currentPage >= totalPages"
+                                class="w-32 disabled:opacity-50 disabled:cursor-not-allowed">
+                                Next &rarr;
+                            </BaseButton>
+                        </div>
                     </div>
                 </div>
 

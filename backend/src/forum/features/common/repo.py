@@ -1,14 +1,28 @@
 from abc import ABC
-from typing import Any, Generic, List, Optional, Type, TypeVar
+from dataclasses import dataclass
+from typing import Any, Generic, List, Optional, Sequence, Type, TypeVar
 from forum.features.common.entities import BaseEntity, OwnableEntity, ViewableEntity
+from forum.features.common.schemas import PaginationDTO
 from forum.features.query import PaginationQuery
 from forum.features.user.database.models import User
-from sqlalchemy import update
+from pydantic import BaseModel
+from sqlalchemy import ColumnExpressionArgument, func, select, update
 from sqlalchemy.orm import Session
 
+X = TypeVar("X")
+
+@dataclass
+class PaginationResult(Generic[X]):
+    items: Sequence[X]
+    current_offset: int
+    total_items: int
+    limit: int
+    
+    def to_dto(self) -> PaginationDTO:
+        return PaginationDTO(current_offset=self.current_offset, total_items=self.total_items, limit=self.limit)
+    
+    
 T = TypeVar("T", bound=BaseEntity)
-
-
 class BaseRepo(ABC, Generic[T]):
     def __init__(self, db: Session, model: Type[T]):
         self.db = db
@@ -26,12 +40,37 @@ class CRUDRepo(BaseRepo[T]):
         entity = self.db.query(self.model).filter(self.model.id == entity_id).first()
         return entity
 
-    def get_all(self, pagination: Optional[PaginationQuery] = None) -> List[T]:
-        query = self.db.query(self.model)
+    def get_page(
+        self, 
+        *filters: ColumnExpressionArgument[bool],
+        pagination: Optional[PaginationQuery] = None
+    ) -> PaginationResult[T]:
+        
+        base_stmt = select(self.model)
+        if filters:
+            base_stmt = base_stmt.where(*filters)
+            
+        data_stmt = base_stmt
+        current_offset = 0
+        
         if pagination:
-            query = query.limit(pagination.limit).offset(pagination.offset)
+            current_offset = pagination.offset
+            data_stmt = data_stmt.limit(pagination.limit).offset(pagination.offset)
+        
+        items = self.db.execute(data_stmt).scalars().all()
+        
+        count_stmt = select(func.count()).select_from(base_stmt.alias()) 
+        total_items = self.db.scalar(count_stmt) or 0
+        
+        return PaginationResult(items=items, total_items=total_items, current_offset=current_offset, limit=pagination.limit if pagination else 0)
 
-        return query.all()
+    def get_all(self, *filters: ColumnExpressionArgument[bool]) -> Sequence[T]:
+        stmt = select(self.model)
+        if filters:
+            stmt = stmt.where(*filters)
+        
+        result = self.db.execute(stmt)
+        return result.scalars().all()
 
     def update(self, entity_id: int, **kwargs: Any) -> Optional[T]:
         entity = self.get_by_id(entity_id)

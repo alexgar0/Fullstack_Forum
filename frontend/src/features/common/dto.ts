@@ -14,3 +14,9 @@ export interface OwnableDTO {
 export interface CreatedAtDTO {
     created_at: Date;
 }
+
+export interface  PaginationDTO {
+    current_offset: number;
+    total_items: number;
+    limit: number;
+}

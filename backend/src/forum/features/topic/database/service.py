@@ -1,6 +1,8 @@
 from datetime import timedelta, datetime, timezone
 from typing import Generator, List, Optional
 from fastapi import Depends
+from forum.features.common.repo import PaginationResult
+from forum.features.common.schemas import PaginationDTO
 from forum.features.reply.database.service import ReplyService
 from sqlalchemy.orm import Session
 
@@ -34,23 +36,21 @@ class TopicService:
         dto = FullTopicDTO.model_validate(topic)
         
         reply_service = ReplyService(self.db)
-        dto.replies = reply_service.get_by_topic(topic_id, pagination=pagination)
+        pagination_result = reply_service.get_by_topic(topic_id, pagination=pagination)
+        dto.replies = list(pagination_result.items)
+        dto.pagination = pagination_result.to_dto()
         return dto
 
     def get_small_topics_from_branch_with_pagination(
-        self, branch_id: int, pagination: PaginationQuery
-    ) -> List[SmallTopicDTO]:
-        active_topics = [
-            topic
-            for topic in self.repo.get_topics_by_branch(branch_id, pagination)
-            if topic.is_active
-        ]
+        self, branch_id: int, pagination: Optional[PaginationQuery] = None
+    ) -> PaginationResult[SmallTopicDTO]:
+        active_topics = self.repo.get_page(Topic.branch_id == branch_id, Topic.is_active, pagination=pagination)
 
         result = []
-        for orm_topic in active_topics:
+        for orm_topic in list(active_topics.items):
             result.append(SmallTopicDTO.model_validate(orm_topic))
 
-        return result
+        return PaginationResult(items=result, current_offset=active_topics.current_offset, total_items=active_topics.total_items, limit=active_topics.limit)
 
     def create_topic(self, user: User, topic: TopicCreateDTO) -> FullTopicDTO:
         if not (

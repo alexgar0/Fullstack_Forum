@@ -1,4 +1,4 @@
-import type { BaseEntityDTO, CreatedAtDTO, OwnableDTO, ViewsDTO } from "../../common/dto";
+import type { BaseEntityDTO, CreatedAtDTO, OwnableDTO, PaginationDTO, ViewsDTO } from "../../common/dto";
 import type { SmallTopicDTO } from "../../topic/api/dto";
 
 export interface BranchDTO extends BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO {
@@ -13,6 +13,7 @@ export interface BranchDTO extends BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedA
 
 export interface BranchWithSmallTopicsDTO extends BranchDTO {
     small_topics: SmallTopicDTO[];
+    pagination: PaginationDTO;
 }
 
 export interface BranchCreateDTO {

@@ -23,6 +23,3 @@ class BranchRepo(CRUDRepo[Branch], ViewableRepo[Branch], OwnableRepo[Branch]):
             if "branches_parent_id" in str(e.orig):
                 raise NotFoundError("Parent branch not found")
             raise
-
-    def get_topics(self, branch: Branch) -> List[Topic]:
-        return self.db.query(Topic).filter(Topic.branch_id == branch.id).all()

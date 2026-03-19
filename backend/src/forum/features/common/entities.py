@@ -32,5 +32,5 @@ class CreatedAtEntity(BaseEntity, CreatedAtMixin):
 
 
 class EditableEntity(CreatedAtEntity, EditableMixin):
-    def edited(self, repo: "CRUDRepo"):
+    def edited(self, repo: "CRUDRepo[EditableEntity]") -> None:
         repo.update(self.id, last_edited_at=datetime.now())

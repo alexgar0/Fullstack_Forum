@@ -3,6 +3,7 @@ from forum.features.common.schemas import (
     BaseEntityDTO,
     CreatedAtDTO,
     OwnableDTO,
+    PaginationDTO,
     ViewsDTO,
 )
 from pydantic import BaseModel, ConfigDict
@@ -29,3 +30,4 @@ class BranchDTO(BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO):
 
 class BranchWithSmallTopicsDTO(BranchDTO):
     small_topics: List[SmallTopicDTO]
+    pagination: PaginationDTO

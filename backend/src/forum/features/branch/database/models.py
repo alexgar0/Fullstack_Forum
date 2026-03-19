@@ -22,6 +22,7 @@ __all__ = ["Branch"]
 
 if TYPE_CHECKING:
     from forum.features.topic.database.models import Topic
+    from forum.features.user.database.models import User
 
 
 class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):

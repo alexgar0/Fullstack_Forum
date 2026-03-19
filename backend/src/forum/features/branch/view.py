@@ -33,12 +33,7 @@ async def read_branch(
     branch_service: BranchService = Depends(get_branch_service),
     topic_service: TopicService = Depends(get_topic_service),
 ) -> BranchWithSmallTopicsDTO:
-    branch = branch_service.get_branch(current_user, branch_id)
-    small_topics = topic_service.get_small_topics_from_branch_with_pagination(
-        branch_id, pagination
-    )
-    base_dto = BranchDTO.model_validate(branch)
-    dto = BranchWithSmallTopicsDTO(**base_dto.model_dump(), small_topics=small_topics)
+    dto = branch_service.get_branch_with_small_topics(current_user, branch_id, pagination)
     return dto
 
 

@@ -1,9 +1,10 @@
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 from forum.features.common.schemas import (
     BaseEntityDTO,
     CreatedAtDTO,
     OwnableDTO,
+    PaginationDTO,
     ViewsDTO,
 )
 from forum.features.reply.schemas import ReplyDTO
@@ -33,3 +34,4 @@ class FullTopicDTO(SmallTopicDTO):
     is_active: bool
     description: str | None = None
     replies: List[ReplyDTO]
+    pagination: Optional[PaginationDTO] = None

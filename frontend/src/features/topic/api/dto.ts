@@ -1,4 +1,4 @@
-import type { BaseEntityDTO, CreatedAtDTO, OwnableDTO, ViewsDTO } from "../../common/dto";
+import type { BaseEntityDTO, CreatedAtDTO, OwnableDTO, PaginationDTO, ViewsDTO } from "../../common/dto";
 
 export interface SmallTopicDTO extends BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO {
     branch_id: number;
@@ -10,6 +10,7 @@ export interface TopicDTO extends SmallTopicDTO {
     description: string;
     is_active: boolean;
     replies: ReplyDTO[];
+    pagination: PaginationDTO;
 }
 
 export interface CreateTopicDTO {
