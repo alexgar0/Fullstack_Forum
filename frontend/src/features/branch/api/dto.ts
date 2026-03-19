@@ -1,12 +1,10 @@
+import type { BaseEntityDTO, CreatedAtDTO, OwnableDTO, ViewsDTO } from "../../common/dto";
 import type { SmallTopicDTO } from "../../topic/api/dto";
 
-export interface BranchDTO {
-    id: number;
+export interface BranchDTO extends BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO {
     title: string;
     description?: string;
-    creator_id: number;
     is_active: boolean;
-    created_at: Date;
     parent_id?: number;
     topic_count: number;
     children_ids: number[];

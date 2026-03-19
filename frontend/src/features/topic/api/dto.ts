@@ -1,10 +1,8 @@
-export interface SmallTopicDTO {
-    id: number;
+import type { BaseEntityDTO, CreatedAtDTO, OwnableDTO, ViewsDTO } from "../../common/dto";
+
+export interface SmallTopicDTO extends BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO {
     branch_id: number;
     title: string;
-    creator_id: number;
-    creator_username: string;
-    created_at: string;
     last_edited_at: string;
 }
 
