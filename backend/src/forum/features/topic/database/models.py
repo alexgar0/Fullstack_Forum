@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 from forum.features.branch.database.models import Branch
-from forum.features.common.mixins import IdMixin, OwnableByUserMixin
+from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin
 from forum.features.reply.database.models import Reply
 from forum.features.user.database.models import User
 from sqlalchemy import (
@@ -20,7 +20,7 @@ from sqlalchemy.orm import DynamicMapped, Mapped, mapped_column, relationship
 from forum.database import Base
 
 
-class Topic(Base, IdMixin, OwnableByUserMixin):
+class Topic(Base, IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin):
     __tablename__ = "topics"
 
     branch_id: Mapped[int] = mapped_column(
@@ -29,9 +29,6 @@ class Topic(Base, IdMixin, OwnableByUserMixin):
     title: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
     last_edited_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
-from forum.features.common.mixins import IdMixin, OwnableByUserMixin
+from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin
 from sqlalchemy import (
     Boolean,
     DateTime,
@@ -22,15 +22,12 @@ if TYPE_CHECKING:
     from forum.features.topic.database.models import Topic
     from forum.features.user.database.models import User
 
-class Branch(Base, IdMixin, OwnableByUserMixin):
+class Branch(Base, IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin):
     __tablename__ = "branches"
 
     title: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     parent_id: Mapped[int] = mapped_column(

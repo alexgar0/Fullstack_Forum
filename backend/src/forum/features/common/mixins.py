@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import DateTime, ForeignKey, Integer, func
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 
 
@@ -21,3 +22,8 @@ class OwnableByUserMixin:
     @declared_attr
     def creator(cls: Any) -> Mapped[User]:
         return relationship("User", back_populates=f"created_{cls.__tablename__}")
+
+class CreatedAtTimestampMixin:
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )

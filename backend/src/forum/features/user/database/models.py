@@ -5,7 +5,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
 
-from forum.features.common.mixins import IdMixin
+from forum.features.common.mixins import IdMixin, CreatedAtTimestampMixin
 from sqlalchemy import (
     Integer,
     String,
@@ -33,7 +33,7 @@ class Role(str, Enum):
     guest = "guest"
 
 
-class User(Base, IdMixin):
+class User(Base, IdMixin, CreatedAtTimestampMixin):
     __tablename__ = "users"
 
     username: Mapped[str] = mapped_column(
@@ -43,9 +43,6 @@ class User(Base, IdMixin):
     hashed_password: Mapped[str] = mapped_column(String, nullable=False)
     role: Mapped[Role] = mapped_column(SqlEnum(Role), default=Role.user, nullable=False)
     bio: Mapped[Optional[str]] = mapped_column(Text)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
     last_login: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
