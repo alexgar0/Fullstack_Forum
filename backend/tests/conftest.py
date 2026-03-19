@@ -1,5 +1,9 @@
 from forum.features.branch.database.repo import BranchRepo
 from forum.features.branch.database.service import BranchService
+from forum.features.branch.schemas import BranchCreateDTO
+from forum.features.topic.database.repo import TopicRepo
+from forum.features.topic.database.service import TopicService
+from forum.features.topic.schemas import TopicCreateDTO
 from httpx import ASGITransport, AsyncClient
 import pytest
 import os
@@ -72,7 +76,43 @@ def branch_repo(db_session):
 @pytest.fixture
 def branch_service(db_session):
     yield BranchService(db_session)
+    
+@pytest.fixture
+def mock_branch_create_dto():
+    mock_create = {
+        'title': 'mock_branch title',
+        'description': 'mock_branch description'
+    }
+    yield BranchCreateDTO.model_validate(mock_create)
 
+@pytest.fixture
+def mock_branch(branch_service, test_user_admin, mock_branch_create_dto):
+    branch = branch_service.create_branch(user=test_user_admin, branch=mock_branch_create_dto)
+    assert branch is not None
+    yield branch
+
+@pytest.fixture
+def topic_repo(db_session):
+    yield TopicRepo(db_session)
+    
+@pytest.fixture
+def topic_service(db_session):
+    yield TopicService(db_session)
+
+@pytest.fixture
+def mock_topic_create_dto(mock_branch):
+    mock_create = {
+        'title': 'mock_topic title',
+        'description': 'mock_topic description',
+        'branch_id': mock_branch.id
+    }
+    yield TopicCreateDTO.model_validate(mock_create)
+
+@pytest.fixture
+def mock_topic(topic_service, test_user_admin, mock_topic_create_dto):
+    topic = topic_service.create_topic(user=test_user_admin, topic=mock_topic_create_dto)
+    assert topic is not None
+    yield topic
 
 @pytest_asyncio.fixture
 async def client():
