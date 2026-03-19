@@ -10,11 +10,11 @@ from forum.features.user.session import get_current_user, get_current_user_for_a
 from forum.features.user.database.models import Role, User
 from forum.main import app
 from forum.database import Base, get_db
-
+from forum.config import settings
 
 @pytest.fixture(scope="session")
 def db_engine():
-    engine = create_engine(os.environ.get("DATABASE_URL"))
+    engine = create_engine(settings.database_url)
     Base.metadata.create_all(bind=engine)
     yield engine
     Base.metadata.drop_all(bind=engine)
