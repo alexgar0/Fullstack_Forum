@@ -1,7 +1,7 @@
 from typing import Optional
 
 from forum.features.common.mixins import IdMixin
-from forum.features.common.repo import CRUDRepo, ViewableRepo
+from forum.features.common.repo import CRUDRepo, OwnableRepo, ViewableRepo
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -11,7 +11,7 @@ from forum.features.query import PaginationQuery
 from forum.exceptions import ExistingResourceError, NotFoundError
 
 
-class TopicRepo(CRUDRepo[Topic], ViewableRepo[Topic]):
+class TopicRepo(CRUDRepo[Topic], ViewableRepo[Topic], OwnableRepo[Topic]):
     def __init__(self, db: Session):
         super().__init__(db, Topic)
 
@@ -25,9 +25,6 @@ class TopicRepo(CRUDRepo[Topic], ViewableRepo[Topic]):
             if "topics_branch_id" in str(e.orig):
                 raise NotFoundError("Branch not found")
             raise
-
-    def get_topics_by_creator(self, creator_id: int) -> list[Topic]:
-        return self.db.query(Topic).filter(Topic.creator_id == creator_id).all()
 
     def get_topics_by_branch(
         self, branch_id: int, pagination: PaginationQuery | None

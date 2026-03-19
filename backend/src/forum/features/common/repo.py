@@ -1,8 +1,9 @@
 
 from abc import ABC
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
-from forum.features.common.entities import BaseEntity, ViewableEntity
+from forum.features.common.entities import BaseEntity, OwnableEntity, ViewableEntity
 from forum.features.query import PaginationQuery
+from forum.features.user.database.models import User
 from sqlalchemy import update
 from sqlalchemy.orm import Session
 
@@ -64,3 +65,18 @@ class ViewableRepo(BaseRepo[V]):
         result = self.db.execute(stmt)
         self.db.flush() 
         return result.scalar_one_or_none()
+    
+U = TypeVar("U", bound=OwnableEntity)
+class OwnableRepo(BaseRepo[U]):
+    def get_owner(self, entity_id: int) -> Optional[User]:
+        entity = self.db.query(self.model).filter(self.model.id == entity_id).first()
+        if entity:
+            return entity.creator
+        return None
+    
+    def get_all_by_owner(self, owner_id: int, pagination: Optional[PaginationQuery] = None) -> List[U]:
+        query = self.db.query(self.model).where(self.model.creator_id == owner_id)
+        if pagination:
+            query = query.limit(pagination.limit).offset(pagination.offset)
+            
+        return query.all()
