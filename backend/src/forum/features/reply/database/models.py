@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin
+from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin, ViewsMixin
 from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, relationship
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from forum.features.user.database.models import User
 
 
-class Reply(Base, IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin):
+class Reply(Base, IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin, ViewsMixin):
     __tablename__ = "replies"
 
     content = Column(Text, nullable=False)

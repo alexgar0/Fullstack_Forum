@@ -5,7 +5,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
 
-from forum.features.common.mixins import IdMixin, CreatedAtTimestampMixin
+from forum.features.common.mixins import IdMixin, CreatedAtTimestampMixin, ViewsMixin
 from sqlalchemy import (
     Integer,
     String,
@@ -33,7 +33,7 @@ class Role(str, Enum):
     guest = "guest"
 
 
-class User(Base, IdMixin, CreatedAtTimestampMixin):
+class User(Base, IdMixin, CreatedAtTimestampMixin, ViewsMixin):
     __tablename__ = "users"
 
     username: Mapped[str] = mapped_column(

@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 from forum.features.branch.database.models import Branch
-from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin
+from forum.features.common.mixins import IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin, ViewsMixin
 from forum.features.reply.database.models import Reply
 from forum.features.user.database.models import User
 from sqlalchemy import (
@@ -20,7 +20,7 @@ from sqlalchemy.orm import DynamicMapped, Mapped, mapped_column, relationship
 from forum.database import Base
 
 
-class Topic(Base, IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin):
+class Topic(Base, IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin, ViewsMixin):
     __tablename__ = "topics"
 
     branch_id: Mapped[int] = mapped_column(
@@ -35,8 +35,6 @@ class Topic(Base, IdMixin, OwnableByUserMixin, CreatedAtTimestampMixin):
         onupdate=func.now(),
         nullable=False,
     )
-
-    view_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
     branch: Mapped[Branch] = relationship("Branch", back_populates="topics")
     replies: DynamicMapped[Reply] = relationship(
