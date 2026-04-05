@@ -2,6 +2,7 @@
 
 # Forum API
 
+
 **A modern full-stack forum application with hierarchical categories, user authentication, and real-time discussions.**
 
 [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/downloads/)
@@ -16,6 +17,7 @@
 
 ## 📋 Table of Contents
 
+- [Screenshots](#-screenshots)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
 - [Architecture](#-architecture)
@@ -24,6 +26,17 @@
 - [Development](#-development)
 - [Testing](#-testing)
 - [Configuration](#-configuration)
+
+---
+
+## 📸 Screenshots
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/c58f0530-7854-47a8-a6db-a70892b7c5eb" width="45%" alt="Screenshot 1" />
+  <img src="https://github.com/user-attachments/assets/2fb4689f-83ba-4558-8b7b-e5897121f02f" width="45%" alt="Screenshot 2" />
+  <img src="https://github.com/user-attachments/assets/fea96a7d-c3d1-4da3-92e6-23d8fc179f78" width="45%" alt="Screenshot 3" />
+  <img src="https://github.com/user-attachments/assets/ac911aa2-c051-4852-a628-747540b3ce84" width="45%" alt="Screenshot 4" />
+  <img src="https://github.com/user-attachments/assets/6001c011-c491-4e89-b6b7-5767c8e93a7a" width="45%" alt="Screenshot 5" />
+</div>
 
 ---
 
@@ -136,6 +149,9 @@ docker-compose -f docker-compose.dev.yml up --build
 ### Local Development
 
 ```bash
+# Start dev database
+./run-dev.sh
+
 # Backend
 cd backend
 uv sync
