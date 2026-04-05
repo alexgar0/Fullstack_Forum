@@ -41,7 +41,7 @@ done
 
 echo -e "${BLUE} Starting development environment: ${PROJECT_NAME}${NC}"
 
-DC="sudo docker compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE}"
+DC="docker compose -p ${PROJECT_NAME} -f ${COMPOSE_FILE}"
 
 if [ "$BUILD" = true ]; then
     echo -e "${YELLOW}Building images...${NC}"

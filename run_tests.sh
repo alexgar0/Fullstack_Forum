@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo docker compose -f ./docker-compose.test.yml up \
+docker compose -f ./docker-compose.test.yml up \
   --build \
   --exit-code-from pytest \
   --abort-on-container-exit \
@@ -9,7 +9,7 @@ sudo docker compose -f ./docker-compose.test.yml up \
 EXIT_CODE=$?
 
 echo ""
-sudo docker compose -f ./docker-compose.test.yml down -v --rmi local --remove-orphans
+docker compose -f ./docker-compose.test.yml down -v --rmi local --remove-orphans
 echo "Test containers, volumes and local images removed."
 
 if [ $EXIT_CODE -eq 0 ]; then
