@@ -28,6 +28,7 @@ dev = [
     "httpx>=0.28.1",
     "types-python-jose>=3.5.0.20250531",
     "types-passlib>=1.7.7.20260211",
+    "testcontainers[postgres]>=4.15.0",
 ]
 
 [tool.mypy]

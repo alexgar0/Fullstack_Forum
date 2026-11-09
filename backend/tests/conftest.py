@@ -1,3 +1,5 @@
+from collections.abc import Generator
+
 from forum.features.branch.database.repo import BranchRepo
 from forum.features.branch.database.service import BranchService
 from forum.features.branch.schemas import BranchCreateDTO
@@ -14,10 +16,16 @@ from forum.features.user.database.models import Role, User
 from forum.main import app
 from forum.database import Base, get_db
 from forum.config import settings
+from testcontainers.community.postgres import PostgresContainer
 
 @pytest.fixture(scope="session")
-def db_engine():
-    engine = create_engine(settings.database_url)
+def postgres() -> Generator[PostgresContainer]:
+    with PostgresContainer("postgres:17") as container:
+        yield container
+
+@pytest.fixture(scope="session")
+def db_engine(postgres: PostgresContainer):
+    engine = create_engine(postgres.get_connection_url())
     Base.metadata.create_all(bind=engine)
     yield engine
     Base.metadata.drop_all(bind=engine)
