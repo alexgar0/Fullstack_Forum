@@ -11,7 +11,7 @@ from forum.core.auth.session import (
 )
 from forum.core.config import settings
 from forum.features.user.dependencies import CurrentUserDep, UserServiceDep
-from forum.features.user.schemas import Token, UserCreate, UserDTO
+from forum.features.user.schemas import Token, RegisterDTO, UserDTO
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -24,7 +24,7 @@ async def me(
 
 
 @router.post("/register", response_model=UserDTO, status_code=status.HTTP_201_CREATED)
-def register(user: UserCreate, user_service: UserServiceDep) -> UserDTO:
+def register(user: RegisterDTO, user_service: UserServiceDep) -> UserDTO:
     return user_service.create_user(user)
 
 

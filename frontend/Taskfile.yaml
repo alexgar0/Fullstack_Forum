@@ -47,6 +47,11 @@ tasks:
     cmds:
       - npm run preview
 
+  generate-schema:
+    desc: Generate schema from backend OpenAPI
+    cmds:
+      - npx openapi-typescript http://localhost:8080/openapi.json -o src/api/schema.generated.ts
+
   # Code quality
 
   lint:

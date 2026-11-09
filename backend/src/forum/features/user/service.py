@@ -12,7 +12,7 @@ from forum.core.exceptions import (
 )
 from forum.features.user.models import Role, User
 from forum.features.user.repo import UserRepo
-from forum.features.user.schemas import UserCreate, UserDTO
+from forum.features.user.schemas import RegisterDTO, UserDTO
 
 
 def password_complexity_check(password: str) -> tuple[bool, str]:
@@ -62,7 +62,7 @@ class UserService:
         self.repo.increment_views(user_id)
         return self.get_user(user_id)
 
-    def create_user(self, user: UserCreate) -> UserDTO:
+    def create_user(self, user: RegisterDTO) -> UserDTO:
         if (
             len(user.username) < settings.username_length_bounds[0]
             or len(user.username) > settings.username_length_bounds[1]
