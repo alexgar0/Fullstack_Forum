@@ -15,7 +15,7 @@ export default withVueTs(
   {
     rules: {
       // General
-      'no-console': 'warn',
+      'no-console': ['warn', { allow: ['error'] }],
       'no-debugger': 'error',
       eqeqeq: ['error', 'always'],
 

@@ -23,8 +23,8 @@ function go_to_topic() {
 
 <template>
   <div
-    @click="go_to_topic"
     class="border border-primary-alt p-4 mb-2 flex flex-row items-center justify-between hover:bg-primary-alt transition-colors cursor-pointer"
+    @click="go_to_topic"
   >
     <div class="flex items-center gap-4">
       <span class="text-text-secondary text-xs font-mono">#{{ topic.id }}</span>

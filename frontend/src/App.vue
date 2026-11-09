@@ -44,8 +44,8 @@ async function handle_logout() {
         >
         <button
           v-else
-          @click="handle_logout"
           class="hover:underline"
+          @click="handle_logout"
         >
           Logout
         </button>

@@ -41,7 +41,7 @@ async function handle_create() {
       description: description.value,
       branch_id: branch_id.value,
     }
-    let created_topic: TopicDTO = await create_topic(new_topic)
+    const created_topic: TopicDTO = await create_topic(new_topic)
     success.value = `Topic ${created_topic.title} created`
     setTimeout(() => {
       router.push({
@@ -50,7 +50,7 @@ async function handle_create() {
       })
     }, 1000)
   } catch (e: unknown) {
-    console.log(e)
+    console.error(e)
     error.value = e instanceof ApiError ? e.message : 'Unexpected error'
   }
 }
@@ -68,8 +68,8 @@ async function handle_create() {
 
       <p class="font-bold text-sm">Parent branch</p>
       <select
-        class="text-sm text-text-secondary rounded border border-primary-alt mb-4 bg-primary-alt"
         v-model="branch_id"
+        class="text-sm text-text-secondary rounded border border-primary-alt mb-4 bg-primary-alt"
       >
         <option
           v-for="branch in all_branches"
@@ -82,8 +82,8 @@ async function handle_create() {
 
       <p class="font-bold text-sm">Description</p>
       <BaseTextArea
-        class="bg-primary-alt"
         v-model="description"
+        class="bg-primary-alt"
       ></BaseTextArea>
       <p
         v-if="error"

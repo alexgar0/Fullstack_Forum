@@ -17,7 +17,7 @@ async function handleRegister() {
     await register(username.value, email.value, password.value, password_check.value)
     window.location.href = COMPLETE_REGISTRATION_PATH
   } catch (e: unknown) {
-    console.log(e)
+    console.error(e)
 
     if (e instanceof ApiError && e.status === 401 && e.message === 'Unexpected error') {
       error.value = 'Invalid username or password'
@@ -45,8 +45,8 @@ function handleSubmit(e?: Event) {
       {{ error }}
     </p>
     <form
-      @submit="handleSubmit"
       class="flex flex-col gap-4"
+      @submit="handleSubmit"
     >
       <BaseInput
         v-model="username"

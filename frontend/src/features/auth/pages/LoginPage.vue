@@ -15,7 +15,7 @@ async function handleLogin() {
     await login(username.value, password.value)
     window.location.href = '/'
   } catch (e: unknown) {
-    console.log(e)
+    console.error(e)
 
     const detail = e instanceof ApiError ? e.detail : undefined
 
@@ -48,8 +48,8 @@ function handleSubmit(e?: Event) {
       {{ error }}
     </p>
     <form
-      @submit="handleSubmit"
       class="flex flex-col gap-4"
+      @submit="handleSubmit"
     >
       <BaseInput
         v-model="username"

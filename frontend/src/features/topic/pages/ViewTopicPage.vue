@@ -35,7 +35,7 @@ async function fetchTopic(page: number) {
   try {
     topic.value = await get_topic_by_id(topic_id.value, offset, limit)
     currentPage.value = page
-  } catch (e) {
+  } catch {
     error.value = true
   }
 }
@@ -78,7 +78,7 @@ async function send_reply() {
       router.go(0)
     }, 1000)
   } catch (e: unknown) {
-    console.log(e)
+    console.error(e)
     reply_error.value = e instanceof ApiError ? e.message : 'Unexpected error'
   }
 }
@@ -92,8 +92,8 @@ onMounted(() => {
   <div class="p-8 flex flex-col gap-6 max-w-5xl mx-auto">
     <div class="flex items-center gap-4">
       <button
-        @click="back_to_branch"
         class="text-text-secondary hover:text-accent cursor-pointer transition-colors text-sm"
+        @click="back_to_branch"
       >
         &larr; Back to branch
       </button>
@@ -184,16 +184,16 @@ onMounted(() => {
             </span>
             <div class="flex gap-2">
               <BaseButton
-                @click="change_page(currentPage - 1)"
                 :disabled="currentPage <= 1"
                 class="bg-transparent border-primary-alt hover:bg-primary-alt w-32 disabled:opacity-50 disabled:cursor-not-allowed"
+                @click="change_page(currentPage - 1)"
               >
                 &larr; Prev
               </BaseButton>
               <BaseButton
-                @click="change_page(currentPage + 1)"
                 :disabled="currentPage >= totalPages"
                 class="w-32 disabled:opacity-50 disabled:cursor-not-allowed"
+                @click="change_page(currentPage + 1)"
               >
                 Next &rarr;
               </BaseButton>
@@ -213,8 +213,8 @@ onMounted(() => {
         <div class="w-full">
           <p class="font-bold text-sm mb-1">Leave your reply</p>
           <BaseTextArea
-            class="bg-primary-alt w-full"
             v-model="reply_content"
+            class="bg-primary-alt w-full"
           ></BaseTextArea>
         </div>
         <div class="flex gap-2 self-end">
@@ -222,8 +222,8 @@ onMounted(() => {
             Report
           </BaseButton>
           <BaseButton
-            @click="send_reply"
             class="w-40"
+            @click="send_reply"
           >
             Reply
           </BaseButton>

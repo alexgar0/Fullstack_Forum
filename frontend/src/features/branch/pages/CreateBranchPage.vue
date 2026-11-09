@@ -33,10 +33,10 @@ async function handle_create() {
       title: title.value,
       description: description.value,
     }
-    let created_branch: BranchDTO = await create_branch(new_branch)
+    const created_branch: BranchDTO = await create_branch(new_branch)
     success.value = `Branch ${created_branch.title} created`
   } catch (e: unknown) {
-    console.log(e)
+    console.error(e)
 
     error.value = e instanceof ApiError ? e.message : 'Unexpected error'
   }
@@ -55,8 +55,8 @@ async function handle_create() {
 
       <p class="font-bold text-sm">Parent branch</p>
       <select
-        class="text-sm text-text-secondary rounded border border-primary-alt mb-4 bg-primary-alt"
         v-model="parent_id"
+        class="text-sm text-text-secondary rounded border border-primary-alt mb-4 bg-primary-alt"
       >
         <option :value="undefined">Root branch (no parent)</option>
         <option
@@ -70,8 +70,8 @@ async function handle_create() {
 
       <p class="font-bold text-sm">Description</p>
       <BaseTextArea
-        class="bg-primary-alt"
         v-model="description"
+        class="bg-primary-alt"
       ></BaseTextArea>
       <p
         v-if="error"

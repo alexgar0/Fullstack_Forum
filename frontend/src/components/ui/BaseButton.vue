@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { twMerge } from 'tailwind-merge'
 
 const props = defineProps({
-  class: String,
+  class: { type: String, default: undefined },
 })
 
 const buttonClasses = computed(() => {

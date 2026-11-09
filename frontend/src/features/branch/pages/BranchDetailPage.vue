@@ -18,7 +18,7 @@ onMounted(async () => {
   }
   try {
     branch.value = await get_branch(branch_id.value)
-  } catch (e: any) {
+  } catch {
     show_error.value = true
   }
 })
@@ -38,9 +38,9 @@ onMounted(async () => {
       <div class="flex flex-row mb-4">
         <p class="text-3xl">{{ branch.title }}</p>
         <router-link
+          v-slot="{ navigate }"
           :to="{ name: 'topic_create', params: { id: branch_id } }"
           custom
-          v-slot="{ navigate }"
         >
           <BaseButton
             class="border-primary bg-primary ml-auto"
