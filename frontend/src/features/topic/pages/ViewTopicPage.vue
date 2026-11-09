@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { create_reply, get_topic_by_id } from '../api/endpoints'
-import type { ReplyCreateDTO, ReplyDTO, TopicDTO } from '../api/dto'
+import type { ReplyCreateDTO, TopicDTO } from '../api/dto'
 import BaseButton from '../../../components/ui/BaseButton.vue'
 import BaseTextArea from '../../../components/ui/BaseTextArea.vue'
 
@@ -71,7 +71,7 @@ async function send_reply() {
       content: reply_content.value,
       topic_id: topic.value?.id,
     }
-    let created_reply: ReplyDTO = await create_reply(new_reply)
+    await create_reply(new_reply)
     reply_success.value = `Reply created`
     setTimeout(() => {
       router.go(0)

@@ -1,8 +1,5 @@
 import http from '../../../api/http'
-import type { components } from '../../../api/schema.generated'
-
-type RegisterDTO = components['schemas']['RegisterDTO']
-type UserDTO = components['schemas']['UserDTO']
+import type { RegisterDTO, UserDTO } from './dto'
 
 export async function login(username: string, password: string) {
   const body = new URLSearchParams()

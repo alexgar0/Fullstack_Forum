@@ -1,10 +1,6 @@
 import http from '../../../api/http'
-import type { components } from '../../../api/schema.generated'
+import type { BranchCreateDTO, BranchDTO, BranchWithSmallTopicsDTO } from './dto'
 import type { PaginationQuery } from '../../../api/query'
-
-type BranchCreateDTO = components['schemas']['BranchCreateDTO']
-type BranchDTO = components['schemas']['BranchDTO']
-type BranchWithSmallTopicsDTO = components['schemas']['BranchWithSmallTopicsDTO']
 
 export async function create_branch(new_branch: BranchCreateDTO): Promise<BranchDTO> {
   const response = await http.post<BranchDTO>('/branches/', new_branch)
