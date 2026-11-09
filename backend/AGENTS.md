@@ -54,6 +54,7 @@ Rules:
 - Do not introduce circular dependencies.
 - Avoid leaking ORM models into public API contracts.
 - Preserve established transaction boundaries.
+- Use `.agent-venv` as main venv.
 
 ## Python Coding Standards
 

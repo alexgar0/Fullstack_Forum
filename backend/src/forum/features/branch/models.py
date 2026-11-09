@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
@@ -21,8 +21,6 @@ from forum.features.common.entities import (
 __all__ = ["Branch"]
 
 if TYPE_CHECKING:
-    from sqlalchemy.orm.dynamic import AppenderQuery
-
     from forum.features.topic.models import Topic
 
 
@@ -49,7 +47,7 @@ class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):
 
     @property
     def topic_count(self) -> int:
-        return cast("AppenderQuery[Topic]", self.topics).count()
+        return self.topics.count()
 
     @property
     def children_ids(self) -> list[int]:

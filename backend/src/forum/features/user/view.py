@@ -20,7 +20,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 async def me(
     current_user: CurrentUserDep,
 ) -> UserDTO:
-    return current_user
+    return UserDTO.model_validate(current_user)
 
 
 @router.post("/register", response_model=UserDTO, status_code=status.HTTP_201_CREATED)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime  # noqa: TC003
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import DateTime, ForeignKey, Integer, func
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
@@ -22,12 +22,13 @@ class OwnableByUserMixin:
     )
 
     @declared_attr
+    @classmethod
     def creator(cls: Any) -> Mapped[User]:
         return relationship("User", back_populates=f"created_{cls.__tablename__}")
 
     @property
     def creator_username(self) -> str:
-        return cast("User", self.creator).username
+        return self.creator.username
 
 
 class CreatedAtMixin:

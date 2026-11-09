@@ -35,7 +35,6 @@ dev = [
 [tool.mypy]
 python_version = "3.13"
 strict = true
-plugins = ["sqlalchemy.ext.mypy.plugin"]
 
 [project.scripts]
 start = "forum.core.main:main"
