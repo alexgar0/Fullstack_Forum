@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 from sqlalchemy.orm import Session
 
+from forum.core.auth.security import hash_password, verify_password
 from forum.core.config import settings
 from forum.core.exceptions import (
     AppException,
@@ -12,7 +13,6 @@ from forum.core.exceptions import (
 from forum.features.user.database.models import Role, User
 from forum.features.user.database.repo import UserRepo
 from forum.features.user.schemas import UserCreate, UserDTO
-from forum.features.user.security import hash_password, verify_password
 
 
 def password_complexity_check(password: str) -> tuple[bool, str]:

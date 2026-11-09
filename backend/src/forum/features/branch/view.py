@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
+from forum.core.auth.session import get_current_user
 from forum.features.branch.dependencies import BranchServiceDep
 from forum.features.branch.schemas import (
     BranchCreateDTO,
@@ -9,8 +10,7 @@ from forum.features.branch.schemas import (
     BranchWithSmallTopicsDTO,
 )
 from forum.features.query import PaginationQuery
-from forum.features.user.database.models import User
-from forum.features.user.session import get_current_user
+from forum.features.user.dependencies import CurrentUserDep
 
 router = APIRouter(prefix="/branches", tags=["Branches"])
 
@@ -28,7 +28,7 @@ async def read_all_branches(
 async def read_branch(
     branch_id: int,
     pagination: Annotated[PaginationQuery, Depends(PaginationQuery)],
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: CurrentUserDep,
     branch_service: BranchServiceDep,
 ) -> BranchWithSmallTopicsDTO:
     return branch_service.get_branch_with_small_topics(
@@ -39,7 +39,7 @@ async def read_branch(
 @router.post("/", response_model=BranchDTO, status_code=201)
 async def create_branch(
     branch: BranchCreateDTO,
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: CurrentUserDep,
     branch_service: BranchServiceDep,
 ) -> BranchDTO:
     return branch_service.create_branch(current_user, branch)
@@ -48,7 +48,7 @@ async def create_branch(
 @router.delete("/{branch_id}", status_code=204)
 async def delete_branch(
     branch_id: int,
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: CurrentUserDep,
     branch_service: BranchServiceDep,
 ) -> None:
     branch_service.delete_branch(current_user, branch_id)

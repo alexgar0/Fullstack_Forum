@@ -4,14 +4,14 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-from forum.core.config import settings
-from forum.features.user.dependencies import UserServiceDep
-from forum.features.user.schemas import Token, UserCreate, UserDTO
-from forum.features.user.security import create_access_token, create_refresh_token
-from forum.features.user.session import (
+from forum.core.auth.security import create_access_token, create_refresh_token
+from forum.core.auth.session import (
     get_current_user_for_activity,
     get_current_user_from_refresh_token,
 )
+from forum.core.config import settings
+from forum.features.user.dependencies import UserServiceDep
+from forum.features.user.schemas import Token, UserCreate, UserDTO
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
