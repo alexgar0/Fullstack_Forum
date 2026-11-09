@@ -1,18 +1,14 @@
-import http from '../../../api/http'
+import { api, requireData, requireSuccess } from '../../../api/openapi'
 import type { RegisterDTO, UserDTO } from './dto'
 
 export async function login(username: string, password: string) {
-  const body = new URLSearchParams()
-  body.append('username', username)
-  body.append('password', password)
-
-  const response = await http.post('/users/login', body, {
-    // withCredentials: true,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
+  const result = await api.POST('/users/login', {
+    credentials: 'same-origin',
+    body: { username, password, scope: '' },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   })
-  return response.data
+  requireSuccess(result)
+  return result.data
 }
 
 export async function register(
@@ -21,7 +17,7 @@ export async function register(
   password: string,
   password_check: string,
 ) {
-  if (password != password_check) {
+  if (password !== password_check) {
     throw new Error("Passwords don't match")
   }
 
@@ -30,16 +26,13 @@ export async function register(
     email: email,
     password: password,
   }
-  const response = await http.post('/users/register', body)
-
-  return response.data
+  return requireData(await api.POST('/users/register', { body, credentials: 'same-origin' }))
 }
 
 export async function me(): Promise<UserDTO> {
-  const response = await http.get<UserDTO>('/users/me')
-  return response.data
+  return requireData(await api.GET('/users/me', { credentials: 'same-origin' }))
 }
 
 export async function logout() {
-  await http.post('/users/logout')
+  requireSuccess(await api.POST('/users/logout', { credentials: 'same-origin' }))
 }

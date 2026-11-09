@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { login } from '../api/endpoints'
+import { ApiError } from '../../../api/openapi'
 import { REGISTER_PATH } from '../router'
 import BaseButton from '../../../components/ui/BaseButton.vue'
 import BaseInput from '../../../components/ui/BaseInput.vue'
@@ -13,14 +14,14 @@ async function handleLogin() {
   try {
     await login(username.value, password.value)
     window.location.href = '/'
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.log(e)
 
-    const detail = e.response?.data?.detail
+    const detail = e instanceof ApiError ? e.detail : undefined
 
     if (detail) {
       error.value = detail // показываем detail
-    } else if (e.response?.status === 401) {
+    } else if (e instanceof ApiError && e.status === 401) {
       error.value = 'Invalid username or password'
     } else {
       error.value = 'Unexpected error'

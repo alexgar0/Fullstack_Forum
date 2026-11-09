@@ -3,6 +3,7 @@ import type { TopicDTO, CreateTopicDTO } from '../api/dto'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { create_topic } from '../api/endpoints'
+import { ApiError } from '../../../api/openapi'
 import type { BranchDTO } from '../../branch/api/dto'
 import { get_all_branches } from '../../branch/api/endpoints'
 
@@ -48,14 +49,9 @@ async function handle_create() {
         params: { id: created_topic.id },
       })
     }, 1000)
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.log(e)
-    const detail = e.response?.data?.message
-    if (detail) {
-      error.value = detail
-    } else {
-      error.value = 'Unexpected error'
-    }
+    error.value = e instanceof ApiError ? e.message : 'Unexpected error'
   }
 }
 </script>

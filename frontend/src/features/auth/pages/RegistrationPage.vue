@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { register } from '../api/endpoints'
+import { ApiError } from '../../../api/openapi'
 import { LOGIN_PATH, COMPLETE_REGISTRATION_PATH } from '../router'
 import BaseInput from '../../../components/ui/BaseInput.vue'
 import BaseButton from '../../../components/ui/BaseButton.vue'
@@ -15,17 +16,13 @@ async function handleRegister() {
   try {
     await register(username.value, email.value, password.value, password_check.value)
     window.location.href = COMPLETE_REGISTRATION_PATH
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.log(e)
 
-    const message = e.response?.data?.message
-
-    if (message) {
-      error.value = message
-    } else if (e.response?.status === 401) {
+    if (e instanceof ApiError && e.status === 401 && e.message === 'Unexpected error') {
       error.value = 'Invalid username or password'
     } else {
-      error.value = e
+      error.value = e instanceof Error ? e.message : 'Unexpected error'
     }
   }
 }

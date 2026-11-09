@@ -1,9 +1,8 @@
-import http from '../../../api/http'
+import { api, requireData } from '../../../api/openapi'
 import type { CreateTopicDTO, ReplyCreateDTO, ReplyDTO, TopicDTO, UpdateTopicDTO } from './dto'
 
 export async function create_topic(dto: CreateTopicDTO): Promise<TopicDTO> {
-  const response = await http.post<TopicDTO>('/topics/', dto, { withCredentials: true })
-  return response.data
+  return requireData(await api.POST('/topics/', { body: dto }))
 }
 
 export async function get_topic_by_id(
@@ -11,22 +10,25 @@ export async function get_topic_by_id(
   offset: number = 0,
   limit: number = 10,
 ): Promise<TopicDTO> {
-  const response = await http.get<TopicDTO>(`/topics/${id}`, {
-    params: {
-      offset,
-      limit,
-    },
-    withCredentials: true,
-  })
-  return response.data
+  return requireData(
+    await api.GET('/topics/{topic_id}', {
+      params: {
+        path: { topic_id: id },
+        query: { offset, limit },
+      },
+    }),
+  )
 }
 
 export async function update_topic(id: number, dto: UpdateTopicDTO): Promise<TopicDTO> {
-  const response = await http.put<TopicDTO>(`/topics/${id}`, dto, { withCredentials: true })
-  return response.data
+  return requireData(
+    await api.PUT('/topics/{topic_id}', {
+      params: { path: { topic_id: id } },
+      body: dto,
+    }),
+  )
 }
 
 export async function create_reply(dto: ReplyCreateDTO): Promise<ReplyDTO> {
-  const response = await http.put<ReplyDTO>(`/replies/`, dto, { withCredentials: true })
-  return response.data
+  return requireData(await api.PUT('/replies/', { body: dto }))
 }

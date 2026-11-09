@@ -2,6 +2,7 @@
 import type { BranchCreateDTO, BranchDTO } from '../api/dto'
 import { onMounted, ref } from 'vue'
 import { create_branch, get_all_branches } from '../api/endpoints'
+import { ApiError } from '../../../api/openapi'
 
 import BaseButton from '../../../components/ui/BaseButton.vue'
 import BaseInput from '../../../components/ui/BaseInput.vue'
@@ -34,16 +35,10 @@ async function handle_create() {
     }
     let created_branch: BranchDTO = await create_branch(new_branch)
     success.value = `Branch ${created_branch.title} created`
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.log(e)
 
-    const detail = e.response?.data?.message
-
-    if (detail) {
-      error.value = detail
-    } else {
-      error.value = 'Unexpected error'
-    }
+    error.value = e instanceof ApiError ? e.message : 'Unexpected error'
   }
 }
 </script>

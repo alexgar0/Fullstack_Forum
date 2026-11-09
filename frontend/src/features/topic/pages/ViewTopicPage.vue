@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { create_reply, get_topic_by_id } from '../api/endpoints'
+import { ApiError } from '../../../api/openapi'
 import type { ReplyCreateDTO, TopicDTO } from '../api/dto'
 import BaseButton from '../../../components/ui/BaseButton.vue'
 import BaseTextArea from '../../../components/ui/BaseTextArea.vue'
@@ -76,14 +77,9 @@ async function send_reply() {
     setTimeout(() => {
       router.go(0)
     }, 1000)
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.log(e)
-    const detail = e.response?.data?.message
-    if (detail) {
-      reply_error.value = detail
-    } else {
-      reply_error.value = 'Unexpected error'
-    }
+    reply_error.value = e instanceof ApiError ? e.message : 'Unexpected error'
   }
 }
 
