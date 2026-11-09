@@ -1,15 +1,14 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-import uvicorn
 
-from forum.features.user.view import router as user_router
-from forum.features.topic.view import router as topic_router
+from forum.config import settings
+from forum.exceptions import register_exception_handlers
 from forum.features.branch.view import router as branch_router
 from forum.features.reply.view import router as reply_router
-
+from forum.features.topic.view import router as topic_router
+from forum.features.user.view import router as user_router
 from forum.log import initialize_logger
-from forum.exceptions import register_exception_handlers
-from forum.config import settings
 
 app = FastAPI(
     title="Forum API",
@@ -32,9 +31,9 @@ async def root() -> JSONResponse:
 def main() -> None:
     initialize_logger()
     if settings.dev:
-        uvicorn.run("forum.main:app", host="0.0.0.0", port=8080, reload=True)
+        uvicorn.run("forum.main:app", host="0.0.0.0", port=8080, reload=True)  # noqa: S104
     else:
-        uvicorn.run(app, host="0.0.0.0", port=8080)
+        uvicorn.run(app, host="0.0.0.0", port=8080)  # noqa: S104
 
 
 if __name__ == "__main__":

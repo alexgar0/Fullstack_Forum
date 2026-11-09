@@ -1,7 +1,8 @@
 from datetime import datetime
-from forum.features.common.schemas import BaseEntityDTO, CreatedAtDTO, ViewsDTO
+
 from pydantic import BaseModel
 
+from forum.features.common.schemas import BaseEntityDTO, CreatedAtDTO, ViewsDTO
 from forum.features.user.database.models import Role
 
 

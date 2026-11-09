@@ -1,22 +1,21 @@
-from datetime import datetime
-from typing import Optional, Tuple
+from datetime import UTC, datetime
+
 from sqlalchemy.orm import Session
 
+from forum.config import settings
 from forum.exceptions import (
     AppException,
     ExistingResourceError,
     NotFoundError,
     PermissionDeniedError,
 )
+from forum.features.user.database.models import Role, User
+from forum.features.user.database.repo import UserRepo
 from forum.features.user.schemas import UserCreate, UserDTO
 from forum.features.user.security import hash_password, verify_password
-from forum.features.user.database.models import User, Role
-from forum.features.user.database.repo import UserRepo
-
-from forum.config import settings
 
 
-def password_complexity_check(password: str) -> Tuple[bool, str]:
+def password_complexity_check(password: str) -> tuple[bool, str]:
     if len(password) < 8:
         return False, "Password must be at least 8 characters long"
     if not any(char.isupper() for char in password):
@@ -33,7 +32,7 @@ class PasswordTooWeakError(AppException):
         super().__init__(message, status_code=422)
 
 
-class WrongUsernameLength(AppException):
+class WrongUsernameLengthError(AppException):
     def __init__(
         self,
         message: str = f"Username length must be beetween {settings.username_length_bounds[0]} and {settings.username_length_bounds[1]} characters long",
@@ -41,12 +40,12 @@ class WrongUsernameLength(AppException):
         super().__init__(message, status_code=422)
 
 
-class EmailAlreadyRegistered(ExistingResourceError):
+class EmailAlreadyRegisteredError(ExistingResourceError):
     def __init__(self, message: str = "Email is already registered"):
         super().__init__(message)
 
 
-class UsernameAlreadyTaken(ExistingResourceError):
+class UsernameAlreadyTakenError(ExistingResourceError):
     def __init__(self, message: str = "Username is already taken"):
         super().__init__(message)
 
@@ -69,17 +68,17 @@ class UserService:
             len(user.username) < settings.username_length_bounds[0]
             or len(user.username) > settings.username_length_bounds[1]
         ):
-            raise WrongUsernameLength()
+            raise WrongUsernameLengthError
 
         pwd_check = password_complexity_check(user.password)
         if not pwd_check[0]:
             raise PasswordTooWeakError(pwd_check[1])
 
         if self.repo.get_user_by_email(user.email):
-            raise EmailAlreadyRegistered()
+            raise EmailAlreadyRegisteredError
 
         if self.repo.get_user_by_username(user.username):
-            raise UsernameAlreadyTaken()
+            raise UsernameAlreadyTakenError
 
         hashed_pass = hash_password(user.password)
         db_user = User(
@@ -91,7 +90,7 @@ class UserService:
         orm_user = self.repo.create(db_user)
         return UserDTO.model_validate(orm_user)
 
-    def authenticate_user(self, username: str, password: str) -> Optional[UserDTO]:
+    def authenticate_user(self, username: str, password: str) -> UserDTO | None:
         user = self.repo.get_user_by_username(username)
         if not user:
             user = self.repo.get_user_by_email(username)
@@ -113,14 +112,14 @@ class UserService:
         return UserDTO.model_validate(orm_user)
 
     def update_last_activity(self, user_id: int) -> UserDTO:
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
         orm_user = self.repo.update(user_id, last_activity=now)
         if not orm_user:
             raise NotFoundError("User not found")
         return UserDTO.model_validate(orm_user)
 
     def update_last_login(self, user_id: int) -> UserDTO:
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
         orm_user = self.repo.update(user_id, last_login=now)
         if not orm_user:
             raise NotFoundError("User not found")

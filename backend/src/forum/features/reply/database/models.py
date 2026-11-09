@@ -2,16 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from forum.features.common.entities import (
-    CreatedAtEntity,
-    EditableEntity,
-    ViewableEntity,
-    OwnableEntity,
-)
-from sqlalchemy import Column, ForeignKey, Integer, Text
+from sqlalchemy import ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from forum.database import Base
+from forum.features.common.entities import (
+    EditableEntity,
+    OwnableEntity,
+    ViewableEntity,
+)
 
 __all__ = ["Reply"]
 
@@ -27,9 +26,8 @@ class Reply(Base, ViewableEntity, OwnableEntity, EditableEntity):
     topic_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("topics.id", ondelete="CASCADE"), nullable=False
     )
-    topic: Mapped["Topic"] = relationship("Topic", back_populates="replies")
+    topic: Mapped[Topic] = relationship("Topic", back_populates="replies")
 
-    
     def __init__(self, content: str, topic_id: int, creator_id: int) -> None:
         self.content = content
         self.topic_id = topic_id

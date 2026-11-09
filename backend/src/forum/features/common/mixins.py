@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime  # noqa: TC003
 from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import DateTime, ForeignKey, Integer, func
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
-
 
 if TYPE_CHECKING:
     from forum.features.user.database.models import User
@@ -23,7 +22,7 @@ class OwnableByUserMixin:
     )
 
     @declared_attr
-    def creator(cls: Any) -> Mapped["User"]:
+    def creator(cls: Any) -> Mapped[User]:
         return relationship("User", back_populates=f"created_{cls.__tablename__}")
 
     @property
@@ -36,12 +35,14 @@ class CreatedAtMixin:
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
+
 class EditableMixin:
     last_edited_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
     )
+
 
 class ViewsMixin:
     view_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

@@ -1,26 +1,23 @@
-from datetime import timedelta, datetime, timezone
-from typing import Generator, List, Optional
-from fastapi import Depends
-from forum.features.common.repo import PaginationResult
-from forum.features.common.schemas import PaginationDTO
-from forum.features.reply.database.service import ReplyService
+from collections.abc import Generator
+from datetime import UTC, datetime, timedelta
+
 from sqlalchemy.orm import Session
 
 from forum.config import settings
-from forum.database import get_db
 from forum.exceptions import InvalidLengthError, NotFoundError, PermissionDeniedError
-
+from forum.features.common.dependencies import DatabaseDep
+from forum.features.common.repo import PaginationResult
 from forum.features.query import PaginationQuery
-from forum.features.user.database.models import User
+from forum.features.reply.service import ReplyService
+from forum.features.topic.database.models import Topic
+from forum.features.topic.database.repo import TopicRepo
 from forum.features.topic.schemas import (
     FullTopicDTO,
     SmallTopicDTO,
     TopicCreateDTO,
     TopicUpdateDTO,
 )
-
-from forum.features.topic.database.repo import TopicRepo
-from forum.features.topic.database.models import Topic
+from forum.features.user.database.models import User
 
 
 class TopicService:
@@ -28,13 +25,15 @@ class TopicService:
         self.db = db
         self.repo = TopicRepo(db)
 
-    def get_topic(self, topic_id: int, pagination: Optional[PaginationQuery] = None) -> FullTopicDTO:
+    def get_topic(
+        self, topic_id: int, pagination: PaginationQuery | None = None
+    ) -> FullTopicDTO:
         topic = self.repo.get_by_id(topic_id)
         if not topic:
             raise NotFoundError("Topic not found")
         self.repo.increment_views(topic_id)
         dto = FullTopicDTO.model_validate(topic)
-        
+
         reply_service = ReplyService(self.db)
         pagination_result = reply_service.get_by_topic(topic_id, pagination=pagination)
         dto.replies = list(pagination_result.items)
@@ -42,15 +41,23 @@ class TopicService:
         return dto
 
     def get_small_topics_from_branch_with_pagination(
-        self, branch_id: int, pagination: Optional[PaginationQuery] = None
+        self, branch_id: int, pagination: PaginationQuery | None = None
     ) -> PaginationResult[SmallTopicDTO]:
-        active_topics = self.repo.get_page(Topic.branch_id == branch_id, Topic.is_active, pagination=pagination)
+        active_topics = self.repo.get_page(
+            Topic.branch_id == branch_id, Topic.is_active, pagination=pagination
+        )
 
-        result = []
-        for orm_topic in list(active_topics.items):
-            result.append(SmallTopicDTO.model_validate(orm_topic))
+        result = [
+            SmallTopicDTO.model_validate(orm_topic)
+            for orm_topic in list(active_topics.items)
+        ]
 
-        return PaginationResult(items=result, current_offset=active_topics.current_offset, total_items=active_topics.total_items, limit=active_topics.limit)
+        return PaginationResult(
+            items=result,
+            current_offset=active_topics.current_offset,
+            total_items=active_topics.total_items,
+            limit=active_topics.limit,
+        )
 
     def create_topic(self, user: User, topic: TopicCreateDTO) -> FullTopicDTO:
         if not (
@@ -85,7 +92,7 @@ class TopicService:
             raise PermissionDeniedError("Only the creator or admin can edit the topic")
 
         if (
-            datetime.now(timezone.utc) - topic.created_at
+            datetime.now(UTC) - topic.created_at
             > timedelta(minutes=settings.topic_edition_timeframe_minutes)
             and not user.is_admin
         ):
@@ -110,8 +117,8 @@ class TopicService:
 
 
 def get_topic_service(
-    db: Session = Depends(get_db),
-) -> Generator[TopicService, None, None]:
+    db: DatabaseDep,
+) -> Generator[TopicService]:
     try:
         topic_service = TopicService(db)
         yield topic_service

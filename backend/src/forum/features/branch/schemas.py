@@ -1,4 +1,5 @@
-from typing import List, Optional
+from pydantic import BaseModel, ConfigDict, Field
+
 from forum.features.common.schemas import (
     BaseEntityDTO,
     CreatedAtDTO,
@@ -6,28 +7,26 @@ from forum.features.common.schemas import (
     PaginationDTO,
     ViewsDTO,
 )
-from pydantic import BaseModel, ConfigDict
-
 from forum.features.topic.schemas import SmallTopicDTO
 
 
 class BranchCreateDTO(BaseModel):
     title: str
-    description: Optional[str] = None
-    parent_id: Optional[int] = None
+    description: str | None = None
+    parent_id: int | None = None
 
 
 class BranchDTO(BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO):
     title: str
-    description: Optional[str] = None
+    description: str | None = None
     is_active: bool
-    parent_id: Optional[int] = None
+    parent_id: int | None = None
     topic_count: int
-    children_ids: List[int] = []
+    children_ids: list[int] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class BranchWithSmallTopicsDTO(BranchDTO):
-    small_topics: List[SmallTopicDTO]
+    small_topics: list[SmallTopicDTO]
     pagination: PaginationDTO

@@ -1,12 +1,12 @@
+from typing import Annotated
+
+import jwt
 from fastapi import Depends, HTTPException, Request, status
 from jose import JWTError
-import jwt
-from sqlalchemy.orm import Session
 
 from forum.config import settings
-from forum.database import get_db
-from forum.features.user.database.service import UserService
 from forum.features.user.database.models import User
+from forum.features.user.dependencies import UserServiceDep
 
 
 def get_token_from_cookie(request: Request) -> str:
@@ -18,13 +18,11 @@ def get_token_from_cookie(request: Request) -> str:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    if token.startswith("Bearer "):
-        token = token[7:]
-    return token
+    return token.removeprefix("Bearer ")
 
 
 def get_current_user(
-    token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)
+    token: Annotated[str, Depends(get_token_from_cookie)], user_service: UserServiceDep
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -40,16 +38,15 @@ def get_current_user(
         username: str | None = payload.get("sub")
         if username is None:
             raise credentials_exception
-    except JWTError:
-        raise credentials_exception
-    except jwt.ExpiredSignatureError:
+    except JWTError as exc:
+        raise credentials_exception from exc
+    except jwt.ExpiredSignatureError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired",
             headers={"WWW-Authenticate": "Bearer"},
-        )
+        ) from exc
 
-    user_service = UserService(db)
     user = user_service.repo.get_user_by_username(username=username)
     if user is None:
         raise credentials_exception
@@ -57,16 +54,14 @@ def get_current_user(
 
 
 def get_current_user_for_activity(
-    token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)
+    user: Annotated[User, Depends(get_current_user)], user_service: UserServiceDep
 ) -> User:
-    user = get_current_user(token=token, db=db)
-    user_service = UserService(db)
     user_service.update_last_activity(user.id)
     return user
 
 
 def get_current_user_from_refresh_token(
-    token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)
+    token: Annotated[str, Depends(get_token_from_cookie)], user_service: UserServiceDep
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -82,10 +77,9 @@ def get_current_user_from_refresh_token(
         username: str | None = payload.get("sub")
         if username is None:
             raise credentials_exception
-    except JWTError:
-        raise credentials_exception
+    except JWTError as exc:
+        raise credentials_exception from exc
 
-    user_service = UserService(db)
     user = user_service.repo.get_user_by_username(username=username)
     if user is None:
         raise credentials_exception

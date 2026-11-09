@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, Optional
+from datetime import UTC, datetime, timedelta
+from typing import Any
+
 from jose import jwt
 from passlib.context import CryptContext
 
@@ -17,34 +18,28 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def create_access_token(
-    data: Dict[str, Any], expires_delta: Optional[timedelta] = None
+    data: dict[str, Any], expires_delta: timedelta | None = None
 ) -> str:
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
+        expire = datetime.now(UTC) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(
+        expire = datetime.now(UTC) + timedelta(
             minutes=settings.access_token_expire_minutes
         )
     to_encode.update({"exp": int(expire.timestamp()), "token_type": "access"})
-    encoded_jwt = jwt.encode(
-        to_encode, settings.secret_key, algorithm=settings.algorithm
-    )
-    return encoded_jwt
+    return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
 
 
 def create_refresh_token(
-    data: Dict[str, Any], expires_delta: Optional[timedelta] = None
+    data: dict[str, Any], expires_delta: timedelta | None = None
 ) -> str:
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
+        expire = datetime.now(UTC) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(
+        expire = datetime.now(UTC) + timedelta(
             minutes=settings.refresh_token_expire_minutes
         )
     to_encode.update({"exp": int(expire.timestamp()), "token_type": "refresh"})
-    encoded_jwt = jwt.encode(
-        to_encode, settings.secret_key, algorithm=settings.algorithm
-    )
-    return encoded_jwt
+    return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)

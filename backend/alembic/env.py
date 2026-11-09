@@ -1,24 +1,16 @@
-import os
 import sys
+from logging.config import fileConfig
 from pathlib import Path
 
-from logging.config import fileConfig
-
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
-
 
 # Add the parent directory of 'src' to the path, so that 'src' is treated as a package
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from forum.database import Base
 from forum.config import settings
-import forum.features.user.database.models
-import forum.features.topic.database.models
-import forum.features.branch.database.models
-import forum.features.reply.database.models
+from forum.database import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -1,13 +1,13 @@
-from typing import Generator, List, Optional
-from fastapi import Depends
-from forum.database import get_db
-from forum.exceptions import InvalidLengthError
-from forum.features.common.repo import PaginationResult
-from forum.features.query import PaginationQuery
-from forum.features.reply.database.models import Reply
+from collections.abc import Generator
+
 from sqlalchemy.orm import Session
 
 from forum.config import settings
+from forum.exceptions import InvalidLengthError
+from forum.features.common.dependencies import DatabaseDep
+from forum.features.common.repo import PaginationResult
+from forum.features.query import PaginationQuery
+from forum.features.reply.database.models import Reply
 from forum.features.reply.database.repo import ReplyRepo
 from forum.features.reply.schemas import ReplyCreateDTO, ReplyDTO
 from forum.features.user.database.models import User
@@ -15,7 +15,7 @@ from forum.features.user.database.models import User
 
 class ReplyService:
     def __init__(self, db: Session):
-            self.repo = ReplyRepo(db)
+        self.repo = ReplyRepo(db)
 
     def create_reply(self, user: User, reply: ReplyCreateDTO) -> ReplyDTO:
         if not (
@@ -28,28 +28,36 @@ class ReplyService:
                 max_length=settings.reply_content_length_bounds[1],
                 message=f"Reply must be between {settings.reply_content_length_bounds[0]} and {settings.reply_content_length_bounds[1]} characters long",
             )
-            
+
         new_reply = Reply(
-            content=reply.content,
-            topic_id=reply.topic_id,
-            creator_id=user.id
+            content=reply.content, topic_id=reply.topic_id, creator_id=user.id
         )
         created = self.repo.create(new_reply)
         return ReplyDTO.model_validate(created)
-    
-    def get_by_topic(self, topic_id: int, pagination: Optional[PaginationQuery] = None) -> PaginationResult[ReplyDTO]:
+
+    def get_by_topic(
+        self, topic_id: int, pagination: PaginationQuery | None = None
+    ) -> PaginationResult[ReplyDTO]:
         # orm_models = self.repo.get_by_topic(topic_id, pagination=pagination)
-        orm_models = self.repo.get_page(Reply.topic_id == topic_id, pagination=pagination)
-        
-        result = []
-        for orm_model in orm_models.items:
-            result.append(ReplyDTO.model_validate(orm_model))
-        return PaginationResult(items=result, total_items=orm_models.total_items, current_offset=orm_models.current_offset, limit=orm_models.limit)
-    
-    
+        orm_models = self.repo.get_page(
+            Reply.topic_id == topic_id, pagination=pagination
+        )
+
+        result = [
+            ReplyDTO.model_validate(orm_model) for orm_model in list(orm_models.items)
+        ]
+
+        return PaginationResult(
+            items=result,
+            total_items=orm_models.total_items,
+            current_offset=orm_models.current_offset,
+            limit=orm_models.limit,
+        )
+
+
 def get_reply_service(
-    db: Session = Depends(get_db),
-) -> Generator[ReplyService, None, None]:
+    db: DatabaseDep,
+) -> Generator[ReplyService]:
     try:
         reply_service = ReplyService(db)
         yield reply_service

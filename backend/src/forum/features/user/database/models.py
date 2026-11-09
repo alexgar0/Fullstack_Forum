@@ -1,31 +1,30 @@
 from __future__ import annotations
 
-from datetime import datetime
-from enum import Enum
-from typing import TYPE_CHECKING, Optional
+import enum
+from datetime import datetime  # noqa: TC003
+from typing import TYPE_CHECKING
 
-
-from forum.features.common.entities import CreatedAtEntity, ViewableEntity
 from sqlalchemy import (
+    DateTime,
+    Enum as SqlEnum,
     String,
     Text,
-    Enum as SqlEnum,
-    DateTime,
     func,
 )
 from sqlalchemy.orm import DynamicMapped, Mapped, mapped_column, relationship
 
 from forum.database import Base
+from forum.features.common.entities import CreatedAtEntity, ViewableEntity
 
 __all__ = ["Role", "User"]
 
 if TYPE_CHECKING:
-    from forum.features.topic.database.models import Topic
     from forum.features.branch.database.models import Branch
     from forum.features.reply.database.models import Reply
+    from forum.features.topic.database.models import Topic
 
 
-class Role(str, Enum):
+class Role(enum.StrEnum):
     admin = "admin"
     premium = "premium"
     user = "user"
@@ -41,7 +40,7 @@ class User(Base, ViewableEntity, CreatedAtEntity):
     email: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String, nullable=False)
     role: Mapped[Role] = mapped_column(SqlEnum(Role), default=Role.user, nullable=False)
-    bio: Mapped[Optional[str]] = mapped_column(Text)
+    bio: Mapped[str | None] = mapped_column(Text)
     last_login: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -58,7 +57,7 @@ class User(Base, ViewableEntity, CreatedAtEntity):
         email: str,
         role: Role,
         hashed_password: str,
-        bio: Optional[str] = None,
+        bio: str | None = None,
     ) -> None:
         self.username = username
         self.email = email
@@ -66,13 +65,13 @@ class User(Base, ViewableEntity, CreatedAtEntity):
         self.role = role
         self.hashed_password = hashed_password
 
-    created_topics: DynamicMapped["Topic"] = relationship(
+    created_topics: DynamicMapped[Topic] = relationship(
         "Topic", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic"
     )
-    created_branches: DynamicMapped["Branch"] = relationship(
+    created_branches: DynamicMapped[Branch] = relationship(
         "Branch", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic"
     )
-    created_replies: DynamicMapped["Reply"] = relationship(
+    created_replies: DynamicMapped[Reply] = relationship(
         "Reply", back_populates="creator", cascade="all, delete-orphan", lazy="dynamic"
     )
 

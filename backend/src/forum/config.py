@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Tuple
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,11 +11,11 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     refresh_token_expire_minutes: int = 60 * 24 * 7  # 7 Days
 
-    username_length_bounds: Tuple[int, int] = (4, 15)
-    branch_name_length_bounds: Tuple[int, int] = (2, 30)
-    topic_title_length_bounds: Tuple[int, int] = (5, 60)
+    username_length_bounds: tuple[int, int] = (4, 15)
+    branch_name_length_bounds: tuple[int, int] = (2, 30)
+    topic_title_length_bounds: tuple[int, int] = (5, 60)
     topic_edition_timeframe_minutes: int = 30
-    reply_content_length_bounds: Tuple[int, int] = (1, 10000)
+    reply_content_length_bounds: tuple[int, int] = (1, 10000)
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -29,8 +29,8 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Gets the application settings.
 
-    This function returns a cached instance of the Settings class, ensuring that the settings
-    are loaded only once.
+    This function returns a cached instance of the Settings class,
+    ensuring that the settings are loaded only once.
 
     Returns:
         The application settings.

@@ -1,4 +1,5 @@
 import math
+
 import pytest
 
 create_branch_mock = {

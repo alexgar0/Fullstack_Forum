@@ -1,5 +1,7 @@
 from datetime import datetime
-from typing import List, Optional
+
+from pydantic import BaseModel
+
 from forum.features.common.schemas import (
     BaseEntityDTO,
     CreatedAtDTO,
@@ -8,7 +10,6 @@ from forum.features.common.schemas import (
     ViewsDTO,
 )
 from forum.features.reply.schemas import ReplyDTO
-from pydantic import BaseModel
 
 
 class TopicCreateDTO(BaseModel):
@@ -33,5 +34,5 @@ class SmallTopicDTO(BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO):
 class FullTopicDTO(SmallTopicDTO):
     is_active: bool
     description: str | None = None
-    replies: List[ReplyDTO]
-    pagination: Optional[PaginationDTO] = None
+    replies: list[ReplyDTO]
+    pagination: PaginationDTO | None = None

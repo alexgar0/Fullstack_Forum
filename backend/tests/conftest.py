@@ -1,27 +1,29 @@
 from collections.abc import Generator
 
-from forum.features.branch.database.repo import BranchRepo
-from forum.features.branch.database.service import BranchService
-from forum.features.branch.schemas import BranchCreateDTO
-from forum.features.topic.database.repo import TopicRepo
-from forum.features.topic.database.service import TopicService
-from forum.features.topic.schemas import TopicCreateDTO
-from httpx import ASGITransport, AsyncClient
 import pytest
 import pytest_asyncio
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from forum.features.user.session import get_current_user, get_current_user_for_activity
-from forum.features.user.database.models import Role, User
-from forum.main import app
-from forum.database import Base, get_db
-from forum.config import settings
 from testcontainers.community.postgres import PostgresContainer
+
+from forum.database import Base, get_db
+from forum.features.branch.database.repo import BranchRepo
+from forum.features.branch.schemas import BranchCreateDTO
+from forum.features.branch.service import BranchService
+from forum.features.topic.database.repo import TopicRepo
+from forum.features.topic.schemas import TopicCreateDTO
+from forum.features.topic.service import TopicService
+from forum.features.user.database.models import Role, User
+from forum.features.user.session import get_current_user, get_current_user_for_activity
+from forum.main import app
+
 
 @pytest.fixture(scope="session")
 def postgres() -> Generator[PostgresContainer]:
     with PostgresContainer("postgres:17") as container:
         yield container
+
 
 @pytest.fixture(scope="session")
 def db_engine(postgres: PostgresContainer):
@@ -36,7 +38,7 @@ def db_engine(postgres: PostgresContainer):
 def db_session(db_engine):
     connection = db_engine.connect()
     transaction = connection.begin()
-    SessionLocal = sessionmaker(bind=connection)
+    SessionLocal = sessionmaker(bind=connection)  # noqa: N806
     session = SessionLocal()
 
     yield session
@@ -77,49 +79,60 @@ def override_auth(test_user_admin):
 
 @pytest.fixture
 def branch_repo(db_session):
-    yield BranchRepo(db_session)
+    return BranchRepo(db_session)
 
 
 @pytest.fixture
 def branch_service(db_session):
-    yield BranchService(db_session)
-    
+    return BranchService(db_session)
+
+
 @pytest.fixture
 def mock_branch_create_dto():
     mock_create = {
-        'title': 'mock_branch title',
-        'description': 'mock_branch description'
+        "title": "mock_branch title",
+        "description": "mock_branch description",
     }
-    yield BranchCreateDTO.model_validate(mock_create)
+    return BranchCreateDTO.model_validate(mock_create)
+
 
 @pytest.fixture
 def mock_branch(branch_service, test_user_admin, mock_branch_create_dto):
-    branch = branch_service.create_branch(user=test_user_admin, branch=mock_branch_create_dto)
+    branch = branch_service.create_branch(
+        user=test_user_admin, branch=mock_branch_create_dto
+    )
     assert branch is not None
-    yield branch
+    return branch
+
 
 @pytest.fixture
 def topic_repo(db_session):
-    yield TopicRepo(db_session)
-    
+    return TopicRepo(db_session)
+
+
 @pytest.fixture
 def topic_service(db_session):
-    yield TopicService(db_session)
+    return TopicService(db_session)
+
 
 @pytest.fixture
 def mock_topic_create_dto(mock_branch):
     mock_create = {
-        'title': 'mock_topic title',
-        'description': 'mock_topic description',
-        'branch_id': mock_branch.id
+        "title": "mock_topic title",
+        "description": "mock_topic description",
+        "branch_id": mock_branch.id,
     }
-    yield TopicCreateDTO.model_validate(mock_create)
+    return TopicCreateDTO.model_validate(mock_create)
+
 
 @pytest.fixture
 def mock_topic(topic_service, test_user_admin, mock_topic_create_dto):
-    topic = topic_service.create_topic(user=test_user_admin, topic=mock_topic_create_dto)
+    topic = topic_service.create_topic(
+        user=test_user_admin, topic=mock_topic_create_dto
+    )
     assert topic is not None
-    yield topic
+    return topic
+
 
 @pytest_asyncio.fixture
 async def client():

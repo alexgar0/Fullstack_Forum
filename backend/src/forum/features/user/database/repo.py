@@ -1,11 +1,8 @@
-from typing import Optional
-
-from forum.features.common.repo import CRUDRepo, ViewableRepo
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
 from forum.exceptions import ExistingResourceError
-
+from forum.features.common.repo import CRUDRepo, ViewableRepo
 from forum.features.user.database.models import User
 
 
@@ -16,16 +13,16 @@ class UserRepo(CRUDRepo[User], ViewableRepo[User]):
     def create(self, entity: User) -> User:
         try:
             return super().create(entity)
-        except IntegrityError as e:
+        except IntegrityError as exc:
             self.db.rollback()
-            if "users_email" in str(e.orig):
-                raise ExistingResourceError("Email already registered")
-            if "users_username" in str(e.orig):
-                raise ExistingResourceError("Username already taken")
+            if "users_email" in str(exc.orig):
+                raise ExistingResourceError("Email already registered") from exc
+            if "users_username" in str(exc.orig):
+                raise ExistingResourceError("Username already taken") from exc
             raise
 
-    def get_user_by_email(self, email: str) -> Optional[User]:
+    def get_user_by_email(self, email: str) -> User | None:
         return self.db.query(User).filter(User.email == email).first()
 
-    def get_user_by_username(self, username: str) -> Optional[User]:
+    def get_user_by_username(self, username: str) -> User | None:
         return self.db.query(User).filter(User.username == username).first()

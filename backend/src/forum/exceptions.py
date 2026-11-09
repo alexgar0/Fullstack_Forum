@@ -1,15 +1,15 @@
-from typing import Dict, Any, Optional
+from typing import Any
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 
-class AppException(Exception):
+class AppException(Exception):  # noqa: N818
     def __init__(
         self,
         message: str,
         status_code: int = 400,
-        details: Optional[Dict[str, Any]] = None,
+        details: dict[str, Any] | None = None,
     ):
         self.message = message
         self.status_code = status_code
@@ -34,7 +34,7 @@ class NotFoundError(AppException):
     def __init__(
         self,
         message: str = "Resource not found",
-        details: Optional[Dict[str, Any]] = None,
+        details: dict[str, Any] | None = None,
     ):
         super().__init__(message, status_code=404, details=details)
 
@@ -43,7 +43,7 @@ class PermissionDeniedError(AppException):
     def __init__(
         self,
         message: str = "Permission denied",
-        details: Optional[Dict[str, Any]] = None,
+        details: dict[str, Any] | None = None,
     ):
         super().__init__(message, status_code=403, details=details)
 
@@ -52,7 +52,7 @@ class ExistingResourceError(AppException):
     def __init__(
         self,
         message: str = "Resource already exists",
-        details: Optional[Dict[str, Any]] = None,
+        details: dict[str, Any] | None = None,
     ):
         super().__init__(message, status_code=409, details=details)
 
@@ -61,9 +61,9 @@ class InvalidLengthError(AppException):
     def __init__(
         self,
         message: str = "Invalid content length",
-        min_length: Optional[int] = None,
-        max_length: Optional[int] = None,
-        details: Optional[Dict[str, Any]] = None,
+        min_length: int | None = None,
+        max_length: int | None = None,
+        details: dict[str, Any] | None = None,
     ):
         error_details = details or {}
         if min_length is not None:
