@@ -11,7 +11,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import DynamicMapped, Mapped, backref, mapped_column, relationship
 
-from forum.database import Base
+from forum.core.database import Base
 from forum.features.common.entities import (
     CreatedAtEntity,
     OwnableEntity,

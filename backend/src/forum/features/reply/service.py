@@ -2,8 +2,8 @@ from collections.abc import Generator
 
 from sqlalchemy.orm import Session
 
-from forum.config import settings
-from forum.exceptions import InvalidLengthError
+from forum.core.config import settings
+from forum.core.exceptions import InvalidLengthError
 from forum.features.common.dependencies import DatabaseDep
 from forum.features.common.repo import PaginationResult
 from forum.features.query import PaginationQuery

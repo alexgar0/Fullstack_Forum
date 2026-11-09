@@ -2,8 +2,8 @@ from collections.abc import Generator
 
 from sqlalchemy.orm import Session
 
-from forum.config import settings
-from forum.exceptions import AppException, NotFoundError, PermissionDeniedError
+from forum.core.config import settings
+from forum.core.exceptions import AppException, NotFoundError, PermissionDeniedError
 from forum.features.branch.database.models import Branch
 from forum.features.branch.database.repo import BranchRepo
 from forum.features.branch.schemas import (

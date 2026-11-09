@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-from forum.config import settings
+from forum.core.config import settings
 from forum.features.user.dependencies import UserServiceDep
 from forum.features.user.schemas import Token, UserCreate, UserDTO
 from forum.features.user.security import create_access_token, create_refresh_token

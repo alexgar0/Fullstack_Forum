@@ -4,7 +4,7 @@ from typing import Any
 from jose import jwt
 from passlib.context import CryptContext
 
-from forum.config import settings
+from forum.core.config import settings
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 

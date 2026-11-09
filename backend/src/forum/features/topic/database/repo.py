@@ -1,7 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from forum.exceptions import ExistingResourceError, NotFoundError
+from forum.core.exceptions import ExistingResourceError, NotFoundError
 from forum.features.common.repo import CRUDRepo, OwnableRepo, ViewableRepo
 from forum.features.topic.database.models import Topic
 

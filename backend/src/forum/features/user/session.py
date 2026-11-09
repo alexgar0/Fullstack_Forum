@@ -4,7 +4,7 @@ import jwt
 from fastapi import Depends, HTTPException, Request, status
 from jose import JWTError
 
-from forum.config import settings
+from forum.core.config import settings
 from forum.features.user.database.models import User
 from forum.features.user.dependencies import UserServiceDep
 

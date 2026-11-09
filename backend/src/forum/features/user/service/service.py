@@ -2,8 +2,8 @@ from datetime import UTC, datetime
 
 from sqlalchemy.orm import Session
 
-from forum.config import settings
-from forum.exceptions import (
+from forum.core.config import settings
+from forum.core.exceptions import (
     AppException,
     ExistingResourceError,
     NotFoundError,

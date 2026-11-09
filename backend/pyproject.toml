@@ -37,7 +37,7 @@ strict = true
 plugins = ["sqlalchemy.ext.mypy.plugin"]
 
 [project.scripts]
-start = "forum.main:main"
+start = "forum.core.main:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

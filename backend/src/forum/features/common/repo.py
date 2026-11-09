@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, TypeVar
+from typing import Any
 
 from sqlalchemy import ColumnExpressionArgument, func, select, update
 from sqlalchemy.orm import Session
@@ -9,8 +9,6 @@ from forum.features.common.entities import BaseEntity, OwnableEntity, ViewableEn
 from forum.features.common.schemas import PaginationDTO
 from forum.features.query import PaginationQuery
 from forum.features.user.database.models import User
-
-X = TypeVar("X")
 
 
 @dataclass

@@ -7,7 +7,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from testcontainers.community.postgres import PostgresContainer
 
-from forum.database import Base, get_db
+from forum.core.database import Base, get_db
+from forum.core.main import app
 from forum.features.branch.database.repo import BranchRepo
 from forum.features.branch.schemas import BranchCreateDTO
 from forum.features.branch.service import BranchService
@@ -16,7 +17,6 @@ from forum.features.topic.schemas import TopicCreateDTO
 from forum.features.topic.service import TopicService
 from forum.features.user.database.models import Role, User
 from forum.features.user.session import get_current_user, get_current_user_for_activity
-from forum.main import app
 
 
 @pytest.fixture(scope="session")

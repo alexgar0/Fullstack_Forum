@@ -9,8 +9,8 @@ from alembic import context
 # Add the parent directory of 'src' to the path, so that 'src' is treated as a package
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from forum.config import settings
-from forum.database import Base
+from forum.core.config import settings
+from forum.core.database import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

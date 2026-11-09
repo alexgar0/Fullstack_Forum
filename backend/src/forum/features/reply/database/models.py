@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from forum.database import Base
+from forum.core.database import Base
 from forum.features.common.entities import (
     EditableEntity,
     OwnableEntity,
