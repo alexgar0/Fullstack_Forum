@@ -11,7 +11,7 @@ http.interceptors.response.use(
   (error) => {
     console.error('API error:', error)
     throw error
-  }
+  },
 )
 
 export default http

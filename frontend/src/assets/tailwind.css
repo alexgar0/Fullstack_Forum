@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Stack+Sans+Text:wght@200..700&display=swap');
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* твоя цветовая схема */
@@ -18,6 +18,6 @@
 @layer base {
   body {
     font-family: 'Stack Sans Text', sans-serif;
-     @apply bg-surface text-text-primary;
+    @apply bg-surface text-text-primary;
   }
 }

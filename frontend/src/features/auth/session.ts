@@ -1,4 +1,4 @@
-import { ref } from "vue";
-import type { UserDTO } from "./api/dto";
+import { ref } from 'vue'
+import type { UserDTO } from './api/dto'
 
-export const user = ref<UserDTO>();
+export const user = ref<UserDTO>()

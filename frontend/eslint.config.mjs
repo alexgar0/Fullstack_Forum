@@ -1,4 +1,3 @@
-
 import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
 import { withVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
@@ -6,12 +5,7 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default withVueTs(
   {
-    ignores: [
-      '**/dist/**',
-      '**/coverage/**',
-      '**/node_modules/**',
-      '**/*.d.ts',
-    ],
+    ignores: ['**/dist/**', '**/coverage/**', '**/node_modules/**', '**/*.d.ts'],
   },
 
   js.configs.recommended,
@@ -23,7 +17,7 @@ export default withVueTs(
       // General
       'no-console': 'warn',
       'no-debugger': 'error',
-      'eqeqeq': ['error', 'always'],
+      eqeqeq: ['error', 'always'],
 
       // TypeScript
       '@typescript-eslint/no-unused-vars': [

@@ -1,22 +1,22 @@
 export interface BaseEntityDTO {
-    id: number;
+  id: number
 }
 
 export interface ViewsDTO {
-    view_count: number;
+  view_count: number
 }
 
 export interface OwnableDTO {
-    creator_id: number;
-    creator_username: string;
+  creator_id: number
+  creator_username: string
 }
 
 export interface CreatedAtDTO {
-    created_at: Date;
+  created_at: Date
 }
 
-export interface  PaginationDTO {
-    current_offset: number;
-    total_items: number;
-    limit: number;
+export interface PaginationDTO {
+  current_offset: number
+  total_items: number
+  limit: number
 }

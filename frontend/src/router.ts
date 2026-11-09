@@ -13,7 +13,7 @@ const router = createRouter({
     },
     ...auth_router,
     ...branch_router,
-    ...topic_router
+    ...topic_router,
   ],
 })
 
