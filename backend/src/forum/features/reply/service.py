@@ -1,10 +1,7 @@
-from collections.abc import Generator
-
 from sqlalchemy.orm import Session
 
 from forum.core.config import settings
 from forum.core.exceptions import InvalidLengthError
-from forum.features.common.dependencies import DatabaseDep
 from forum.features.common.repo import PaginationResult
 from forum.features.query import PaginationQuery
 from forum.features.reply.models import Reply
@@ -53,13 +50,3 @@ class ReplyService:
             current_offset=orm_models.current_offset,
             limit=orm_models.limit,
         )
-
-
-def get_reply_service(
-    db: DatabaseDep,
-) -> Generator[ReplyService]:
-    try:
-        reply_service = ReplyService(db)
-        yield reply_service
-    finally:
-        pass

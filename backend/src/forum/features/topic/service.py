@@ -1,4 +1,3 @@
-from collections.abc import Generator
 from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.orm import Session
@@ -9,7 +8,6 @@ from forum.core.exceptions import (
     NotFoundError,
     PermissionDeniedError,
 )
-from forum.features.common.dependencies import DatabaseDep
 from forum.features.common.repo import PaginationResult
 from forum.features.query import PaginationQuery
 from forum.features.reply.service import ReplyService
@@ -118,13 +116,3 @@ class TopicService:
             )
 
         self.repo.update(topic_id, is_active=False)
-
-
-def get_topic_service(
-    db: DatabaseDep,
-) -> Generator[TopicService]:
-    try:
-        topic_service = TopicService(db)
-        yield topic_service
-    finally:
-        pass

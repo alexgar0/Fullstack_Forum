@@ -1,5 +1,3 @@
-from collections.abc import Generator
-
 from sqlalchemy.orm import Session
 
 from forum.core.config import settings
@@ -11,7 +9,6 @@ from forum.features.branch.schemas import (
     BranchDTO,
     BranchWithSmallTopicsDTO,
 )
-from forum.features.common.dependencies import DatabaseDep
 from forum.features.query import PaginationQuery
 from forum.features.topic.service import TopicService
 from forum.features.user.models import Role, User
@@ -81,13 +78,3 @@ class BranchService:
         updated_branch = self.repo.update(entity_id=branch_id, is_active=False)
         if not updated_branch:
             raise NotFoundError("Branch not found")
-
-
-def get_branch_service(
-    db: DatabaseDep,
-) -> Generator[BranchService]:
-    try:
-        branch_service = BranchService(db)
-        yield branch_service
-    finally:
-        pass
