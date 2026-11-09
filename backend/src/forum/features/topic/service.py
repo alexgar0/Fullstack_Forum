@@ -1,7 +1,6 @@
 from collections.abc import Generator
 from datetime import UTC, datetime, timedelta
 
-from forum.features.topic.database.repo import TopicRepo
 from sqlalchemy.orm import Session
 
 from forum.core.config import settings
@@ -15,6 +14,7 @@ from forum.features.common.repo import PaginationResult
 from forum.features.query import PaginationQuery
 from forum.features.reply.service import ReplyService
 from forum.features.topic.models import Topic
+from forum.features.topic.repo import TopicRepo
 from forum.features.topic.schemas import (
     FullTopicDTO,
     SmallTopicDTO,

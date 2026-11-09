@@ -1,5 +1,3 @@
-import math
-
 import pytest
 
 create_branch_mock = {
@@ -78,14 +76,19 @@ async def test_branch_topic_pagination(client, db_session):
 
     # Read with pagination
     limit = 30
-    total_pages = math.ceil(topic_count / limit)
-    for page_number in range(1, total_pages + 1):
-        pagination = {"page": page_number, "limit": limit}
+    seen_ids = set()
+    for offset in range(0, topic_count, limit):
+        pagination = {"offset": offset, "limit": limit}
         response = await client.get(f"/branches/{branch_id}", params=pagination)
         assert response.status_code == 200
         data = response.json()
         small_topics = data["small_topics"]
-        assert len(small_topics) <= limit
+        assert len(small_topics) == limit
+        ids = {topic["id"] for topic in small_topics}
+        assert not seen_ids.intersection(ids)
+        seen_ids.update(ids)
+
+    assert len(seen_ids) == topic_count
 
 
 @pytest.mark.asyncio

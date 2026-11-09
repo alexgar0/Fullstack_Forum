@@ -1,6 +1,11 @@
 import pytest
 
 
+@pytest.fixture
+def client(anonymous_client):
+    return anonymous_client
+
+
 @pytest.mark.asyncio
 async def test_register_login_logout(client, db_session):
 
@@ -48,6 +53,7 @@ async def test_register_login_logout(client, db_session):
     # Test me endpoint
     response = await client.get("/users/me")
     assert response.status_code == 200
+    assert response.json()["username"] == registration_data["username"]
 
     # Logout
     response = await client.post("/users/logout")

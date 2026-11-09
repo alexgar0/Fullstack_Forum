@@ -10,12 +10,6 @@ from testcontainers.community.postgres import PostgresContainer
 from forum.core.auth.session import get_current_user, get_current_user_for_activity
 from forum.core.database import Base, get_db
 from forum.core.main import app
-from forum.features.branch.repo import BranchRepo
-from forum.features.branch.schemas import BranchCreateDTO
-from forum.features.branch.service import BranchService
-from forum.features.topic.repo import TopicRepo
-from forum.features.topic.schemas import TopicCreateDTO
-from forum.features.topic.service import TopicService
 from forum.features.user.models import Role, User
 
 
@@ -48,11 +42,9 @@ def db_session(db_engine):
     connection.close()
 
 
-@pytest.fixture(autouse=True)
-def override_dependency(db_session):
-    app.dependency_overrides[get_db] = lambda: db_session
-    yield
-    app.dependency_overrides.clear()
+@pytest.fixture
+def override_dependency(db_session, monkeypatch):
+    monkeypatch.setitem(app.dependency_overrides, get_db, lambda: db_session)
 
 
 @pytest.fixture
@@ -68,75 +60,24 @@ def test_user_admin(db_session):
     return user
 
 
-@pytest.fixture(autouse=True)
-def override_auth(test_user_admin):
-    app.dependency_overrides[get_current_user] = lambda: test_user_admin
-    app.dependency_overrides[get_current_user_for_activity] = lambda: test_user_admin
-    yield
-    app.dependency_overrides.pop(get_current_user, None)
-    app.dependency_overrides.pop(get_current_user_for_activity, None)
-
-
 @pytest.fixture
-def branch_repo(db_session):
-    return BranchRepo(db_session)
-
-
-@pytest.fixture
-def branch_service(db_session):
-    return BranchService(db_session)
-
-
-@pytest.fixture
-def mock_branch_create_dto():
-    mock_create = {
-        "title": "mock_branch title",
-        "description": "mock_branch description",
-    }
-    return BranchCreateDTO.model_validate(mock_create)
-
-
-@pytest.fixture
-def mock_branch(branch_service, test_user_admin, mock_branch_create_dto):
-    branch = branch_service.create_branch(
-        user=test_user_admin, branch=mock_branch_create_dto
+def override_auth(test_user_admin, monkeypatch):
+    monkeypatch.setitem(
+        app.dependency_overrides, get_current_user, lambda: test_user_admin
     )
-    assert branch is not None
-    return branch
-
-
-@pytest.fixture
-def topic_repo(db_session):
-    return TopicRepo(db_session)
-
-
-@pytest.fixture
-def topic_service(db_session):
-    return TopicService(db_session)
-
-
-@pytest.fixture
-def mock_topic_create_dto(mock_branch):
-    mock_create = {
-        "title": "mock_topic title",
-        "description": "mock_topic description",
-        "branch_id": mock_branch.id,
-    }
-    return TopicCreateDTO.model_validate(mock_create)
-
-
-@pytest.fixture
-def mock_topic(topic_service, test_user_admin, mock_topic_create_dto):
-    topic = topic_service.create_topic(
-        user=test_user_admin, topic=mock_topic_create_dto
+    monkeypatch.setitem(
+        app.dependency_overrides, get_current_user_for_activity, lambda: test_user_admin
     )
-    assert topic is not None
-    return topic
 
 
 @pytest_asyncio.fixture
-async def client():
+async def anonymous_client(override_dependency):
     async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
+        transport=ASGITransport(app=app), base_url="https://test"
     ) as ac:
         yield ac
+
+
+@pytest_asyncio.fixture
+async def client(anonymous_client, override_auth):
+    return anonymous_client
