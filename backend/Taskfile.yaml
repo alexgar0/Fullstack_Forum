@@ -1,0 +1,44 @@
+version: '3'
+
+tasks:
+  install:
+    desc: Install Python dependencies
+    cmds:
+      - uv sync --locked
+
+  dev:
+    desc: Start FastAPI development server
+    cmds:
+      - uv run start
+
+  lint:
+    desc: Check Python code
+    cmds:
+      - uv run ruff check .
+      - uv run mypy src
+
+  format:
+    desc: Format Python code
+    cmds:
+      - uv run ruff format .
+      - uv run ruff check --fix .
+
+  test:
+    desc: Run pytest
+    cmds:
+      - uv run pytest
+
+  build:
+    desc: Build Python package
+    cmds:
+      - uv build
+
+  migrate:
+    desc: Apply database migrations
+    cmds:
+      - uv run alembic upgrade head
+
+  migration:
+    desc: Generate new migration
+    cmds:
+      - uv run alembic revision --autogenerate -m "{{.CLI_ARGS}}"
