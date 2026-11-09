@@ -29,6 +29,7 @@ dev = [
     "types-python-jose>=3.5.0.20250531",
     "types-passlib>=1.7.7.20260211",
     "testcontainers[postgres]>=4.15.0",
+    "pytest-cov>=7.1.0",
 ]
 
 [tool.mypy]
