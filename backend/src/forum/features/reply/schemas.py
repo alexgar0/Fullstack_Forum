@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from forum.features.common.schemas import (
     BaseEntityDTO,
@@ -12,8 +12,7 @@ class ReplyDTO(BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO):
     content: str
     topic_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ReplyCreateDTO(BaseModel):

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from forum.features.common.schemas import (
     BaseEntityDTO,
@@ -27,8 +27,7 @@ class SmallTopicDTO(BaseEntityDTO, ViewsDTO, OwnableDTO, CreatedAtDTO):
     title: str
     last_edited_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class FullTopicDTO(SmallTopicDTO):

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from forum.features.common.schemas import BaseEntityDTO, CreatedAtDTO, ViewsDTO
 from forum.features.user.models import Role
@@ -32,5 +32,4 @@ class UserDTO(BaseEntityDTO, ViewsDTO, CreatedAtDTO):
     last_login: datetime
     last_activity: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

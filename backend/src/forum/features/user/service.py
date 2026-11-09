@@ -60,8 +60,7 @@ class UserService:
 
     def view_user(self, user_id: int) -> UserDTO:
         self.repo.increment_views(user_id)
-        dto = self.get_user(user_id)
-        return dto
+        return self.get_user(user_id)
 
     def create_user(self, user: UserCreate) -> UserDTO:
         if (
