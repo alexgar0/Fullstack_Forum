@@ -59,8 +59,8 @@ class UserService:
         return UserDTO.model_validate(orm_user)
 
     def view_user(self, user_id: int) -> UserDTO:
-        dto = self.get_user(user_id)
         self.repo.increment_views(user_id)
+        dto = self.get_user(user_id)
         return dto
 
     def create_user(self, user: UserCreate) -> UserDTO:
