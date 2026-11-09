@@ -19,9 +19,9 @@ from forum.features.common.entities import CreatedAtEntity, ViewableEntity
 __all__ = ["Role", "User"]
 
 if TYPE_CHECKING:
-    from forum.features.branch.database.models import Branch
-    from forum.features.reply.database.models import Reply
-    from forum.features.topic.database.models import Topic
+    from forum.features.branch.models import Branch
+    from forum.features.reply.models import Reply
+    from forum.features.topic.models import Topic
 
 
 class Role(enum.StrEnum):

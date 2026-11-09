@@ -22,6 +22,11 @@ config.set_main_option("sqlalchemy.url", settings.database_url)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
+from forum.features.branch import models
+from forum.features.user import models
+from forum.features.topic import models
+from forum.features.reply import models
+
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel

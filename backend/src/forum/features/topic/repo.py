@@ -2,23 +2,23 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from forum.core.exceptions import ExistingResourceError, NotFoundError
-from forum.features.branch.database.models import Branch
 from forum.features.common.repo import CRUDRepo, OwnableRepo, ViewableRepo
+from forum.features.topic.models import Topic
 
 
-class BranchRepo(CRUDRepo[Branch], ViewableRepo[Branch], OwnableRepo[Branch]):
+class TopicRepo(CRUDRepo[Topic], ViewableRepo[Topic], OwnableRepo[Topic]):
     def __init__(self, db: Session):
-        super().__init__(db, Branch)
+        super().__init__(db, Topic)
 
-    def create(self, entity: Branch) -> Branch:
+    def create(self, entity: Topic) -> Topic:
         try:
             return super().create(entity)
         except IntegrityError as exc:
             self.db.rollback()
-            if "branches_title" in str(exc.orig):
+            if "topics_title" in str(exc.orig):
                 raise ExistingResourceError(
-                    "Branch with the same title already exists"
+                    "Topic with the same title already exists"
                 ) from exc
-            if "branches_parent_id" in str(exc.orig):
-                raise NotFoundError("Parent branch not found") from exc
+            if "topics_branch_id" in str(exc.orig):
+                raise NotFoundError("Branch not found") from exc
             raise

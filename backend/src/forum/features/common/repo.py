@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from forum.features.common.entities import BaseEntity, OwnableEntity, ViewableEntity
 from forum.features.common.schemas import PaginationDTO
 from forum.features.query import PaginationQuery
-from forum.features.user.database.models import User
+from forum.features.user.models import User
 
 
 @dataclass

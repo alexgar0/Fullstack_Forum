@@ -10,7 +10,7 @@ from forum.core.auth.session import (
     get_current_user_from_refresh_token,
 )
 from forum.core.config import settings
-from forum.features.user.dependencies import UserServiceDep
+from forum.features.user.dependencies import CurrentUserDep, UserServiceDep
 from forum.features.user.schemas import Token, UserCreate, UserDTO
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -18,7 +18,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get("/me", response_model=UserDTO, dependencies=[])
 async def me(
-    current_user: Annotated[UserDTO, Depends(get_current_user_for_activity)],
+    current_user: CurrentUserDep,
 ) -> UserDTO:
     return current_user
 

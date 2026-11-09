@@ -4,8 +4,8 @@ from jose import JWTError
 
 from forum.core.config import settings
 from forum.features.common.dependencies import DatabaseDep
-from forum.features.user.database.models import User
-from forum.features.user.service.service import UserService
+from forum.features.user.models import User
+from forum.features.user.service import UserService
 
 
 def get_token_from_cookie(request: Request) -> str:

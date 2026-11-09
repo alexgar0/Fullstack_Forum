@@ -15,7 +15,7 @@ from forum.features.common.entities import (
 __all__ = ["Reply"]
 
 if TYPE_CHECKING:
-    from forum.features.topic.database.models import Topic
+    from forum.features.topic.models import Topic
 
 
 class Reply(Base, ViewableEntity, OwnableEntity, EditableEntity):

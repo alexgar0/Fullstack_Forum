@@ -19,8 +19,8 @@ from forum.features.common.entities import (
 )
 
 if TYPE_CHECKING:
-    from forum.features.branch.database.models import Branch
-    from forum.features.reply.database.models import Reply
+    from forum.features.branch.models import Branch
+    from forum.features.reply.models import Reply
 
 
 class Topic(Base, ViewableEntity, OwnableEntity, EditableEntity):

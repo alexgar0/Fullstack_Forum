@@ -7,7 +7,7 @@ from sqlalchemy import DateTime, ForeignKey, Integer, func
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from forum.features.user.database.models import User
+    from forum.features.user.models import User
 
 
 class IdMixin:

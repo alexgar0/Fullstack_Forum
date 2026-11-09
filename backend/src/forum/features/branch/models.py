@@ -23,7 +23,7 @@ __all__ = ["Branch"]
 if TYPE_CHECKING:
     from sqlalchemy.orm.dynamic import AppenderQuery
 
-    from forum.features.topic.database.models import Topic
+    from forum.features.topic.models import Topic
 
 
 class Branch(Base, ViewableEntity, OwnableEntity, CreatedAtEntity):

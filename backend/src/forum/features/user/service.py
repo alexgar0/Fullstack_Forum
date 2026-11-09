@@ -10,8 +10,8 @@ from forum.core.exceptions import (
     NotFoundError,
     PermissionDeniedError,
 )
-from forum.features.user.database.models import Role, User
-from forum.features.user.database.repo import UserRepo
+from forum.features.user.models import Role, User
+from forum.features.user.repo import UserRepo
 from forum.features.user.schemas import UserCreate, UserDTO
 
 

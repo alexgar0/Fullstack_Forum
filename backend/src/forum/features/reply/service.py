@@ -7,10 +7,10 @@ from forum.core.exceptions import InvalidLengthError
 from forum.features.common.dependencies import DatabaseDep
 from forum.features.common.repo import PaginationResult
 from forum.features.query import PaginationQuery
-from forum.features.reply.database.models import Reply
-from forum.features.reply.database.repo import ReplyRepo
+from forum.features.reply.models import Reply
+from forum.features.reply.repo import ReplyRepo
 from forum.features.reply.schemas import ReplyCreateDTO, ReplyDTO
-from forum.features.user.database.models import User
+from forum.features.user.models import User
 
 
 class ReplyService:

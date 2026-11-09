@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 from forum.features.common.schemas import BaseEntityDTO, CreatedAtDTO, ViewsDTO
-from forum.features.user.database.models import Role
+from forum.features.user.models import Role
 
 
 class UserBase(BaseModel):

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from forum.core.exceptions import ExistingResourceError
 from forum.features.common.repo import CRUDRepo, ViewableRepo
-from forum.features.user.database.models import User
+from forum.features.user.models import User
 
 
 class UserRepo(CRUDRepo[User], ViewableRepo[User]):

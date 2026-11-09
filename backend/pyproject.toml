@@ -177,6 +177,10 @@ classmethod-decorators = [
     "ALL",
 ]
 
+"**/alembic/*.py" = [
+    "ALL",
+]
+
 "**/versions/*.py" = [
     "ALL",
 ]
