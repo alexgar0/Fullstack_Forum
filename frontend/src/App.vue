@@ -3,6 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import { logout, me } from './features/auth/api/endpoints'
 import { user } from './features/auth/session'
 import { onMounted } from 'vue'
+import UserLink from './features/user/ui/UserLink.vue'
 
 onMounted(async () => {
   try {
@@ -29,7 +30,11 @@ async function handle_logout() {
         Home
       </RouterLink>
       <div class="flex gap-4 ml-auto">
-        <p v-if="user">{{ user?.username }}</p>
+        <UserLink
+          v-if="user"
+          :id="user.id"
+          :username="user.username"
+        />
         <RouterLink
           v-if="!user"
           to="/login"

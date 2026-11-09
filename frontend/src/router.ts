@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage.vue'
 import auth_router from './features/auth/router'
 import { branch_router } from './features/branch/router'
 import { topic_router } from './features/topic/router'
+import { user_router } from './features/user/router'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -14,6 +15,7 @@ const router = createRouter({
     ...auth_router,
     ...branch_router,
     ...topic_router,
+    ...user_router,
   ],
 })
 

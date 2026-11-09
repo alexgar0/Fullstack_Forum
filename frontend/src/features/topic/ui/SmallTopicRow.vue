@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import type { SmallTopicDTO } from '../api/dto'
 import { computed } from 'vue'
+import UserLink from '../../user/ui/UserLink.vue'
 
 const props = defineProps<{
   topic: SmallTopicDTO
@@ -36,7 +37,11 @@ function go_to_topic() {
 
     <div class="flex items-center gap-6 text-sm text-text-secondary">
       <div class="flex flex-col items-end">
-        <span>{{ topic.creator_username }}</span>
+        <UserLink
+          :id="topic.creator_id"
+          :username="topic.creator_username"
+          @click.stop
+        />
       </div>
 
       <div class="flex flex-col items-end border-l border-primary-alt pl-6">

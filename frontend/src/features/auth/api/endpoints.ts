@@ -33,6 +33,15 @@ export async function me(): Promise<UserDTO> {
   return requireData(await api.GET('/users/me', { credentials: 'same-origin' }))
 }
 
+export async function get_user_by_id(user_id: number): Promise<UserDTO> {
+  return requireData(
+    await api.GET('/users/{user_id}', {
+      params: { path: { user_id } },
+      credentials: 'same-origin',
+    }),
+  )
+}
+
 export async function logout() {
   requireSuccess(await api.POST('/users/logout', { credentials: 'same-origin' }))
 }

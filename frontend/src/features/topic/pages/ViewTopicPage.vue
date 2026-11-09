@@ -6,6 +6,7 @@ import { ApiError } from '../../../api/openapi'
 import type { ReplyCreateDTO, TopicDTO } from '../api/dto'
 import BaseButton from '../../../components/ui/BaseButton.vue'
 import BaseTextArea from '../../../components/ui/BaseTextArea.vue'
+import UserLink from '../../user/ui/UserLink.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -118,7 +119,11 @@ onMounted(() => {
             <span class="text-[10px] font-bold uppercase tracking-widest text-text-secondary"
               >Author</span
             >
-            <span class="text-accent">{{ topic.creator_username }}</span>
+            <UserLink
+              :id="topic.creator_id"
+              :username="topic.creator_username"
+              class="text-accent"
+            />
           </div>
           <div class="h-8 border-l border-primary-alt"></div>
           <div class="flex flex-col">
@@ -167,7 +172,11 @@ onMounted(() => {
             <div
               class="flex justify-between items-center mb-3 text-sm border-b border-primary-alt/30 pb-2"
             >
-              <span class="text-accent font-medium">{{ reply.creator_username }}</span>
+              <UserLink
+                :id="reply.creator_id"
+                :username="reply.creator_username"
+                class="text-accent font-medium"
+              />
               <span class="font-mono text-xs text-text-secondary">
                 {{ formattedDate(reply.created_at) }}
               </span>
