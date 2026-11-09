@@ -1,0 +1,62 @@
+version: '3'
+
+includes:
+  backend:
+    taskfile: ./backend/Taskfile.yaml
+    dir: ./backend
+
+  frontend:
+    taskfile: ./frontend/Taskfile.yaml
+    dir: ./frontend
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  install:
+    desc: Install all dependencies
+    deps:
+      - backend:install
+      - frontend:install
+
+  dev:
+    desc: Start backend and frontend
+    deps:
+      - backend:dev
+      - frontend:dev
+
+  lint:
+    desc: Lint all applications
+    deps:
+      - backend:lint
+      - frontend:lint
+
+  format:
+    desc: Format all applications
+    deps:
+      - backend:format
+      - frontend:format
+
+  test:
+    desc: Run all tests
+    deps:
+      - backend:test
+      - frontend:test
+
+  build:
+    desc: Build all applications
+    deps:
+      - backend:build
+      - frontend:build
+
+  infra:up:
+    desc: Start infrastructure
+    cmds:
+      - docker compose up -d
+
+  infra:down:
+    desc: Stop infrastructure
+    cmds:
+      - docker compose down

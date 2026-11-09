@@ -1,0 +1,145 @@
+
+version: '3'
+
+tasks:
+  default:
+    desc: Show available frontend tasks
+    cmds:
+      - task --list
+
+  # Dependencies
+
+  install:
+    desc: Install dependencies from package-lock.json
+    cmds:
+      - npm ci
+    sources:
+      - package.json
+      - package-lock.json
+    generates:
+      - node_modules/.package-lock.json
+
+  update:
+    desc: Update dependencies
+    cmds:
+      - npm update
+
+  outdated:
+    desc: Show outdated dependencies
+    cmds:
+      - npm outdated
+
+  audit:
+    desc: Check dependencies for vulnerabilities
+    cmds:
+      - npm audit
+
+  # Development
+
+  dev:
+    desc: Start development server
+    cmds:
+      - npm run dev
+
+  preview:
+    desc: Preview production build
+    deps:
+      - build
+    cmds:
+      - npm run preview
+
+  # Code quality
+
+  lint:
+    desc: Run ESLint
+    cmds:
+      - npm run lint
+
+  lint:fix:
+    desc: Automatically fix ESLint issues
+    cmds:
+      - npm run lint -- --fix
+
+  format:
+    desc: Format code with Prettier
+    cmds:
+      - npm run format
+
+  format:check:
+    desc: Check code formatting
+    cmds:
+      - npm run format:check
+
+  typecheck:
+    desc: Run TypeScript type checking
+    cmds:
+      - npm run typecheck
+
+  check:
+    desc: Run all code quality checks
+    deps:
+      - lint
+      - format:check
+      - typecheck
+
+  # Testing
+
+  test:
+    desc: Run tests once
+    cmds:
+      - npm run test -- --run
+
+  test:watch:
+    desc: Run tests in watch mode
+    cmds:
+      - npm run test
+
+  test:coverage:
+    desc: Run tests with coverage
+    cmds:
+      - npm run test -- --run --coverage
+
+  # Build
+
+  build:
+    desc: Build production bundle
+    cmds:
+      - npm run build
+    sources:
+      - src/**/*
+      - public/**/*
+      - index.html
+      - package.json
+      - package-lock.json
+      - tsconfig*.json
+      - vite.config.*
+    generates:
+      - dist/**/*
+
+  # Cleanup
+
+  clean:
+    desc: Remove build and coverage artifacts
+    cmds:
+      - rm -rf dist coverage
+
+  clean:all:
+    desc: Remove dependencies and build artifacts
+    cmds:
+      - rm -rf node_modules dist coverage
+
+  reinstall:
+    desc: Reinstall dependencies
+    cmds:
+      - task: clean:all
+      - npm ci
+
+  # CI
+
+  ci:
+    desc: Run CI checks and production build
+    cmds:
+      - npm ci
+      - task: check
+      - task: test
+      - npm run build
