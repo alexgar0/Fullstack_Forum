@@ -6,7 +6,7 @@ from sqlalchemy import ColumnExpressionArgument, func, select, update
 from sqlalchemy.orm import Session
 
 from forum.features.common.entities import BaseEntity, OwnableEntity, ViewableEntity
-from forum.features.common.schemas import PaginationDTO
+from forum.features.common.schemas import BaseEntityDTO, PageDTO, PaginationDTO
 from forum.features.query import PaginationQuery
 from forum.features.user.models import User
 
@@ -20,6 +20,14 @@ class PaginationResult[X]:
 
     def to_dto(self) -> PaginationDTO:
         return PaginationDTO(
+            current_offset=self.current_offset,
+            total_items=self.total_items,
+            limit=self.limit,
+        )
+
+    def to_page_dto[M: BaseEntityDTO](self, item_type: type[M]) -> PageDTO[M]:
+        return PageDTO[M](
+            items=[item_type.model_validate(item) for item in self.items],
             current_offset=self.current_offset,
             total_items=self.total_items,
             limit=self.limit,
@@ -112,18 +120,19 @@ class ViewableRepo[V: ViewableEntity](BaseRepo[V]):
         return result.scalar_one_or_none()
 
 
-class OwnableRepo[U: OwnableEntity](BaseRepo[U]):
+class OwnableRepo[U: OwnableEntity](CRUDRepo[U]):
     def get_owner(self, entity_id: int) -> User | None:
         entity = self.db.query(self.model).filter(self.model.id == entity_id).first()
         if entity:
             return entity.creator
         return None
 
-    def get_all_by_owner(
-        self, owner_id: int, pagination: PaginationQuery | None = None
-    ) -> list[U]:
-        query = self.db.query(self.model).where(self.model.creator_id == owner_id)
-        if pagination:
-            query = query.limit(pagination.limit).offset(pagination.offset)
-
-        return query.all()
+    def get_by_owner(
+        self,
+        owner_id: int,
+        *filters: ColumnExpressionArgument[bool],
+        pagination: PaginationQuery | None = None,
+    ) -> PaginationResult[U]:
+        return self.get_page(
+            self.model.creator_id == owner_id, *filters, pagination=pagination
+        )

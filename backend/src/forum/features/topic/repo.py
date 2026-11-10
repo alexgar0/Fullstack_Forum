@@ -2,11 +2,11 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from forum.core.exceptions import ExistingResourceError, NotFoundError
-from forum.features.common.repo import CRUDRepo, OwnableRepo, ViewableRepo
+from forum.features.common.repo import OwnableRepo, ViewableRepo
 from forum.features.topic.models import Topic
 
 
-class TopicRepo(CRUDRepo[Topic], ViewableRepo[Topic], OwnableRepo[Topic]):
+class TopicRepo(ViewableRepo[Topic], OwnableRepo[Topic]):
     def __init__(self, db: Session):
         super().__init__(db, Topic)
 

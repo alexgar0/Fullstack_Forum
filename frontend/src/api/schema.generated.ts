@@ -89,6 +89,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/users/{user_id}/topics/': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Read User Topics */
+    get: operations['read_user_topics_users__user_id__topics__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/users/logout': {
     parameters: {
       query?: never
@@ -344,6 +361,17 @@ export interface components {
     HTTPValidationError: {
       /** Detail */
       detail?: components['schemas']['ValidationError'][]
+    }
+    /** PageDTO[SmallTopicDTO] */
+    PageDTO_SmallTopicDTO_: {
+      /** Current Offset */
+      current_offset: number
+      /** Limit */
+      limit: number
+      /** Total Items */
+      total_items: number
+      /** Items */
+      items: components['schemas']['SmallTopicDTO'][]
     }
     /** PaginationDTO */
     PaginationDTO: {
@@ -616,6 +644,40 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['UserDTO']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  read_user_topics_users__user_id__topics__get: {
+    parameters: {
+      query?: {
+        offset?: number
+        limit?: number
+      }
+      header?: never
+      path: {
+        user_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PageDTO_SmallTopicDTO_']
         }
       }
       /** @description Validation Error */

@@ -24,3 +24,7 @@ class PaginationDTO(BaseModel):
     current_offset: int
     limit: int
     total_items: int
+
+
+class PageDTO[T](PaginationDTO):
+    items: list[T]

@@ -10,8 +10,12 @@ from forum.core.auth.session import (
     get_current_user_from_refresh_token,
 )
 from forum.core.config import settings
+from forum.features.common.schemas import PageDTO
+from forum.features.query import PaginationQuery
+from forum.features.topic.dependencies import TopicServiceDep
+from forum.features.topic.schemas import SmallTopicDTO
 from forum.features.user.dependencies import CurrentUserDep, UserServiceDep
-from forum.features.user.schemas import Token, RegisterDTO, UserDTO
+from forum.features.user.schemas import RegisterDTO, Token, UserDTO
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -86,6 +90,19 @@ async def read_user(
     user_service: UserServiceDep,
 ) -> UserDTO:
     return user_service.view_user(user_id)
+
+
+@router.get(
+    "/{user_id}/topics/",
+    response_model=PageDTO[SmallTopicDTO],
+    dependencies=[Depends(get_current_user_for_activity)],
+)
+async def read_user_topics(
+    user_id: int,
+    pagination: Annotated[PaginationQuery, Depends(PaginationQuery)],
+    topic_service: TopicServiceDep,
+) -> PageDTO[SmallTopicDTO]:
+    return topic_service.get_small_topics_by_user(user_id, pagination)
 
 
 @router.post("/logout")

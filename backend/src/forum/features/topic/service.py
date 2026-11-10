@@ -9,6 +9,7 @@ from forum.core.exceptions import (
     PermissionDeniedError,
 )
 from forum.features.common.repo import PaginationResult
+from forum.features.common.schemas import PageDTO
 from forum.features.query import PaginationQuery
 from forum.features.reply.service import ReplyService
 from forum.features.topic.models import Topic
@@ -116,3 +117,10 @@ class TopicService:
             )
 
         self.repo.update(topic_id, is_active=False)
+
+    def get_small_topics_by_user(
+        self, user_id: int, pagination: PaginationQuery | None = None
+    ) -> PageDTO[SmallTopicDTO]:
+        return self.repo.get_by_owner(
+            user_id, Topic.is_active, pagination=pagination
+        ).to_page_dto(SmallTopicDTO)

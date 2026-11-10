@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 
 from forum.core.exceptions import ExistingResourceError, NotFoundError
 from forum.features.branch.models import Branch
-from forum.features.common.repo import CRUDRepo, OwnableRepo, ViewableRepo
+from forum.features.common.repo import OwnableRepo, ViewableRepo
 
 
-class BranchRepo(CRUDRepo[Branch], ViewableRepo[Branch], OwnableRepo[Branch]):
+class BranchRepo(ViewableRepo[Branch], OwnableRepo[Branch]):
     def __init__(self, db: Session):
         super().__init__(db, Branch)
 
